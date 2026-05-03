@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCDEE — ร้านบัญชีโซเชียลมีเดียพรีเมียม</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Orbitron:wght@700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+  ✅ เปิดให้บริการปกติ &nbsp;•&nbsp; ระบบตรวจสอบออเดอร์อัตโนมัติ 24 ชม. &nbsp;•&nbsp; ติดต่อ @accdee_th บน Telegram
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="#">ACC<span>DEE</span></a>
+  <ul class="nav-links">
+    <li><a href="#products">สินค้า</a></li>
+    <li><a href="#features">ทำไมต้องเรา</a></li>
+    <li><a href="#contact">ติดต่อ</a></li>
+  </ul>
+  <div class="nav-cta">
+    <!-- แสดงเมื่อยังไม่ได้ login -->
+    <div id="guestNav">
+      <button class="btn-ghost" onclick="openAuth('login')">เข้าสู่ระบบ</button>
+      <button class="btn-primary" onclick="openAuth('register')">สมัครฟรี</button>
+    </div>
+    <!-- แสดงเมื่อ login แล้ว -->
+    <div id="userNav">
+      <span class="nav-balance" onclick="openTopup()" title="คลิกเพื่อเติมเงิน" style="cursor:pointer">💰 <span id="navBalance">0.00</span> ฿</span>
+      <button class="btn-primary" style="padding:6px 14px;font-size:0.8rem" onclick="openTopup()">เติมเงิน</button>
+      <span class="nav-username" id="navUsername"></span>
+      <button class="btn-ghost" onclick="doLogout()">ออกจากระบบ</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✓ Verified Business · ดำเนินการถูกกฎหมาย</div>
+  <h1 class="hero-title">
+    <span class="line1">ACCDEE</span>
+    <span class="line2">บัญชีโซเชียลมีเดียพรีเมียม</span>
+  </h1>
+  <p class="hero-sub">
+    แหล่งรวมบัญชีโซเชียลมีเดียที่มีคุณภาพสูง<br>
+    <strong>Facebook · Twitter(X) · Instagram · TikTok</strong><br>
+    พร้อมส่งทันที — ระบบอัตโนมัติ 24 ชั่วโมง
+  </p>
+  <div class="hero-actions">
+    <a href="#products" class="btn-primary btn-hero">ดูสินค้าทั้งหมด</a>
+    <a href="#contact" class="btn-ghost btn-hero">ติดต่อทีมงาน</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-num">5,000+</span><span class="stat-label">ลูกค้าที่ไว้วางใจ</span></div>
+  <div class="stat-item"><span class="stat-num">12,000+</span><span class="stat-label">ออเดอร์สำเร็จ</span></div>
+  <div class="stat-item"><span class="stat-num">99.2%</span><span class="stat-label">ความพึงพอใจ</span></div>
+  <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">ระบบอัตโนมัติ</span></div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="dot"></span> FACEBOOK ACCOUNT</div>
+    <div class="marquee-item"><span class="dot"></span> TWITTER(X)</div>
+    <div class="marquee-item"><span class="dot"></span> INSTAGRAM</div>
+    <div class="marquee-item"><span class="dot"></span> TIKTOK</div>
+    <div class="marquee-item"><span class="dot"></span> GMAIL</div>
+    <div class="marquee-item"><span class="dot"></span> FACEBOOK ADS</div>
+    <div class="marquee-item"><span class="dot"></span> FANPAGE</div>
+    <div class="marquee-item"><span class="dot"></span> BM BUSINESS MANAGER</div>
+    <!-- ทำซ้ำเพื่อให้ marquee วนได้ไม่ขาด -->
+    <div class="marquee-item"><span class="dot"></span> FACEBOOK ACCOUNT</div>
+    <div class="marquee-item"><span class="dot"></span> TWITTER(X)</div>
+    <div class="marquee-item"><span class="dot"></span> INSTAGRAM</div>
+    <div class="marquee-item"><span class="dot"></span> TIKTOK</div>
+    <div class="marquee-item"><span class="dot"></span> GMAIL</div>
+    <div class="marquee-item"><span class="dot"></span> FACEBOOK ADS</div>
+    <div class="marquee-item"><span class="dot"></span> FANPAGE</div>
+    <div class="marquee-item"><span class="dot"></span> BM BUSINESS MANAGER</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-header">
+    <div class="section-tag">สินค้า · Products</div>
+    <h2 class="section-title">เลือกสินค้าที่ต้องการ</h2>
+    <p class="section-desc">บัญชีคุณภาพสูง ราคาเหมาะสม ส่งทันทีหลังชำระเงิน</p>
+  </div>
+
+  <div class="cat-tabs">
+    <button class="cat-tab active" onclick="filterCat(this,'all')">ทั้งหมด</button>
+    <button class="cat-tab" onclick="filterCat(this,'facebook')">Facebook</button>
+    <button class="cat-tab" onclick="filterCat(this,'twitter')">Twitter(X)</button>
+    <button class="cat-tab" onclick="filterCat(this,'coming')">เร็วๆ นี้</button>
+  </div>
+
+  <div class="product-grid" id="productGrid">
+
+    <div class="product-card" data-cat="facebook" onclick="openModal('fb-blank')">
+      <div class="product-icon icon-fb">📘</div>
+      <div class="product-platform">Facebook</div>
+      <div class="product-name">บัญชี Facebook เปล่า</div>
+      <div class="product-desc">บัญชี Facebook ใหม่ ไม่มีแฟนเพจ พร้อมใช้งานทันที เหมาะสำหรับเริ่มต้น</div>
+      <div class="product-tags">
+        <span class="tag tag-blue">ใหม่</span>
+        <span class="tag tag-green">ส่งทันที</span>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <div class="price-label">ราคา</div>
+          <div class="price">50<span class="currency"> ฿</span></div>
+        </div>
+        <button class="buy-btn">สั่งซื้อ</button>
+      </div>
+    </div>
+
+    <div class="product-card featured" data-cat="facebook" onclick="openModal('fb-10page')">
+      <div class="product-icon icon-fb">📘</div>
+      <div class="product-platform">Facebook</div>
+      <div class="product-name">บัญชี Facebook พร้อม 10 แฟนเพจ</div>
+      <div class="product-desc">บัญชีที่มีแฟนเพจครบ 10 เพจพร้อมใช้งาน เหมาะสำหรับงานโฆษณาและการตลาด</div>
+      <div class="product-tags">
+        <span class="tag tag-blue">10 แฟนเพจ</span>
+        <span class="tag tag-green">ส่งทันที</span>
+        <span class="tag tag-purple">โฆษณา</span>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <div class="price-label">ราคา</div>
+          <div class="price">100<span class="currency"> ฿</span></div>
+        </div>
+        <button class="buy-btn">สั่งซื้อ</button>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="facebook" onclick="openModal('fb-5page')">
+      <div class="product-icon icon-fb">📘</div>
+      <div class="product-platform">Facebook</div>
+      <div class="product-name">บัญชี Facebook พร้อม 5 แฟนเพจ</div>
+      <div class="product-desc">บัญชีที่มีแฟนเพจ 5 เพจ ราคาสุดคุ้ม เหมาะสำหรับผู้เริ่มยิงโฆษณา</div>
+      <div class="product-tags">
+        <span class="tag tag-blue">5 แฟนเพจ</span>
+        <span class="tag tag-green">ส่งทันที</span>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <div class="price-label">ราคา</div>
+          <div class="price">50<span class="currency"> ฿</span></div>
+        </div>
+        <button class="buy-btn">สั่งซื้อ</button>
+      </div>
+    </div>
+
+    <div class="product-card featured" data-cat="twitter" onclick="openModal('tw-1k')">
+      <div class="product-icon icon-tw">🐦</div>
+      <div class="product-platform">Twitter (X)</div>
+      <div class="product-name">Twitter บัญชี 1,000+ ผู้ติดตาม</div>
+      <div class="product-desc">บัญชี Twitter ที่มีผู้ติดตามกว่า 1,000 คน มีความน่าเชื่อถือสูง เหมาะทำการตลาด</div>
+      <div class="product-tags">
+        <span class="tag tag-blue">1,000+ Followers</span>
+        <span class="tag tag-yellow">พรีเมียม</span>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <div class="price-label">ราคา</div>
+          <div class="price">800<span class="currency"> ฿</span></div>
+        </div>
+        <button class="buy-btn">สั่งซื้อ</button>
+      </div>
+    </div>
+
+    <div class="product-card coming-soon" data-cat="coming">
+      <div class="product-icon icon-ig">📸</div>
+      <div class="product-platform">Instagram</div>
+      <div class="product-name">บัญชี Instagram ใหม่</div>
+      <div class="product-desc">บัญชี Instagram พร้อมใช้งาน — กำลังเตรียมสต็อก</div>
+      <div class="product-tags"><span class="tag tag-purple">เร็วๆ นี้</span></div>
+      <div class="product-footer">
+        <div class="price-block"><div class="price-label">ราคา</div><div class="price">— <span class="currency">฿</span></div></div>
+        <button class="buy-btn" disabled>เร็วๆ นี้</button>
+      </div>
+    </div>
+
+    <div class="product-card coming-soon" data-cat="coming">
+      <div class="product-icon icon-tt">🎵</div>
+      <div class="product-platform">TikTok</div>
+      <div class="product-name">บัญชี TikTok ใหม่ / Live</div>
+      <div class="product-desc">บัญชี TikTok พร้อม Live — กำลังเตรียมสต็อก</div>
+      <div class="product-tags"><span class="tag tag-yellow">เร็วๆ นี้</span></div>
+      <div class="product-footer">
+        <div class="price-block"><div class="price-label">ราคา</div><div class="price">— <span class="currency">฿</span></div></div>
+        <button class="buy-btn" disabled>เร็วๆ นี้</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-header">
+    <div class="section-tag">ทำไมต้องเรา · Why Us</div>
+    <h2 class="section-title">มาตรฐานที่คุณไว้วางใจได้</h2>
+    <p class="section-desc">เราใส่ใจในคุณภาพและความปลอดภัยของลูกค้าเป็นอันดับหนึ่ง</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">ส่งทันทีอัตโนมัติ</div><div class="feature-desc">ระบบจัดส่งอัตโนมัติ 24 ชั่วโมง ได้รับสินค้าทันทีหลังชำระเงิน ไม่ต้องรอทีมงาน</div></div>
+    <div class="feature-card"><div class="feature-icon">🔒</div><div class="feature-title">ปลอดภัย 100%</div><div class="feature-desc">ดำเนินการถูกกฎหมาย ไม่มีการหลอกลวง มีนโยบาย Anti-Fraud ชัดเจน</div></div>
+    <div class="feature-card"><div class="feature-icon">💎</div><div class="feature-title">คุณภาพสูง</div><div class="feature-desc">คัดสรรบัญชีคุณภาพ ตรวจสอบมาตรฐานก่อนส่งทุกออเดอร์ มีการรับประกัน</div></div>
+    <div class="feature-card"><div class="feature-icon">🎯</div><div class="feature-title">ราคาเหมาะสม</div><div class="feature-desc">ราคาถูกกว่าตลาดทั่วไป ไม่มีค่าธรรมเนียมซ่อนเร้น ชำระง่ายผ่านพร้อมเพย์</div></div>
+    <div class="feature-card"><div class="feature-icon">🛠️</div><div class="feature-title">API พร้อมใช้</div><div class="feature-desc">รองรับการเชื่อมต่อ API สำหรับนักพัฒนาและธุรกิจที่ต้องการระบบอัตโนมัติ</div></div>
+    <div class="feature-card"><div class="feature-icon">📞</div><div class="feature-title">ทีมงานพร้อมช่วยเหลือ</div><div class="feature-desc">ติดต่อได้ทาง Telegram, LINE, Facebook มีเวลาทำการชัดเจน ตอบเร็ว</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-header">
+    <div class="section-tag">ติดต่อ · Contact</div>
+    <h2 class="section-title">ช่องทางติดต่อ</h2>
+    <p class="section-desc">กรุณาติดต่อผ่านช่องทางที่ระบุเท่านั้น เพื่อป้องกันการแอบอ้าง</p>
+  </div>
+  <div class="contact-grid">
+    <a href="https://t.me/accdee_th" class="contact-card">
+      <div class="contact-ico">✈️</div>
+      <div class="contact-info"><div class="contact-platform">Telegram</div><div class="contact-handle">@accdee_th</div></div>
+    </a>
+    <a href="#" class="contact-card">
+      <div class="contact-ico">💬</div>
+      <div class="contact-info"><div class="contact-platform">LINE OA</div><div class="contact-handle">@accdee</div></div>
+    </a>
+    <a href="#" class="contact-card">
+      <div class="contact-ico">📘</div>
+      <div class="contact-info"><div class="contact-platform">Facebook</div><div class="contact-handle">Accdee Official</div></div>
+    </a>
+    <a href="mailto:support@accdee.shop" class="contact-card">
+      <div class="contact-ico">✉️</div>
+      <div class="contact-info"><div class="contact-platform">Email</div><div class="contact-handle">support@accdee.shop</div></div>
+    </a>
+  </div>
+  <div class="hours-block">
+    <div class="hours-title">⏰ เวลาทำการ GMT+7</div>
+    <div class="hour-row"><span>ช่วงเช้า</span><span class="hour-time">09:00 – 12:00</span></div>
+    <div class="hour-row"><span>ช่วงบ่าย</span><span class="hour-time">14:00 – 17:30</span></div>
+    <div class="hour-row"><span>ช่วงค่ำ</span><span class="hour-time">20:00 – 22:30</span></div>
+    <div class="hour-row"><span>ระบบอัตโนมัติ</span><span class="hour-time">24 ชั่วโมง</span></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="#">ACC<span>DEE</span></a>
+      <p>ผู้ให้บริการบัญชีโซเชียลมีเดียและโซลูชันการตลาดออนไลน์ครบวงจร เน้นความปลอดภัยและความเป็นมืออาชีพ</p>
+    </div>
+    <div>
+      <div class="footer-col-title">สินค้า</div>
+      <ul class="footer-links">
+        <li><a href="#">Facebook Account</a></li>
+        <li><a href="#">Facebook Ads / BM</a></li>
+        <li><a href="#">Fanpage</a></li>
+        <li><a href="#">Twitter (X)</a></li>
+        <li><a href="#">TikTok</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">ข้อมูล</div>
+      <ul class="footer-links">
+        <li><a href="#">นโยบาย</a></li>
+        <li><a href="#">คำถามที่พบบ่อย</a></li>
+        <li><a href="#">ติดต่อเรา</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 ACCDEE · All Rights Reserved</p>
+    <div class="made-with">BUILT FOR PERFORMANCE</div>
+  </div>
+</footer>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOuter(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL (Login / Register) -->
+<div class="auth-overlay" id="authOverlay" onclick="closeAuthOuter(event)">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+
+    <!-- แท็บเปลี่ยนระหว่าง Login / Register -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">เข้าสู่ระบบ</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">สมัครสมาชิก</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="formLogin">
+      <div class="auth-logo">ACC<span>DEE</span></div>
+      <p class="auth-subtitle">ยินดีต้อนรับกลับ</p>
+      <div class="form-group">
+        <label>อีเมล</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com" class="auth-input">
+      </div>
+      <div class="form-group">
+        <label>รหัสผ่าน</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" class="auth-input">
+      </div>
+      <div class="auth-msg" id="loginMsg"></div>
+      <button class="auth-btn" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
+      <p class="auth-switch">ยังไม่มีบัญชี? <a onclick="switchAuthTab('register')">สมัครสมาชิก</a></p>
+    </div>
+
+    <!-- Register Form -->
+    <div id="formRegister" style="display:none">
+      <div class="auth-logo">ACC<span>DEE</span></div>
+      <p class="auth-subtitle">สร้างบัญชีใหม่ฟรี</p>
+      <div class="form-group">
+        <label>ชื่อผู้ใช้</label>
+        <input type="text" id="regUsername" placeholder="ชื่อของคุณ" class="auth-input">
+      </div>
+      <div class="form-group">
+        <label>อีเมล</label>
+        <input type="email" id="regEmail" placeholder="your@email.com" class="auth-input">
+      </div>
+      <div class="form-group">
+        <label>รหัสผ่าน</label>
+        <input type="password" id="regPassword" placeholder="อย่างน้อย 6 ตัวอักษร" class="auth-input">
+      </div>
+      <div class="auth-msg" id="registerMsg"></div>
+      <button class="auth-btn" id="registerBtn" onclick="doRegister()">สมัครสมาชิก</button>
+      <p class="auth-switch">มีบัญชีแล้ว? <a onclick="switchAuthTab('login')">เข้าสู่ระบบ</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast"></div>
+
+<!-- TOPUP MODAL (เติมเงิน) -->
+<div class="auth-overlay" id="topupOverlay" onclick="closeTopupOuter(event)">
+  <div class="auth-modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeTopup()">✕</button>
+
+    <!-- Step 1: เลือกจำนวนเงิน -->
+    <div id="topupStep1">
+      <div class="auth-logo">ACC<span>DEE</span></div>
+      <p class="auth-subtitle">เติมเงินเข้า Wallet</p>
+
+      <!-- ข้อมูลช่องทางชำระเงิน -->
+      <div class="payment-info" id="paymentInfoBox">
+        <div class="payment-row">
+          <span class="payment-label">PromptPay</span>
+          <span class="payment-value" id="payPromptpay">กำลังโหลด...</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-label">ธนาคาร</span>
+          <span class="payment-value" id="payBank">กำลังโหลด...</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-label">เลขบัญชี</span>
+          <span class="payment-value" id="payAccountNum">กำลังโหลด...</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-label">ชื่อบัญชี</span>
+          <span class="payment-value" id="payAccountName">กำลังโหลด...</span>
+        </div>
+      </div>
+
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px;text-align:center">
+        โอนเงินตามช่องทางด้านบน แล้วกรอกข้อมูลด้านล่าง
+      </p>
+
+      <div class="form-group">
+        <label>จำนวนเงิน (บาท)</label>
+        <input type="number" id="topupAmount" placeholder="เช่น 100" min="10" class="auth-input">
+      </div>
+      <div class="form-group">
+        <label>แนบสลิป</label>
+        <input type="file" id="topupSlip" accept="image/*" class="auth-input" style="padding:8px">
+        <div id="slipPreview" style="margin-top:8px;display:none">
+          <img id="slipImg" style="max-width:100%;border-radius:6px;border:1px solid var(--border)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>หมายเหตุ (ไม่บังคับ)</label>
+        <input type="text" id="topupNote" placeholder="เช่น โอนเวลา 14:30" class="auth-input">
+      </div>
+
+      <div class="auth-msg" id="topupMsg"></div>
+      <button class="auth-btn" id="topupBtn" onclick="submitTopup()">ส่งคำขอเติมเงิน</button>
+      <p style="text-align:center;font-size:0.8rem;color:var(--text-muted)">
+        Admin จะตรวจสอบและอนุมัติภายใน 5–30 นาที
+      </p>
+    </div>
+
+    <!-- Step 2: ส่งสำเร็จ -->
+    <div id="topupStep2" style="display:none;text-align:center">
+      <div style="font-size:3rem;margin-bottom:16px">✅</div>
+      <div class="auth-logo">สำเร็จ!</div>
+      <p style="color:var(--text-muted);margin:12px 0 24px;line-height:1.7">
+        ส่งคำขอเติมเงินเรียบร้อยแล้ว<br>
+        Admin จะตรวจสอบและอนุมัติเร็วๆ นี้
+      </p>
+      <button class="auth-btn" onclick="closeTopup()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- โหลด JavaScript -->
+<script src="js/main.js"></script>
+</body>
+</html>
