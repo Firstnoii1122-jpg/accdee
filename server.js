@@ -1,8 +1,9 @@
 require('dotenv').config();
 
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+const express    = require('express');
+const cors       = require('cors');
+const path       = require('path');
+const setupDb    = require('./config/setupDb');
 
 const app = express();
 
@@ -10,13 +11,15 @@ app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const authRoutes = require('./routes/authRoutes');
+const authRoutes    = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
-const walletRoutes = require('./routes/walletRoutes');
+const walletRoutes  = require('./routes/walletRoutes');
+const adminRoutes   = require('./routes/adminRoutes');
 
-app.use('/api/auth', authRoutes);
-app.use('/api', profileRoutes);
+app.use('/api/auth',   authRoutes);
+app.use('/api',        profileRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/admin',  adminRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -30,6 +33,11 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
+setupDb()
+  .then(() => {
+    app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+  })
+  .catch(err => {
+    console.error('Database setup failed:', err.message);
+    process.exit(1);
+  });

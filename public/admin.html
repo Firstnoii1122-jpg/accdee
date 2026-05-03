@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCDEE — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-wrap { max-width: 900px; margin: 100px auto; padding: 0 20px; }
+    .admin-title { font-size: 1.6rem; font-weight: 700; color: var(--neon-blue); margin-bottom: 8px; }
+    .admin-sub   { color: var(--text-muted); margin-bottom: 32px; }
+
+    .topup-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .slip-img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; flex-shrink: 0; }
+    .topup-info { flex: 1; }
+    .topup-user   { font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .topup-amount { font-size: 1.4rem; font-weight: 700; color: var(--neon-green); margin-bottom: 4px; }
+    .topup-note   { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 4px; }
+    .topup-date   { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px; }
+    .action-row   { display: flex; gap: 10px; }
+
+    .btn-approve { background: var(--neon-green); color: #000; border: none; padding: 8px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
+    .btn-reject  { background: transparent; color: var(--neon-red); border: 1px solid var(--neon-red); padding: 8px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
+    .btn-approve:hover { opacity: 0.85; }
+    .btn-reject:hover  { background: rgba(255,68,102,0.1); }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-icon  { font-size: 3rem; margin-bottom: 12px; }
+
+    .login-box { max-width: 360px; margin: 120px auto; }
+    .admin-login-title { font-size: 1.4rem; font-weight: 700; color: var(--neon-blue); margin-bottom: 24px; text-align: center; }
+
+    /* slip lightbox */
+    .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; }
+    .lightbox.open { display:flex; }
+    .lightbox img  { max-width:90vw; max-height:90vh; border-radius:8px; }
+    .lightbox-close { position:absolute; top:16px; right:24px; font-size:2rem; color:#fff; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">ACC<span>DEE</span></a>
+  <div class="nav-cta">
+    <span style="color:var(--text-muted);font-size:0.85rem" id="adminName"></span>
+    <button class="btn-ghost" onclick="logout()">ออกจากระบบ</button>
+  </div>
+</nav>
+
+<!-- หน้า Login (แสดงก่อนถ้ายังไม่ได้ login) -->
+<div id="loginBox" class="login-box" style="display:none">
+  <div class="admin-login-title">🔐 Admin Login</div>
+  <div class="form-group">
+    <label>อีเมล Admin</label>
+    <input type="email" id="loginEmail" class="auth-input" placeholder="admin@accdee.shop">
+  </div>
+  <div class="form-group">
+    <label>รหัสผ่าน</label>
+    <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••">
+  </div>
+  <div class="auth-msg" id="loginMsg"></div>
+  <button class="auth-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+</div>
+
+<!-- หน้า Admin Dashboard -->
+<div id="dashboard" class="admin-wrap" style="display:none">
+  <div class="admin-title">Admin Panel — คำขอเติมเงิน</div>
+  <div class="admin-sub">รายการรอตรวจสอบ กด Approve เพื่ออนุมัติ หรือ Reject เพื่อปฏิเสธ</div>
+
+  <div id="topupList">
+    <div class="empty-state">
+      <div class="empty-icon">⏳</div>
+      <div>กำลังโหลด...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox ดูสลิปขนาดเต็ม -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close">✕</span>
+  <img id="lightboxImg" src="" alt="slip">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+
+// ── AUTH ──────────────────────────────────────────
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const msgEl    = document.getElementById('loginMsg');
+
+  if (!email || !password) {
+    msgEl.textContent = 'กรุณากรอกอีเมลและรหัสผ่าน';
+    msgEl.className   = 'auth-msg error';
+    return;
+  }
+
+  try {
+    const res  = await fetch(`${API}/auth/login`, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      msgEl.textContent = data.message || 'Login ไม่สำเร็จ';
+      msgEl.className   = 'auth-msg error';
+      return;
+    }
+    if (data.data.role !== 'admin') {
+      msgEl.textContent = 'บัญชีนี้ไม่ใช่ Admin';
+      msgEl.className   = 'auth-msg error';
+      return;
+    }
+
+    localStorage.setItem('accdee_token', data.token);
+    localStorage.setItem('accdee_user',  JSON.stringify(data.data));
+    showDashboard(data.data);
+
+  } catch {
+    msgEl.textContent = 'เชื่อมต่อ server ไม่ได้';
+    msgEl.className   = 'auth-msg error';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('accdee_token');
+  localStorage.removeItem('accdee_user');
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginBox').style.display  = 'block';
+}
+
+function showDashboard(user) {
+  document.getElementById('loginBox').style.display  = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('adminName').textContent   = user.username;
+  loadPending();
+}
+
+// ── TOPUP LIST ────────────────────────────────────
+async function loadPending() {
+  const token = localStorage.getItem('accdee_token');
+  try {
+    const res  = await fetch(`${API}/admin/topups`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    const list = document.getElementById('topupList');
+    if (!data.success || data.data.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><div>ไม่มีรายการรอ — ทุกอย่างเรียบร้อย</div></div>`;
+      return;
+    }
+
+    list.innerHTML = data.data.map(tx => `
+      <div class="topup-card" id="tx-${tx.id}">
+        <img class="slip-img"
+             src="/uploads/${tx.slip_image}"
+             alt="slip"
+             onclick="openLightbox('/uploads/${tx.slip_image}')"
+             onerror="this.style.display='none'">
+        <div class="topup-info">
+          <div class="topup-user">👤 ${tx.username} &nbsp;·&nbsp; ${tx.email}</div>
+          <div class="topup-amount">฿${parseFloat(tx.amount).toLocaleString('th-TH', {minimumFractionDigits:2})}</div>
+          ${tx.note ? `<div class="topup-note">📝 ${tx.note}</div>` : ''}
+          <div class="topup-date">🕐 ${new Date(tx.created_at).toLocaleString('th-TH')}</div>
+          <div class="action-row">
+            <button class="btn-approve" onclick="approve(${tx.id})">✅ Approve</button>
+            <button class="btn-reject"  onclick="reject(${tx.id})">❌ Reject</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+  } catch {
+    showToast('โหลดข้อมูลไม่สำเร็จ', 'error');
+  }
+}
+
+async function approve(id) {
+  if (!confirm('อนุมัติคำขอเติมเงินนี้?')) return;
+  await action(id, 'approve');
+}
+
+async function reject(id) {
+  if (!confirm('ปฏิเสธคำขอนี้?')) return;
+  await action(id, 'reject');
+}
+
+async function action(id, type) {
+  const token = localStorage.getItem('accdee_token');
+  try {
+    const res  = await fetch(`${API}/admin/topups/${id}/${type}`, {
+      method : 'POST',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById(`tx-${id}`).remove();
+      showToast(type === 'approve' ? '✅ อนุมัติแล้ว เติมเงินสำเร็จ' : '❌ ปฏิเสธแล้ว');
+      if (!document.querySelector('.topup-card')) loadPending();
+    } else {
+      showToast(data.message || 'เกิดข้อผิดพลาด', 'error');
+    }
+  } catch {
+    showToast('เชื่อมต่อ server ไม่ได้', 'error');
+  }
+}
+
+// ── LIGHTBOX ──────────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// ── TOAST ─────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = `toast ${type} show`;
+  setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+// ── INIT ──────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('accdee_token');
+  const user  = JSON.parse(localStorage.getItem('accdee_user') || 'null');
+
+  if (token && user && user.role === 'admin') {
+    showDashboard(user);
+  } else {
+    document.getElementById('loginBox').style.display = 'block';
+  }
+
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+});
+</script>
+</body>
+</html>
