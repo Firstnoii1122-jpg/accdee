@@ -1,6 +1,7 @@
 const db = require('./db');
 
 async function setupDatabase() {
+  // สร้างตาราง users ถ้ายังไม่มี
   await db.execute(`
     CREATE TABLE IF NOT EXISTS users (
       id         INT           NOT NULL AUTO_INCREMENT,
@@ -11,11 +12,12 @@ async function setupDatabase() {
       role       ENUM('user','admin') NOT NULL DEFAULT 'user',
       created_at TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (id),
-      INDEX idx_email (email),
+      INDEX idx_email    (email),
       INDEX idx_username (username)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 
+  // สร้างตาราง transactions ถ้ายังไม่มี
   await db.execute(`
     CREATE TABLE IF NOT EXISTS transactions (
       id         INT            NOT NULL AUTO_INCREMENT,
@@ -32,7 +34,19 @@ async function setupDatabase() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 
-  console.log('Database tables ready');
+  // สร้าง Admin คนแรก ถ้ายังไม่มี (INSERT IGNORE = ข้ามถ้ามีแล้ว)
+  // email: admin@accdee.shop  |  password: Admin1234
+  await db.execute(`
+    INSERT IGNORE INTO users (username, email, password, role)
+    VALUES (
+      'admin',
+      'admin@accdee.shop',
+      '$2b$10$oL2FKKRHTgs8c859NOYdVuw8.YPKspo78/ztlSp/G/lpyGfrClbkq',
+      'admin'
+    )
+  `);
+
+  console.log('Database ready');
 }
 
 module.exports = setupDatabase;
