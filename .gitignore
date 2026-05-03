@@ -1,11 +1,20 @@
-# ไฟล์และโฟลเดอร์ที่ไม่ต้อง commit ขึ้น Git
-
-# ข้อมูลลับ - ห้าม commit เด็ดขาด!
+# ข้อมูลลับ
 .env
+.env.local
+*.pem
+*.key
 
-# dependencies (ใหญ่มาก ไม่จำเป็นต้อง commit)
+# dependencies
 node_modules/
 
-# Log files
+# ไฟล์ที่ user อัปโหลด
+uploads/
+
+# logs
 *.log
 npm-debug.log*
+
+# IDE
+.DS_Store
+.idea/
+.vscode/
