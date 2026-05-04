@@ -111,7 +111,7 @@ async function doLogin() {
       showAuthMsg('loginMsg', data.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
     }
   } catch (err) {
-    showAuthMsg('loginMsg', 'ไม่สามารถเชื่อมต่อ server ได้ กรุณาลองใหม่');
+    showAuthMsg('loginMsg', 'ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่');
   } finally {
     btn.disabled    = false;
     btn.textContent = 'เข้าสู่ระบบ';
@@ -161,7 +161,7 @@ async function doRegister() {
       showAuthMsg('registerMsg', data.message || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่');
     }
   } catch (err) {
-    showAuthMsg('registerMsg', 'ไม่สามารถเชื่อมต่อ server ได้ กรุณาลองใหม่');
+    showAuthMsg('registerMsg', 'ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่');
   } finally {
     btn.disabled    = false;
     btn.textContent = 'สมัครสมาชิก';
@@ -468,7 +468,7 @@ async function submitTopup() {
       msgEl.className   = 'auth-msg error';
     }
   } catch (err) {
-    msgEl.textContent = 'ไม่สามารถเชื่อมต่อ server ได้ กรุณาลองใหม่';
+    msgEl.textContent = 'ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่';
     msgEl.className   = 'auth-msg error';
   } finally {
     btn.disabled    = false;
