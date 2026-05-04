@@ -2,6 +2,7 @@ const bcrypt           = require('bcryptjs');
 const jwt              = require('jsonwebtoken');
 const User             = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
+const { sendEmail }    = require('../config/email');
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,6 +31,26 @@ const register = async (req, res) => {
     const newUserId      = await User.createUser(username, email, hashedPassword);
 
     sendTelegram(`🆕 <b>สมาชิกใหม่!</b>\n👤 ${username}\n📧 ${email}`);
+
+    sendEmail({
+      to     : email,
+      subject: 'ยินดีต้อนรับสู่ Accdee!',
+      html   : `
+        <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #eee;border-radius:8px">
+          <h2 style="color:#4f46e5">ยินดีต้อนรับ, ${username}! 🎉</h2>
+          <p>สมัครสมาชิกสำเร็จแล้วครับ</p>
+          <p>คุณสามารถเข้าสู่ระบบและเติมเงินเพื่อเริ่มใช้งานได้เลย</p>
+          <a href="https://www.accdee.shop" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px">เข้าสู่เว็บไซต์</a>
+          <p style="margin-top:24px;color:#888;font-size:12px">หากคุณไม่ได้สมัครสมาชิก กรุณาเพิกเฉยต่ออีเมลนี้</p>
+        </div>
+      `
+    });
+
+    sendEmail({
+      to     : process.env.ADMIN_EMAIL,
+      subject: `[Accdee] สมาชิกใหม่: ${username}`,
+      html   : `<p>มีสมาชิกใหม่สมัครเข้ามา</p><p>👤 <b>${username}</b><br>📧 ${email}</p>`
+    });
 
     res.status(201).json({
       success: true,

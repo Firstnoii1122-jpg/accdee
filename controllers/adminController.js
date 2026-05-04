@@ -1,5 +1,7 @@
-const db = require('../config/db');
-const Transaction = require('../models/transactionModel');
+const db               = require('../config/db');
+const Transaction      = require('../models/transactionModel');
+const { sendEmail }    = require('../config/email');
+const { sendTelegram } = require('../config/telegram');
 
 const getPendingTopups = async (req, res) => {
   try {
@@ -19,6 +21,22 @@ const approveTopup = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Transaction already processed' });
     }
     await Transaction.approveTopup(tx.id, tx.user_id, tx.amount);
+
+    const [[user]] = await db.execute('SELECT username, email FROM users WHERE id = ?', [tx.user_id]);
+    sendEmail({
+      to     : user.email,
+      subject: '✅ เติมเงินสำเร็จ!',
+      html   : `
+        <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #eee;border-radius:8px">
+          <h2 style="color:#16a34a">เติมเงินสำเร็จแล้ว ✅</h2>
+          <p>สวัสดี ${user.username}</p>
+          <p>ยอดเงิน <b>${parseFloat(tx.amount).toFixed(2)} บาท</b> ได้รับการอนุมัติแล้วครับ</p>
+          <a href="https://www.accdee.shop" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#16a34a;color:#fff;text-decoration:none;border-radius:6px">ดูยอดเงิน</a>
+        </div>
+      `
+    });
+    sendTelegram(`✅ <b>อนุมัติเติมเงินแล้ว</b>\n👤 ${user.username}\n💵 ${parseFloat(tx.amount).toFixed(2)} บาท`);
+
     res.json({ success: true, message: 'Approved and balance updated' });
   } catch (err) {
     console.error('approveTopup error:', err);
@@ -34,6 +52,22 @@ const rejectTopup = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Transaction already processed' });
     }
     await Transaction.rejectTopup(tx.id);
+
+    const [[user]] = await db.execute('SELECT username, email FROM users WHERE id = ?', [tx.user_id]);
+    sendEmail({
+      to     : user.email,
+      subject: '❌ ไม่สามารถอนุมัติการเติมเงินได้',
+      html   : `
+        <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #eee;border-radius:8px">
+          <h2 style="color:#dc2626">ไม่สามารถอนุมัติการเติมเงินได้</h2>
+          <p>สวัสดี ${user.username}</p>
+          <p>คำขอเติมเงิน <b>${parseFloat(tx.amount).toFixed(2)} บาท</b> ไม่ผ่านการตรวจสอบครับ</p>
+          <p>กรุณาติดต่อ Admin หากมีข้อสงสัย</p>
+          <a href="https://www.accdee.shop" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#dc2626;color:#fff;text-decoration:none;border-radius:6px">กลับสู่เว็บไซต์</a>
+        </div>
+      `
+    });
+
     res.json({ success: true, message: 'Rejected' });
   } catch (err) {
     console.error('rejectTopup error:', err);
