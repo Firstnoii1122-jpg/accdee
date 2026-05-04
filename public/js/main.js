@@ -185,15 +185,26 @@ function updateNavbar(user) {
   const userNav  = document.getElementById('userNav');
 
   if (user) {
-    // login แล้ว — แสดงชื่อและยอดเงิน
     guestNav.style.display = 'none';
     userNav.style.display  = 'flex';
     document.getElementById('navUsername').textContent = user.username;
     document.getElementById('navBalance').textContent  = parseFloat(user.balance || 0).toFixed(2);
+    // อัปเดต drawer ด้วย
+    const dg = document.getElementById('drawerGuest');
+    const du = document.getElementById('drawerUser');
+    if (dg) dg.style.display = 'none';
+    if (du) {
+      du.style.display = 'block';
+      document.getElementById('drawerBalance').textContent  = parseFloat(user.balance || 0).toFixed(2);
+      document.getElementById('drawerUsername').textContent = user.username;
+    }
   } else {
-    // ยังไม่ login — แสดงปุ่ม Login/Register
     guestNav.style.display = 'flex';
     userNav.style.display  = 'none';
+    const dg = document.getElementById('drawerGuest');
+    const du = document.getElementById('drawerUser');
+    if (dg) dg.style.display = 'block';
+    if (du) du.style.display = 'none';
   }
 }
 
@@ -310,17 +321,35 @@ function initScrollAnimations() {
 // ── 9. KEYBOARD SUPPORT ─────────────────────────
 
 function initKeyboardSupport() {
-  // กด Enter ใน input password → submit อัตโนมัติ
   document.getElementById('loginPassword').addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin();
   });
   document.getElementById('regPassword').addEventListener('keydown', e => {
     if (e.key === 'Enter') doRegister();
   });
-  // กด Escape → ปิด modal
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeAuth(); }
+    if (e.key === 'Escape') { closeModal(); closeAuth(); closeTopup(); closeDrawer(); }
   });
+}
+
+// ── 12. COPY TO CLIPBOARD ──────────────────────
+
+function copyText(elementId) {
+  const text = document.getElementById(elementId).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => showToast('คัดลอกแล้ว: ' + text));
+}
+
+// ── 13. MOBILE DRAWER ──────────────────────────
+
+function toggleDrawer() {
+  const drawer = document.getElementById('navDrawer');
+  const isOpen = drawer.classList.toggle('open');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+function closeDrawer() {
+  document.getElementById('navDrawer').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 // ── 10. INIT (รันเมื่อหน้าโหลดเสร็จ) ────────────

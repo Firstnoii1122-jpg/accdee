@@ -36,7 +36,34 @@
       <button class="btn-ghost" onclick="doLogout()">ออกจากระบบ</button>
     </div>
   </div>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleDrawer()" aria-label="เมนู">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE DRAWER -->
+<div class="nav-drawer" id="navDrawer">
+  <div class="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer-panel">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <a class="nav-logo drawer-logo" href="#" onclick="closeDrawer()">ACC<span>DEE</span></a>
+    <nav class="drawer-nav">
+      <a href="#products" onclick="closeDrawer()">🛍️&nbsp; สินค้า</a>
+      <a href="#features" onclick="closeDrawer()">⭐&nbsp; ทำไมต้องเรา</a>
+      <a href="#contact"  onclick="closeDrawer()">📞&nbsp; ติดต่อ</a>
+    </nav>
+    <div class="drawer-auth" id="drawerGuest">
+      <button class="auth-btn" style="margin-bottom:12px" onclick="closeDrawer();openAuth('login')">เข้าสู่ระบบ</button>
+      <button class="btn-ghost" style="width:100%;padding:12px;text-align:center" onclick="closeDrawer();openAuth('register')">สมัครฟรี</button>
+    </div>
+    <div class="drawer-user" id="drawerUser" style="display:none">
+      <div class="drawer-balance">💰 <span id="drawerBalance">0.00</span> ฿</div>
+      <div class="drawer-username" id="drawerUsername"></div>
+      <button class="auth-btn" style="margin-bottom:12px" onclick="closeDrawer();openTopup()">เติมเงิน</button>
+      <button class="btn-ghost" style="width:100%;padding:12px;text-align:center" onclick="closeDrawer();doLogout()">ออกจากระบบ</button>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -367,19 +394,25 @@
       <!-- ข้อมูลช่องทางชำระเงิน -->
       <div class="payment-info" id="paymentInfoBox">
         <div class="payment-row">
-          <span class="payment-label">PromptPay</span>
-          <span class="payment-value" id="payPromptpay">กำลังโหลด...</span>
+          <span class="payment-label">💳 PromptPay</span>
+          <span class="payment-value">
+            <span id="payPromptpay">กำลังโหลด...</span>
+            <button class="copy-btn" onclick="copyText('payPromptpay')" title="คัดลอก">📋</button>
+          </span>
         </div>
         <div class="payment-row">
-          <span class="payment-label">ธนาคาร</span>
+          <span class="payment-label">🏦 ธนาคาร</span>
           <span class="payment-value" id="payBank">กำลังโหลด...</span>
         </div>
         <div class="payment-row">
-          <span class="payment-label">เลขบัญชี</span>
-          <span class="payment-value" id="payAccountNum">กำลังโหลด...</span>
+          <span class="payment-label">🔢 เลขบัญชี</span>
+          <span class="payment-value">
+            <span id="payAccountNum">กำลังโหลด...</span>
+            <button class="copy-btn" onclick="copyText('payAccountNum')" title="คัดลอก">📋</button>
+          </span>
         </div>
         <div class="payment-row">
-          <span class="payment-label">ชื่อบัญชี</span>
+          <span class="payment-label">👤 ชื่อบัญชี</span>
           <span class="payment-value" id="payAccountName">กำลังโหลด...</span>
         </div>
       </div>

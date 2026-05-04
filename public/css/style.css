@@ -602,10 +602,175 @@ footer {
 @keyframes marquee   { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 @keyframes modalIn   { from { opacity:0; transform:scale(0.95) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
 
-/* ── 22. RESPONSIVE (มือถือ) ── */
+/* ── 22. PAYMENT INFO + COPY BUTTON ── */
+.payment-info {
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.payment-row:last-child { border-bottom: none; }
+.payment-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.payment-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--neon-blue);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: right;
+  word-break: break-all;
+}
+.copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.copy-btn:hover { background: rgba(0, 212, 255, 0.1); }
+
+/* ── 23. MOBILE NAV HAMBURGER + DRAWER ── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 4px;
+  z-index: 101;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--neon-blue);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* Drawer overlay + panel */
+.nav-drawer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+.nav-drawer.open { display: block; }
+.drawer-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+.drawer-panel {
+  position: absolute;
+  top: 0; right: 0;
+  width: min(300px, 85vw);
+  height: 100%;
+  background: #0c0c20;
+  border-left: 1px solid var(--border-bright);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: slideInRight 0.28s ease;
+}
+.drawer-close {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+  line-height: 1;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+.drawer-close:hover { color: var(--text-primary); }
+.drawer-logo { font-size: 1.2rem; margin-bottom: 28px; display: inline-block; }
+.drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 28px;
+}
+.drawer-nav a {
+  display: block;
+  padding: 13px 14px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.drawer-nav a:hover, .drawer-nav a:active {
+  background: rgba(0, 212, 255, 0.08);
+  color: var(--neon-blue);
+  border-color: var(--border);
+}
+.drawer-auth, .drawer-user { margin-top: auto; }
+.drawer-balance {
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 1.05rem;
+  color: var(--neon-green);
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.25);
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.drawer-username {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── 23. RESPONSIVE (มือถือ) ── */
 @media (max-width: 768px) {
   nav { padding: 14px 20px; }
   .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  /* ซ่อน cta บน desktop ที่ mobile ซ่อนบางส่วน */
+  #guestNav .btn-ghost { display: none; }
+  #userNav .nav-username { display: none; }
+  #userNav .btn-ghost    { display: none; }
+  .nav-balance { display: none; }
+
   .hero { padding: 70px 20px 50px; }
   .stats-bar { flex-wrap: wrap; gap: 8px; padding: 0 20px; }
   .stat-item { flex: 1 1 calc(50% - 4px); border-radius: 4px !important; border-left: 1px solid var(--border) !important; }
@@ -614,7 +779,18 @@ footer {
   .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
   footer { padding: 40px 20px 24px; }
   .divider { margin: 0 20px; }
-  .alert-banner { padding: 10px 20px; }
-  .nav-balance { display: none; }
-  .auth-modal { padding: 32px 24px; }
+  .alert-banner { padding: 10px 20px; font-size: 0.76rem; }
+
+  /* Modals ต้อง scroll ได้บนมือถือ */
+  .auth-modal {
+    padding: 28px 20px;
+    max-height: 92dvh;
+    overflow-y: auto;
+  }
+  .modal {
+    padding: 28px 20px;
+    max-height: 92dvh;
+    overflow-y: auto;
+  }
+  .payment-info { font-size: 0.85rem; }
 }
