@@ -122,7 +122,7 @@ async function loadPending() {
         <td>${tx.note ? escapeHtml(tx.note) : '<span style="color:#9ca3af">-</span>'}</td>
         <td>
           ${tx.slip_image
-            ? `<img src="/uploads/${escapeHtml(tx.slip_image)}" onclick="openSlip('/uploads/${escapeHtml(tx.slip_image)}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #e5e7eb" onerror="this.style.display='none'">`
+            ? `<img src="${escapeHtml(tx.slip_image)}" onclick="openSlip('${escapeHtml(tx.slip_image)}')" style="width:48px;height:48px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #e5e7eb" onerror="this.style.display='none'">`
             : '<span style="color:#9ca3af">-</span>'}
         </td>
         <td>
@@ -194,7 +194,7 @@ async function loadHistory() {
         <td>${tx.note ? escapeHtml(tx.note) : '-'}</td>
         <td>
           ${tx.slip_image
-            ? `<img src="/uploads/${escapeHtml(tx.slip_image)}" onclick="openSlip('/uploads/${escapeHtml(tx.slip_image)}')" style="width:36px;height:36px;object-fit:cover;border-radius:4px;cursor:pointer" onerror="this.style.display='none'">`
+            ? `<img src="${escapeHtml(tx.slip_image)}" onclick="openSlip('${escapeHtml(tx.slip_image)}')" style="width:36px;height:36px;object-fit:cover;border-radius:4px;cursor:pointer" onerror="this.style.display='none'">`
             : '-'}
         </td>
       </tr>`;
