@@ -18,11 +18,10 @@ const db = pool.promise();
 
 pool.getConnection((err, connection) => {
   if (err) {
-    console.error('MySQL connection failed:', err.code, err.message);
-    console.error('Config used - host:', process.env.MYSQLHOST || process.env.DB_HOST, 'user:', process.env.MYSQLUSER || process.env.DB_USER, 'db:', process.env.MYSQLDATABASE || process.env.DB_NAME);
+    console.error('MySQL connection failed:', err.message);
     process.exit(1);
   }
-  console.log('MySQL connected:', process.env.MYSQLDATABASE || process.env.DB_NAME);
+  console.log('MySQL connected successfully');
   connection.release();
 });
 
