@@ -34,16 +34,21 @@ async function setupDatabase() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 
-  // สร้าง Admin คนแรก ถ้ายังไม่มี (INSERT IGNORE = ข้ามถ้ามีแล้ว)
-  // email: admin@accdee.shop  |  password: Admin1234
+  // สร้าง Admin คนแรก ถ้ายังไม่มี
   await db.execute(`
     INSERT IGNORE INTO users (username, email, password, role)
     VALUES (
       'admin',
       'admin@accdee.shop',
-      '$2b$10$oL2FKKRHTgs8c859NOYdVuw8.YPKspo78/ztlSp/G/lpyGfrClbkq',
+      '$2b$12$UAwk3.OgH477ns00bFkSYeNR4qiI4tlymXCWX1oajXVg68k.a6mJy',
       'admin'
     )
+  `);
+
+  // อัปเดต password admin ให้เป็นค่าล่าสุดเสมอ
+  await db.execute(`
+    UPDATE users SET password = '$2b$12$UAwk3.OgH477ns00bFkSYeNR4qiI4tlymXCWX1oajXVg68k.a6mJy'
+    WHERE email = 'admin@accdee.shop'
   `);
 
   console.log('Database ready');
