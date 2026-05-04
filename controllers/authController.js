@@ -1,6 +1,7 @@
-const bcrypt = require('bcryptjs');
-const jwt    = require('jsonwebtoken');
-const User   = require('../models/userModel');
+const bcrypt           = require('bcryptjs');
+const jwt              = require('jsonwebtoken');
+const User             = require('../models/userModel');
+const { sendTelegram } = require('../config/telegram');
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -27,6 +28,8 @@ const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUserId      = await User.createUser(username, email, hashedPassword);
+
+    sendTelegram(`🆕 <b>สมาชิกใหม่!</b>\n👤 ${username}\n📧 ${email}`);
 
     res.status(201).json({
       success: true,

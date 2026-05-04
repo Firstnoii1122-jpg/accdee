@@ -1,5 +1,6 @@
-const Transaction = require('../models/transactionModel');
-const User        = require('../models/userModel');
+const Transaction      = require('../models/transactionModel');
+const User             = require('../models/userModel');
+const { sendTelegram } = require('../config/telegram');
 
 const getWalletInfo = async (req, res) => {
   try {
@@ -31,6 +32,9 @@ const requestTopup = async (req, res) => {
     }
 
     const txId = await Transaction.createTopup(req.user.id, amount, slipImage, note);
+
+    const user = await User.findUserById(req.user.id);
+    sendTelegram(`💰 <b>มีคำขอเติมเงินใหม่!</b>\n👤 ${user.username}\n💵 ${amount} บาท\n📋 รหัส: #${txId}\n\n⚡ เข้าตรวจสอบที่ https://www.accdee.shop/admin.html`);
 
     res.status(201).json({
       success: true,
