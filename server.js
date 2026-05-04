@@ -27,18 +27,6 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Accdee API is running!', version: '1.0.0' });
 });
 
-// TEMPORARY — ลบหลังใช้งาน
-app.post('/api/_reset-admin-pw', async (req, res) => {
-  if (req.body.secret !== 'accdee-reset-7x9k') {
-    return res.status(403).json({ success: false });
-  }
-  const bcrypt = require('bcryptjs');
-  const db     = require('./config/db');
-  const hash   = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
-  await db.execute('UPDATE users SET password = ? WHERE email = ?', [hash, 'admin@accdee.shop']);
-  res.json({ success: true, message: 'Admin password reset' });
-});
-
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
