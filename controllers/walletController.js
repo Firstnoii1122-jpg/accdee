@@ -1,6 +1,13 @@
+const cloudinary       = require('cloudinary').v2;
 const Transaction      = require('../models/transactionModel');
 const User             = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key   : process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const getWalletInfo = async (req, res) => {
   try {
@@ -26,11 +33,20 @@ const requestTopup = async (req, res) => {
       return res.status(400).json({ success: false, message: 'จำนวนเงินสูงสุด 100,000 บาทต่อครั้ง' });
     }
 
-    const slipImage = req.file ? req.file.filename : null;
-    if (!slipImage) {
+    if (!req.file) {
       return res.status(400).json({ success: false, message: 'กรุณาแนบรูปสลิปการโอนเงิน' });
     }
 
+    // อัปโหลดไป Cloudinary
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: 'accdee/slips', resource_type: 'image' },
+        (err, result) => err ? reject(err) : resolve(result)
+      );
+      stream.end(req.file.buffer);
+    });
+
+    const slipImage = uploadResult.secure_url;
     const txId = await Transaction.createTopup(req.user.id, amount, slipImage, note);
 
     const user = await User.findUserById(req.user.id);
