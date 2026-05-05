@@ -29,17 +29,6 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Accdee API is running!', version: '1.0.0' });
 });
 
-// TEMP TEST — ลบหลังทดสอบ
-app.post('/api/_test-topup', async (req, res) => {
-  if (req.body.secret !== 'test-9z2k') return res.status(403).json({ ok: false });
-  const db = require('./config/db');
-  const [r] = await db.execute(
-    "INSERT INTO transactions (user_id, amount, type, status, slip_image, note) VALUES (?,?,'topup','pending','test','test')",
-    [req.body.userId, req.body.amount]
-  );
-  res.json({ ok: true, txId: r.insertId });
-});
-
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });

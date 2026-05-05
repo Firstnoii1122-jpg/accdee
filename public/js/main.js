@@ -229,6 +229,32 @@ function checkAuth() {
   }
 
   updateNavbar(user);
+  refreshBalance(); // fetch balance จริงจาก server ทันที
+}
+
+// fetch balance ล่าสุดจาก server แล้วอัปเดต UI + localStorage
+async function refreshBalance() {
+  const token = localStorage.getItem('accdee_token');
+  const user  = JSON.parse(localStorage.getItem('accdee_user') || 'null');
+  if (!token || !user) return;
+  try {
+    const res  = await fetch(`${API_URL}/wallet/info`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.success) return;
+
+    const newBalance = parseFloat(data.data.balance || 0).toFixed(2);
+    user.balance = newBalance;
+    localStorage.setItem('accdee_user', JSON.stringify(user));
+
+    // อัปเดต UI
+    const nb = document.getElementById('navBalance');
+    const db = document.getElementById('drawerBalance');
+    if (nb) nb.textContent = newBalance;
+    if (db) db.textContent = newBalance;
+  } catch { /* silent */ }
 }
 
 // ── 5. PRODUCT MODAL ────────────────────────────
@@ -359,6 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();  // เปิด scroll animations
   initKeyboardSupport();   // เปิด keyboard shortcuts
   initTopupEvents();       // เปิด event สำหรับ topup modal
+
+  // refresh balance ทุก 30 วิ — ลูกค้าเห็นยอดล่าสุดหลัง admin อนุมัติ
+  setInterval(refreshBalance, 30000);
 });
 
 // ── 11. TOPUP MODAL (เติมเงินเข้า Wallet) ────────
