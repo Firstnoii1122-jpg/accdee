@@ -185,4 +185,97 @@ const getTopupHistory = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, getTopupHistory };
+// GET /api/admin/inventory — ดูสต็อกทั้งหมด
+const getInventory = async (req, res) => {
+  try {
+    const { productKey } = req.query;
+    let sql = 'SELECT id, product_key, credentials, status, added_at, sold_at FROM inventory';
+    const params = [];
+    if (productKey) {
+      sql += ' WHERE product_key = ?';
+      params.push(productKey);
+    }
+    sql += ' ORDER BY added_at DESC';
+    const [rows] = await db.execute(sql, params);
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('getInventory error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// GET /api/admin/inventory/stock — จำนวนสต็อกแต่ละสินค้า
+const getStock = async (req, res) => {
+  try {
+    const [rows] = await db.execute(
+      "SELECT product_key, COUNT(*) as total, SUM(status='available') as available, SUM(status='sold') as sold FROM inventory GROUP BY product_key"
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('getStock error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// POST /api/admin/inventory — เพิ่มสต็อก
+const addInventory = async (req, res) => {
+  const { productKey, credentials } = req.body;
+  if (!productKey || !credentials || !credentials.trim()) {
+    return res.status(400).json({ success: false, message: 'กรุณากรอกข้อมูลให้ครบ' });
+  }
+  try {
+    const [result] = await db.execute(
+      'INSERT INTO inventory (product_key, credentials) VALUES (?, ?)',
+      [productKey, credentials.trim()]
+    );
+    res.status(201).json({ success: true, message: 'เพิ่มสต็อกสำเร็จ', data: { id: result.insertId } });
+  } catch (err) {
+    console.error('addInventory error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// DELETE /api/admin/inventory/:id — ลบสต็อก (เฉพาะที่ยังไม่ขาย)
+const deleteInventory = async (req, res) => {
+  try {
+    const [[item]] = await db.execute('SELECT status FROM inventory WHERE id = ?', [req.params.id]);
+    if (!item) return res.status(404).json({ success: false, message: 'ไม่พบรายการ' });
+    if (item.status === 'sold') return res.status(400).json({ success: false, message: 'ลบไม่ได้ เพราะขายไปแล้ว' });
+    await db.execute('DELETE FROM inventory WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'ลบสำเร็จ' });
+  } catch (err) {
+    console.error('deleteInventory error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// GET /api/admin/orders — ประวัติคำสั่งซื้อทั้งหมด
+const getAllOrders = async (req, res) => {
+  try {
+    const [rows] = await db.execute(
+      `SELECT o.id, o.product_name, o.amount, o.created_at,
+              u.username, u.email
+       FROM orders o JOIN users u ON o.user_id = u.id
+       ORDER BY o.created_at DESC LIMIT 200`
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('getAllOrders error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+const deleteMember = async (req, res) => {
+  try {
+    const [[user]] = await db.execute("SELECT id, role FROM users WHERE id = ?", [req.params.id]);
+    if (!user) return res.status(404).json({ success: false, message: 'ไม่พบสมาชิก' });
+    if (user.role === 'admin') return res.status(400).json({ success: false, message: 'ลบ admin ไม่ได้' });
+    await db.execute('DELETE FROM users WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'ลบสมาชิกสำเร็จ' });
+  } catch (err) {
+    console.error('deleteMember error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders };
