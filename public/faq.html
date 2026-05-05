@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCDEE — คำถามที่พบบ่อย</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo { font-size: 20px; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .nav-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-outline { background: transparent; border: 1px solid #475569; color: #e2e8f0; }
+    .btn-primary { background: #6d28d9; color: #fff; }
+    .btn-active  { background: transparent; border: 1px solid #a78bfa; color: #a78bfa; }
+    .btn-primary:hover { background: #7c3aed; }
+    .btn-outline:hover { border-color: #a78bfa; color: #a78bfa; }
+
+    /* MAIN */
+    main { max-width: 780px; margin: 0 auto; padding: 40px 24px 60px; }
+
+    .page-header { text-align: center; margin-bottom: 48px; }
+    .page-header h1 { font-size: 26px; color: #f1f5f9; margin-bottom: 10px; }
+    .page-header p  { font-size: 15px; color: #64748b; }
+
+    /* SECTION */
+    .section { margin-bottom: 40px; }
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #a78bfa;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    /* FAQ ITEM */
+    .faq-item {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      color: #f1f5f9;
+      user-select: none;
+      gap: 12px;
+    }
+    .faq-q:hover { background: #243044; }
+    .faq-q .arrow {
+      font-size: 12px;
+      color: #64748b;
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-q .arrow { transform: rotate(180deg); }
+    .faq-a {
+      display: none;
+      padding: 0 20px 18px;
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.8;
+      border-top: 1px solid #334155;
+      padding-top: 14px;
+    }
+    .faq-item.open .faq-a { display: block; }
+    .faq-a b  { color: #e2e8f0; font-weight: 600; }
+    .faq-a ol, .faq-a ul { padding-left: 20px; margin-top: 8px; }
+    .faq-a li { margin-bottom: 6px; }
+    .faq-a .highlight {
+      background: #1a1f3a;
+      border-left: 3px solid #6d28d9;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    /* CONTACT CARD */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .contact-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .2s, transform .15s;
+      display: block;
+    }
+    .contact-card:hover { border-color: #6d28d9; transform: translateY(-2px); }
+    .contact-card .icon { font-size: 32px; margin-bottom: 10px; }
+    .contact-card .label { font-size: 15px; font-weight: 600; color: #f1f5f9; margin-bottom: 4px; }
+    .contact-card .sub   { font-size: 13px; color: #64748b; }
+    .contact-card.line-card  { border-color: #06c755; }
+    .contact-card.tg-card    { border-color: #229ed9; }
+
+    /* POLICY BOX */
+    .policy-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px;
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.9;
+    }
+    .policy-box h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+    .policy-box h3:first-child { margin-top: 0; }
+    .policy-box ul { padding-left: 20px; }
+    .policy-box li { margin-bottom: 6px; }
+    .policy-box .warning {
+      background: #2d1b00;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fbbf24;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">ACC<span style="color:#c4b5fd">DEE</span></a>
+  <div class="nav-right">
+    <a href="/shop.html"   class="nav-btn btn-outline">🛍️ ร้านค้า</a>
+    <a href="/faq.html"    class="nav-btn btn-active">❓ FAQ</a>
+    <a href="#"            onclick="history.back()" class="nav-btn btn-outline">← กลับ</a>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <h1>❓ คำถามที่พบบ่อย</h1>
+    <p>หาคำตอบที่นี่ก่อน ถ้าไม่เจอค่อยทักหาเราได้เลย</p>
+  </div>
+
+  <!-- ── การสมัคร / เข้าใช้งาน ── -->
+  <div class="section">
+    <div class="section-title">การสมัครสมาชิก</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        สมัครสมาชิกยังไง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        <ol>
+          <li>เข้าหน้าแรก <b>accdee.shop</b></li>
+          <li>กดปุ่ม <b>"สมัครสมาชิก"</b> มุมขวาบน</li>
+          <li>กรอก ชื่อผู้ใช้, อีเมล, รหัสผ่าน แล้วกด <b>"สมัคร"</b></li>
+          <li>เข้าระบบด้วยอีเมลและรหัสผ่านที่สมัครไว้ได้ทันที</li>
+        </ol>
+        <div class="highlight">ไม่ต้องยืนยันอีเมล — สมัครเสร็จใช้งานได้เลย</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        ลืมรหัสผ่านทำยังไง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        ขณะนี้ระบบรีเซ็ตรหัสผ่านอัตโนมัติยังอยู่ระหว่างพัฒนา
+        กรุณาติดต่อแอดมินผ่าน LINE หรือ Telegram พร้อมแจ้ง <b>อีเมลที่ใช้สมัคร</b>
+        แอดมินจะรีเซ็ตรหัสผ่านให้ภายใน 30 นาที
+      </div>
+    </div>
+  </div>
+
+  <!-- ── การเติมเงิน ── -->
+  <div class="section">
+    <div class="section-title">การเติมเงิน</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        เติมเงินเข้ากระเป๋าได้ยังไง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        <ol>
+          <li>กดปุ่ม <b>"+ เติมเงิน"</b> ที่ด้านบนของหน้าเว็บ</li>
+          <li>โอนเงินผ่าน <b>พร้อมเพย์ หรือธนาคารไทยพาณิชย์</b> ตามข้อมูลที่แสดง</li>
+          <li>ถ่ายภาพสลิปการโอนเงิน</li>
+          <li>กรอกจำนวนเงินและแนบสลิป แล้วกด <b>"ส่งคำขอ"</b></li>
+          <li>รอแอดมินตรวจสอบและอนุมัติ</li>
+        </ol>
+        <div class="highlight">ยอดเงินขั้นต่ำ <b>10 บาท</b> — อนุมัติปกติภายใน 5–30 นาที</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        เติมเงินแล้วยอดไม่เข้าทำยังไง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        <ol>
+          <li>ไปที่หน้า <b><a href="/wallet.html" style="color:#a78bfa">กระเป๋าเงิน</a></b> เช็คสถานะคำขอเติมเงิน</li>
+          <li>ถ้าสถานะเป็น <b>รอตรวจสอบ (⏳)</b> แปลว่าแอดมินยังไม่ได้ดู รอได้เลย</li>
+          <li>ถ้าเกิน 1 ชั่วโมงแล้วยังไม่อนุมัติ ให้ทักแอดมินพร้อมแนบสลิป</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        ช่องทางชำระเงินมีอะไรบ้าง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        รับโอนผ่าน:
+        <ul>
+          <li><b>พร้อมเพย์</b> — เลขที่แสดงในหน้าเติมเงิน</li>
+          <li><b>ธนาคารไทยพาณิชย์ (SCB)</b> — เลขที่แสดงในหน้าเติมเงิน</li>
+        </ul>
+        <div class="highlight">ยังไม่รับ TrueMoney Wallet / คริปโต / บัตรเครดิต</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── การซื้อสินค้า ── -->
+  <div class="section">
+    <div class="section-title">การซื้อสินค้า</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        ซื้อสินค้าได้ยังไง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        <ol>
+          <li>เติมเงินเข้ากระเป๋าก่อน (ดูหัวข้อด้านบน)</li>
+          <li>ไปที่หน้า <b><a href="/shop.html" style="color:#a78bfa">ร้านค้า</a></b></li>
+          <li>เลือกสินค้าที่ต้องการ กดปุ่ม <b>"🛒 ซื้อเลย"</b></li>
+          <li>ยืนยันการซื้อ — ระบบตัดเงินและส่งข้อมูลบัญชีให้ทันที</li>
+        </ol>
+        <div class="highlight">ข้อมูลบัญชีจะแสดงทันทีหลังซื้อสำเร็จ และดูย้อนหลังได้ที่หน้า <a href="/orders.html" style="color:#a78bfa">ประวัติการซื้อ</a></div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        ซื้อแล้วไม่ได้รับข้อมูลบัญชีทำยังไง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        <ol>
+          <li>ไปที่หน้า <b><a href="/orders.html" style="color:#a78bfa">ประวัติการซื้อ</a></b></li>
+          <li>ถ้ากล่องข้อมูลว่างหรือมีปุ่มสีส้ม ให้กด <b>"ติดต่อ LINE"</b> หรือ <b>"ติดต่อ Telegram"</b></li>
+          <li>แจ้งเลข Order # ให้แอดมิน แอดมินจะส่งข้อมูลให้ทันที</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">
+        สินค้าหมดสต็อกทำยังไง? <span class="arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        ถ้าสินค้าแสดงว่า <b>"หมดสต็อก"</b> ปุ่มซื้อจะถูกล็อคอัตโนมัติ
+        ติดต่อแอดมินเพื่อแจ้งความต้องการ แอดมินจะเติมสต็อกให้โดยเร็ว
+      </div>
+    </div>
+  </div>
+
+  <!-- ── นโยบาย / การรับประกัน ── -->
+  <div class="section">
+    <div class="section-title">นโยบายและการรับประกัน</div>
+
+    <div class="policy-box">
+      <h3>✅ สิ่งที่เรารับประกัน</h3>
+      <ul>
+        <li>บัญชีทุกชิ้นผ่านการตรวจสอบก่อนขาย — เข้าใช้งานได้ทันทีเมื่อได้รับ</li>
+        <li>ข้อมูลบัญชี (username / password) ถูกต้องและใช้งานได้ ณ เวลาที่ส่ง</li>
+        <li>ถ้าเข้าใช้งานไม่ได้ภายใน 24 ชั่วโมงหลังซื้อ — เปลี่ยนให้ฟรี</li>
+      </ul>
+
+      <h3>❌ สิ่งที่ไม่อยู่ในการรับประกัน</h3>
+      <ul>
+        <li>บัญชีที่ถูกแบนหลังจาก 24 ชั่วโมงไปแล้ว (เกิดจากการใช้งานของลูกค้า)</li>
+        <li>บัญชีที่ถูกเปลี่ยนรหัสผ่านโดยลูกค้าแล้วเกิดปัญหา</li>
+        <li>การสูญเสียข้อมูลใดๆ จากการใช้งานผิดวัตถุประสงค์</li>
+      </ul>
+
+      <h3>💸 การคืนเงิน</h3>
+      <ul>
+        <li>คืนเงินเข้ากระเป๋า ACCDEE เท่านั้น (ไม่คืนเป็นเงินสด)</li>
+        <li>ต้องแจ้งภายใน 24 ชั่วโมงหลังซื้อ พร้อมหลักฐาน</li>
+        <li>คำสั่งซื้อที่เปิดดูข้อมูลบัญชีแล้วจะไม่สามารถขอคืนได้</li>
+      </ul>
+
+      <div class="warning">
+        ⚠️ <b>สำคัญ:</b> บัญชีที่ซื้อไปมีไว้เพื่อการใช้งานส่วนตัวเท่านั้น
+        การนำไปใช้ผิดกฎหมายหรือละเมิด TOS ของแพลตฟอร์มถือเป็นความรับผิดชอบของผู้ซื้อ
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ติดต่อเรา ── -->
+  <div class="section">
+    <div class="section-title">ติดต่อแอดมิน</div>
+    <div class="contact-grid">
+      <a href="https://lin.ee/qpUaGmg" target="_blank" class="contact-card line-card">
+        <div class="icon">💬</div>
+        <div class="label">LINE</div>
+        <div class="sub">ตอบทุกวัน 9:00–22:00 น.</div>
+      </a>
+      <a href="https://t.me/TheonXbot" target="_blank" class="contact-card tg-card">
+        <div class="icon">✈️</div>
+        <div class="label">Telegram</div>
+        <div class="sub">@TheonXbot</div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<script>
+  function toggle(qEl) {
+    qEl.closest('.faq-item').classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
