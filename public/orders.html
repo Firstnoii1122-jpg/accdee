@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCDEE — ประวัติการซื้อ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo { font-size: 20px; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .nav-balance { font-size: 14px; color: #10b981; font-weight: 600; }
+    .nav-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-outline { background: transparent; border: 1px solid #475569; color: #e2e8f0; }
+    .btn-primary { background: #6d28d9; color: #fff; }
+    .btn-active  { background: transparent; border: 1px solid #a78bfa; color: #a78bfa; }
+    .btn-primary:hover { background: #7c3aed; }
+    .btn-outline:hover { border-color: #a78bfa; color: #a78bfa; }
+
+    /* MAIN */
+    main { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+    h1 { font-size: 22px; margin-bottom: 8px; color: #f1f5f9; }
+    .subtitle { font-size: 14px; color: #64748b; margin-bottom: 28px; }
+
+    /* ORDER LIST */
+    .order-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .order-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: border-color .2s;
+    }
+    .order-card:hover { border-color: #6d28d9; }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .order-name  { font-size: 16px; font-weight: 600; color: #f1f5f9; }
+    .order-meta  { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .order-amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ef4444;
+      white-space: nowrap;
+    }
+
+    .cred-label { font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
+    .cred-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: monospace;
+      font-size: 13px;
+      color: #10b981;
+      word-break: break-all;
+      white-space: pre-wrap;
+      cursor: pointer;
+      position: relative;
+      transition: border-color .2s;
+    }
+    .cred-box:hover { border-color: #10b981; }
+    .cred-box::after {
+      content: '📋 Copy';
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    /* EMPTY / LOADING */
+    .empty {
+      text-align: center;
+      padding: 80px 0;
+      color: #64748b;
+      font-size: 15px;
+      line-height: 2;
+    }
+    .empty a {
+      color: #a78bfa;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .empty a:hover { text-decoration: underline; }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      z-index: 300;
+    }
+    #toast.show { display: block; }
+    #toast.success { background: #10b981; color: #fff; }
+    #toast.error   { background: #ef4444; color: #fff; }
+
+    /* ORDER ID badge */
+    .order-id {
+      display: inline-block;
+      background: #1e3a5f;
+      color: #93c5fd;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">ACC<span style="color:#c4b5fd">DEE</span></a>
+  <div class="nav-right">
+    <span class="nav-balance" id="navBalance">฿ —</span>
+    <a href="/shop.html" class="nav-btn btn-outline">🛍️ ร้านค้า</a>
+    <a href="/orders.html" class="nav-btn btn-active">📋 ประวัติการซื้อ</a>
+    <a href="#" onclick="goTopup()" class="nav-btn btn-primary">+ เติมเงิน</a>
+    <a href="#" onclick="doLogout()" class="nav-btn btn-outline">ออก</a>
+  </div>
+</nav>
+
+<main>
+  <h1>📋 ประวัติการซื้อ</h1>
+  <p class="subtitle">รายการสินค้าที่คุณสั่งซื้อทั้งหมด (กดที่กล่องข้อมูลเพื่อ copy)</p>
+  <div class="order-list" id="orderList">
+    <div class="empty">กำลังโหลด...</div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+  const TOKEN_KEY = 'accdee_token';
+  const USER_KEY  = 'accdee_user';
+
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+  function getUser()  { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); }
+
+  function toast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + type;
+    setTimeout(() => el.className = '', 3000);
+  }
+
+  async function api(method, path) {
+    const res = await fetch('/api' + path, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getToken()
+      }
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'เกิดข้อผิดพลาด');
+    return data;
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString('th-TH', {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function copyCredentials(el, text) {
+    navigator.clipboard.writeText(text)
+      .then(() => toast('Copy สำเร็จแล้ว!'))
+      .catch(() => toast('Copy ไม่ได้ กรุณา copy ด้วยตัวเอง', 'error'));
+  }
+
+  async function loadOrders() {
+    const list = document.getElementById('orderList');
+    try {
+      const res    = await api('GET', '/shop/orders');
+      const orders = res.data || [];
+
+      if (!orders.length) {
+        list.innerHTML = `
+          <div class="empty">
+            ยังไม่มีประวัติการซื้อ<br>
+            <a href="/shop.html">ไปดูสินค้าได้เลย →</a>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = orders.map(o => {
+        const creds = String(o.credentials || '');
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <div class="order-name">${esc(o.product_name)}</div>
+                <div class="order-meta">
+                  <span class="order-id">#${o.id}</span>
+                  &nbsp;${formatDate(o.created_at)}
+                </div>
+              </div>
+              <div class="order-amount">-฿${parseFloat(o.amount).toFixed(2)}</div>
+            </div>
+            <div class="cred-label">📋 ข้อมูลบัญชีที่ได้รับ (คลิกเพื่อ copy)</div>
+            <div class="cred-box" onclick="copyCredentials(this, ${JSON.stringify(creds)})">${esc(creds)}</div>
+          </div>`;
+      }).join('');
+
+    } catch (err) {
+      list.innerHTML = `<div class="empty" style="color:#ef4444">โหลดประวัติไม่ได้: ${err.message}</div>`;
+    }
+  }
+
+  async function refreshBalance() {
+    const token = getToken();
+    const user  = getUser();
+    if (!token || !user) return;
+    try {
+      const res  = await fetch('/api/wallet/info', { headers: { 'Authorization': 'Bearer ' + token } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.success) return;
+      const newBalance = parseFloat(data.data.balance || 0).toFixed(2);
+      user.balance = newBalance;
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      document.getElementById('navBalance').textContent = '฿ ' + newBalance;
+    } catch { /* silent */ }
+  }
+
+  function goTopup() { location.href = '/'; }
+
+  function doLogout() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    location.href = '/';
+  }
+
+  // เช็ค login
+  const token = getToken();
+  const user  = getUser();
+  if (!token || !user) {
+    location.href = '/';
+  } else {
+    document.getElementById('navBalance').textContent = '฿ ' + parseFloat(user.balance || 0).toFixed(2);
+    refreshBalance();
+    loadOrders();
+    setInterval(refreshBalance, 30000);
+  }
+</script>
+
+</body>
+</html>
