@@ -93,6 +93,36 @@
     .btn-buy:hover:not(:disabled) { background: #7c3aed; }
     .btn-buy:disabled { background: #374151; color: #6b7280; cursor: not-allowed; }
 
+    /* OUT OF STOCK — ปุ่มติดต่อ */
+    .btn-contact {
+      margin-top: auto;
+      padding: 10px;
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+      transition: opacity .2s;
+    }
+    .btn-contact:hover { opacity: .85; }
+
+    /* Card เมื่อหมดสต็อก */
+    .product-card.outstock { border-color: #1e3a5f; }
+    .outstock-badge {
+      display: inline-block;
+      background: #f59e0b22;
+      color: #f59e0b;
+      border: 1px solid #f59e0b55;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
+
     /* EMPTY / LOADING */
     .empty { text-align: center; padding: 60px 0; color: #64748b; }
 
@@ -207,6 +237,37 @@
   </div>
 </div>
 
+<!-- Modal: หมดสต็อก → ติดต่อสั่งซื้อ -->
+<div class="modal-bg" id="contactModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:8px">😔</div>
+    <h2 style="margin-bottom:8px">สินค้าหมดชั่วคราว</h2>
+    <p id="contactProductName" style="color:#a78bfa;font-weight:600;margin-bottom:4px"></p>
+    <p style="margin-bottom:20px;color:#94a3b8;font-size:13px">
+      ติดต่อแอดมินเพื่อสั่งจองหรือสอบถาม<br>แอดมินจะเติมสต็อกให้โดยเร็ว 🚀
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+      <a href="https://lin.ee/qpUaGmg" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;justify-content:center;gap:8px;
+                padding:12px;background:#06c755;color:#fff;border-radius:10px;
+                text-decoration:none;font-weight:600;font-size:15px">
+        💬 ติดต่อผ่าน LINE OA
+      </a>
+      <a href="https://t.me/TheonXbot" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;justify-content:center;gap:8px;
+                padding:12px;background:#0ea5e9;color:#fff;border-radius:10px;
+                text-decoration:none;font-weight:600;font-size:15px">
+        ✈️ ติดต่อผ่าน Telegram
+      </a>
+    </div>
+
+    <button class="btn-close-modal" onclick="closeContactModal()" style="width:100%">
+      ปิด
+    </button>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -249,19 +310,30 @@
       }
 
       grid.innerHTML = list.map(p => {
-        const stock = parseInt(p.stock) || 0;
-        const stockClass = stock === 0 ? 'out' : stock <= 3 ? 'low' : '';
-        const stockText  = stock === 0 ? 'หมดสต็อก' : stock <= 3 ? `เหลือ ${stock} ชิ้น` : `มี ${stock} ชิ้น`;
+        const stock     = parseInt(p.stock) || 0;
+        const isOut     = stock === 0;
+        const stockClass = isOut ? 'out' : stock <= 3 ? 'low' : '';
+        const stockText  = isOut
+          ? '<span class="outstock-badge">⏳ หมดชั่วคราว</span>'
+          : stock <= 3
+            ? `<span style="color:#f59e0b">🔥 เหลือ ${stock} ชิ้น!</span>`
+            : `<span style="color:#10b981">✅ พร้อมจัดส่ง</span>`;
+
+        const btn = isOut
+          ? `<button class="btn-contact" onclick="showContact('${esc(p.name)}')">
+               📞 ติดต่อสั่งซื้อ
+             </button>`
+          : `<button class="btn-buy" onclick="buyProduct('${esc(p.product_key)}', this)">
+               🛒 ซื้อเลย
+             </button>`;
+
         return `
-          <div class="product-card">
+          <div class="product-card${isOut ? ' outstock' : ''}">
             <div class="product-name">${esc(p.name)}</div>
             ${p.description ? `<div class="product-desc">${esc(p.description)}</div>` : ''}
             <div class="product-price">฿${parseFloat(p.price).toFixed(2)}</div>
-            <div class="product-stock ${stockClass}">${stockText}</div>
-            <button class="btn-buy" onclick="buyProduct('${esc(p.product_key)}', this)"
-              ${stock === 0 ? 'disabled' : ''}>
-              ${stock === 0 ? 'หมดสต็อก' : '🛒 ซื้อเลย'}
-            </button>
+            <div class="product-stock ${stockClass}" style="margin-bottom:4px">${stockText}</div>
+            ${btn}
           </div>`;
       }).join('');
     } catch (err) {
@@ -311,6 +383,15 @@
 
   function closeModal() {
     document.getElementById('successModal').classList.remove('open');
+  }
+
+  function showContact(productName) {
+    document.getElementById('contactProductName').textContent = '📦 ' + productName;
+    document.getElementById('contactModal').classList.add('open');
+  }
+
+  function closeContactModal() {
+    document.getElementById('contactModal').classList.remove('open');
   }
 
   function goTopup() { location.href = '/'; }
