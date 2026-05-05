@@ -149,6 +149,74 @@
       border-radius: 4px;
       font-weight: 600;
     }
+
+    /* NO CREDENTIALS — contact box */
+    .no-cred-box {
+      background: #2d1b00;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .no-cred-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fbbf24;
+      margin-bottom: 6px;
+    }
+    .no-cred-desc {
+      font-size: 12px;
+      color: #d97706;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .contact-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #06c755;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      font-family: 'Sarabun', sans-serif;
+      transition: background .2s;
+    }
+    .btn-line:hover { background: #05a847; }
+    .btn-tg {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #229ed9;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      font-family: 'Sarabun', sans-serif;
+      transition: background .2s;
+    }
+    .btn-tg:hover { background: #1a87bb; }
+
+    /* CONTACT BANNER */
+    .contact-banner {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .contact-banner-text { font-size: 13px; color: #94a3b8; }
+    .contact-banner-text b { color: #e2e8f0; }
+    .contact-banner-btns { display: flex; gap: 8px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -167,6 +235,24 @@
 <main>
   <h1>📋 ประวัติการซื้อ</h1>
   <p class="subtitle">รายการสินค้าที่คุณสั่งซื้อทั้งหมด (กดที่กล่องข้อมูลเพื่อ copy)</p>
+
+  <!-- แบนเนอร์ติดต่อแอดมิน -->
+  <div class="contact-banner">
+    <div class="contact-banner-text">
+      <b>มีปัญหาหรือสงสัย?</b> ติดต่อแอดมินได้เลย พร้อมแจ้งเลข Order #
+    </div>
+    <div class="contact-banner-btns">
+      <a href="https://lin.ee/qpUaGmg" target="_blank" class="btn-line">
+        <svg width="16" height="16" viewBox="0 0 40 40" fill="white"><path d="M20 2C10.06 2 2 9.16 2 18c0 7.98 6.5 14.6 15.3 15.8.6.13 1.4.4 1.6.9.2.44.13 1.13.06 1.58l-.26 1.53c-.08.47-.36 1.83 1.6 1 1.96-.84 10.6-6.24 14.46-10.67C37.12 24.9 38 21.56 38 18 38 9.16 29.94 2 20 2z"/></svg>
+        LINE
+      </a>
+      <a href="https://t.me/TheonXbot" target="_blank" class="btn-tg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.94 8.19l-2.02 9.52c-.15.67-.54.84-1.1.52l-3-2.21-1.45 1.4c-.16.16-.3.3-.61.3l.22-3.05 5.56-5.02c.24-.22-.05-.34-.37-.12L6.38 14.4l-2.94-.92c-.64-.2-.65-.64.13-.95l11.5-4.43c.53-.2 1 .13.87.09z"/></svg>
+        Telegram
+      </a>
+    </div>
+  </div>
+
   <div class="order-list" id="orderList">
     <div class="empty">กำลังโหลด...</div>
   </div>
@@ -235,7 +321,32 @@
       }
 
       list.innerHTML = orders.map(o => {
-        const creds = String(o.credentials || '');
+        const creds   = String(o.credentials || '').trim();
+        const hasCred = creds.length > 0;
+        const lineMsg = encodeURIComponent(`สวัสดีครับ ผมสั่งซื้อ Order #${o.id} (${o.product_name}) แต่ไม่ได้รับข้อมูลบัญชี กรุณาตรวจสอบให้ด้วยครับ`);
+        const tgMsg   = encodeURIComponent(`สวัสดีครับ Order #${o.id} (${o.product_name}) ไม่ได้รับข้อมูลบัญชีครับ`);
+
+        const credSection = hasCred
+          ? `<div class="cred-label">📋 ข้อมูลบัญชีที่ได้รับ (คลิกเพื่อ copy)</div>
+             <div class="cred-box" onclick="copyCredentials(this, ${JSON.stringify(creds)})">${esc(creds)}</div>`
+          : `<div class="no-cred-box">
+               <div class="no-cred-title">⚠️ ยังไม่ได้รับข้อมูลบัญชี</div>
+               <div class="no-cred-desc">
+                 กรุณาติดต่อแอดมินพร้อมแจ้งเลข <b>Order #${o.id}</b><br>
+                 เพื่อให้แอดมินส่งข้อมูลบัญชีให้คุณโดยเร็ว
+               </div>
+               <div class="contact-btns">
+                 <a href="https://lin.ee/qpUaGmg" target="_blank" class="btn-line">
+                   <svg width="14" height="14" viewBox="0 0 40 40" fill="white"><path d="M20 2C10.06 2 2 9.16 2 18c0 7.98 6.5 14.6 15.3 15.8.6.13 1.4.4 1.6.9.2.44.13 1.13.06 1.58l-.26 1.53c-.08.47-.36 1.83 1.6 1 1.96-.84 10.6-6.24 14.46-10.67C37.12 24.9 38 21.56 38 18 38 9.16 29.94 2 20 2z"/></svg>
+                   ติดต่อ LINE
+                 </a>
+                 <a href="https://t.me/TheonXbot?text=${tgMsg}" target="_blank" class="btn-tg">
+                   <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.94 8.19l-2.02 9.52c-.15.67-.54.84-1.1.52l-3-2.21-1.45 1.4c-.16.16-.3.3-.61.3l.22-3.05 5.56-5.02c.24-.22-.05-.34-.37-.12L6.38 14.4l-2.94-.92c-.64-.2-.65-.64.13-.95l11.5-4.43c.53-.2 1 .13.87.09z"/></svg>
+                   ติดต่อ Telegram
+                 </a>
+               </div>
+             </div>`;
+
         return `
           <div class="order-card">
             <div class="order-header">
@@ -248,8 +359,7 @@
               </div>
               <div class="order-amount">-฿${parseFloat(o.amount).toFixed(2)}</div>
             </div>
-            <div class="cred-label">📋 ข้อมูลบัญชีที่ได้รับ (คลิกเพื่อ copy)</div>
-            <div class="cred-box" onclick="copyCredentials(this, ${JSON.stringify(creds)})">${esc(creds)}</div>
+            ${credSection}
           </div>`;
       }).join('');
 
