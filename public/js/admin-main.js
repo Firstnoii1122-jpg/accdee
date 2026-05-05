@@ -37,7 +37,8 @@ function showPage(id, menuEl) {
     topups:    'คำขอเติมเงิน',
     history:   'ประวัติทั้งหมด',
     members:   'สมาชิก',
-    inventory: 'สต็อกสินค้า',
+    products:  'จัดการสินค้า',
+    inventory: 'สต็อก',
     orders:    'คำสั่งซื้อ'
   };
   document.getElementById('pageTitle').textContent = titleMap[id] || id;
@@ -45,6 +46,7 @@ function showPage(id, menuEl) {
   if (id === 'topups')    loadPending();
   if (id === 'history')   loadHistory();
   if (id === 'members')   loadMembers();
+  if (id === 'products')  loadProducts();
   if (id === 'inventory') loadInventory();
   if (id === 'orders')    loadOrders();
   if (id === 'dashboard') loadDashboardStats();
@@ -309,6 +311,59 @@ function closeSlip() {
   document.getElementById('slipLightbox').classList.remove('open');
 }
 
+// ===== PRODUCTS =====
+async function loadProducts() {
+  const tbody = document.getElementById('productsTable');
+  if (!tbody) return;
+  try {
+    const res  = await API.get('/admin/products');
+    const list = res?.data || [];
+    tbody.innerHTML = list.length
+      ? list.map(p => `<tr>
+          <td><code>${escapeHtml(p.product_key)}</code></td>
+          <td><b>${escapeHtml(p.name)}</b></td>
+          <td style="color:#9ca3af">${p.description ? escapeHtml(p.description) : '-'}</td>
+          <td class="text-success fw-bold">฿${fmt(p.price)}</td>
+          <td>${parseInt(p.stock) > 0 ? `<span class="badge badge-success">${p.stock} ชิ้น</span>` : '<span class="badge badge-danger">หมด</span>'}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteProduct('${escapeHtml(p.product_key)}')">ลบ</button></td>
+        </tr>`).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:16px">ยังไม่มีสินค้า กด "+ เพิ่มสินค้า" ได้เลย</td></tr>';
+  } catch (err) {
+    console.error('loadProducts error:', err);
+  }
+}
+
+async function saveProduct() {
+  const productKey  = document.getElementById('prdKey')?.value.trim().toLowerCase();
+  const name        = document.getElementById('prdName')?.value.trim();
+  const description = document.getElementById('prdDesc')?.value.trim();
+  const price       = document.getElementById('prdPrice')?.value;
+
+  if (!productKey || !name || !price) { toast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+  if (/\s/.test(productKey))           { toast('Product key ห้ามมีช่องว่าง', 'error'); return; }
+
+  try {
+    const res = await API.post('/admin/products', { productKey, name, description, price: parseFloat(price) });
+    toast('✅ ' + res.message, 'success');
+    document.getElementById('addProductModal').classList.remove('show');
+    ['prdKey','prdName','prdDesc','prdPrice'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    loadProducts();
+  } catch (err) {
+    toast('❌ ' + err.message, 'error');
+  }
+}
+
+async function deleteProduct(key) {
+  if (!confirm(`ลบสินค้า "${key}"?\n(สต็อกที่มีอยู่จะยังคงอยู่ แต่จะซื้อไม่ได้)`)) return;
+  try {
+    const res = await API.del(`/admin/products/${key}`);
+    toast('✅ ' + res.message, 'success');
+    loadProducts();
+  } catch (err) {
+    toast('❌ ' + err.message, 'error');
+  }
+}
+
 // ===== INVENTORY =====
 async function loadInventory() {
   try {
@@ -462,3 +517,6 @@ window.saveInventory = saveInventory;
 window.deleteInv     = deleteInv;
 window.loadOrders    = loadOrders;
 window.deleteMember  = deleteMember;
+window.loadProducts  = loadProducts;
+window.saveProduct   = saveProduct;
+window.deleteProduct = deleteProduct;

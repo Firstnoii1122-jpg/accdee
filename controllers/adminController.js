@@ -265,6 +265,51 @@ const getAllOrders = async (req, res) => {
   }
 };
 
+// GET /api/admin/products — รายการสินค้าทั้งหมด
+const getProducts = async (req, res) => {
+  try {
+    const [rows] = await db.execute(
+      'SELECT p.*, COUNT(i.id) as stock FROM products p LEFT JOIN inventory i ON i.product_key = p.product_key AND i.status = "available" GROUP BY p.id ORDER BY p.price ASC'
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// POST /api/admin/products — เพิ่มสินค้าใหม่
+const addProduct = async (req, res) => {
+  const { productKey, name, description, price } = req.body;
+  if (!productKey || !name || !price) {
+    return res.status(400).json({ success: false, message: 'กรุณากรอกข้อมูลให้ครบ' });
+  }
+  if (isNaN(price) || parseFloat(price) <= 0) {
+    return res.status(400).json({ success: false, message: 'ราคาไม่ถูกต้อง' });
+  }
+  try {
+    await db.execute(
+      'INSERT INTO products (product_key, name, description, price) VALUES (?, ?, ?, ?)',
+      [productKey.trim().toLowerCase(), name.trim(), (description || '').trim(), parseFloat(price)]
+    );
+    res.status(201).json({ success: true, message: 'เพิ่มสินค้าสำเร็จ' });
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ success: false, message: 'product key นี้มีอยู่แล้ว' });
+    }
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// DELETE /api/admin/products/:key — ลบสินค้า
+const deleteProduct = async (req, res) => {
+  try {
+    await db.execute('DELETE FROM products WHERE product_key = ?', [req.params.key]);
+    res.json({ success: true, message: 'ลบสินค้าสำเร็จ' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 const deleteMember = async (req, res) => {
   try {
     const [[user]] = await db.execute("SELECT id, role FROM users WHERE id = ?", [req.params.id]);
@@ -278,4 +323,4 @@ const deleteMember = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders };
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct };

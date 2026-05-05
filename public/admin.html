@@ -32,8 +32,11 @@
     </a>
 
     <div class="menu-section">ร้านค้า</div>
+    <a class="menu-item" onclick="showPage('products', this)">
+      <span class="icon">🏷️</span> จัดการสินค้า
+    </a>
     <a class="menu-item" onclick="showPage('inventory', this)">
-      <span class="icon">📦</span> สต็อกสินค้า
+      <span class="icon">📦</span> สต็อก
     </a>
     <a class="menu-item" onclick="showPage('orders', this)">
       <span class="icon">🛒</span> คำสั่งซื้อ
@@ -239,6 +242,27 @@
 
     </div><!-- end page-members -->
 
+    <!-- =================== PAGE: PRODUCTS =================== -->
+    <div id="page-products" class="page">
+      <div class="filter-row">
+        <button class="btn btn-primary" onclick="document.getElementById('addProductModal').classList.add('show')">+ เพิ่มสินค้า</button>
+        <button class="btn btn-outline btn-sm" onclick="loadProducts()">🔄 รีเฟรช</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">รายการสินค้าทั้งหมด</span></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Product Key</th><th>ชื่อสินค้า</th><th>รายละเอียด</th><th>ราคา</th><th>สต็อก</th><th>จัดการ</th></tr></thead>
+              <tbody id="productsTable">
+                <tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:16px">กำลังโหลด...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!-- end page-products -->
+
     <!-- =================== PAGE: INVENTORY =================== -->
     <div id="page-inventory" class="page">
       <div class="filter-row">
@@ -332,6 +356,38 @@
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="document.getElementById('adjustCreditModal').classList.remove('show')">ยกเลิก</button>
       <button class="btn btn-primary" onclick="saveCredit()">✓ ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: ADD PRODUCT ===== -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🏷️ เพิ่มสินค้าใหม่</span>
+      <button class="modal-close" onclick="document.getElementById('addProductModal').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Product Key</label>
+        <input type="text" id="prdKey" class="form-control" placeholder="เช่น facebook, tiktok (ตัวพิมพ์เล็ก ไม่มีช่องว่าง)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">ชื่อสินค้า</label>
+        <input type="text" id="prdName" class="form-control" placeholder="เช่น บัญชี Facebook พร้อมใช้">
+      </div>
+      <div class="form-group">
+        <label class="form-label">รายละเอียด (ไม่บังคับ)</label>
+        <input type="text" id="prdDesc" class="form-control" placeholder="เช่น อายุบัญชี 1 ปีขึ้นไป">
+      </div>
+      <div class="form-group">
+        <label class="form-label">ราคา (฿)</label>
+        <input type="number" id="prdPrice" class="form-control" placeholder="0.00" min="1" step="0.01">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('addProductModal').classList.remove('show')">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveProduct()">+ เพิ่มสินค้า</button>
     </div>
   </div>
 </div>

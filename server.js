@@ -15,11 +15,13 @@ const authRoutes    = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const walletRoutes  = require('./routes/walletRoutes');
 const adminRoutes   = require('./routes/adminRoutes');
+const shopRoutes    = require('./routes/shopRoutes');
 
 app.use('/api/auth',   authRoutes);
 app.use('/api',        profileRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/admin',  adminRoutes);
+app.use('/api/shop',   shopRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

@@ -12,6 +12,11 @@ router.get('/topups/history',      adminOnly, adminController.getTopupHistory);
 router.post('/topups/:id/approve', adminOnly, adminController.approveTopup);
 router.post('/topups/:id/reject',  adminOnly, adminController.rejectTopup);
 
+// products
+router.get('/products',         adminOnly, adminController.getProducts);
+router.post('/products',        adminOnly, adminController.addProduct);
+router.delete('/products/:key', adminOnly, adminController.deleteProduct);
+
 // inventory & orders
 router.get('/inventory/stock',  adminOnly, adminController.getStock);
 router.get('/inventory',        adminOnly, adminController.getInventory);

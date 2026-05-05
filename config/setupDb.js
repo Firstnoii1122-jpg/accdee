@@ -67,6 +67,21 @@ async function setupDatabase() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 
+  // สร้างตาราง products (รายชื่อสินค้าพร้อมราคา Admin จัดการได้)
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS products (
+      id          INT           NOT NULL AUTO_INCREMENT,
+      product_key VARCHAR(50)   NOT NULL UNIQUE,
+      name        VARCHAR(255)  NOT NULL,
+      description TEXT          NULL,
+      price       DECIMAL(10,2) NOT NULL,
+      is_active   TINYINT(1)    NOT NULL DEFAULT 1,
+      created_at  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      INDEX idx_product_key (product_key)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+
   // สร้าง Admin คนแรก ถ้ายังไม่มี (ทำแค่ครั้งเดียว ไม่ reset ทุก restart)
   const [adminRows] = await db.execute(
     'SELECT id FROM users WHERE email = ?',

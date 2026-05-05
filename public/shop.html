@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCDEE — ร้านค้า</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo { font-size: 20px; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-balance { font-size: 14px; color: #10b981; font-weight: 600; }
+    .nav-btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .btn-outline { background: transparent; border: 1px solid #475569; color: #e2e8f0; }
+    .btn-primary { background: #6d28d9; color: #fff; }
+    .btn-primary:hover { background: #7c3aed; }
+    .btn-outline:hover { border-color: #a78bfa; color: #a78bfa; }
+
+    /* MAIN */
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+    h1 { font-size: 22px; margin-bottom: 24px; color: #f1f5f9; }
+
+    /* PRODUCT GRID */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color .2s;
+    }
+    .product-card:hover { border-color: #6d28d9; }
+
+    .product-name { font-size: 17px; font-weight: 600; color: #f1f5f9; }
+    .product-desc { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+    .product-price { font-size: 22px; font-weight: 700; color: #10b981; }
+    .product-stock { font-size: 12px; color: #64748b; }
+    .product-stock.low { color: #f59e0b; }
+    .product-stock.out { color: #ef4444; }
+
+    .btn-buy {
+      margin-top: auto;
+      padding: 10px;
+      background: #6d28d9;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+      transition: background .2s;
+    }
+    .btn-buy:hover:not(:disabled) { background: #7c3aed; }
+    .btn-buy:disabled { background: #374151; color: #6b7280; cursor: not-allowed; }
+
+    /* EMPTY / LOADING */
+    .empty { text-align: center; padding: 60px 0; color: #64748b; }
+
+    /* MODAL */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 28px;
+      width: 90%;
+      max-width: 440px;
+    }
+    .modal h2 { font-size: 18px; margin-bottom: 16px; }
+    .modal p { font-size: 14px; color: #94a3b8; margin-bottom: 8px; line-height: 1.6; }
+    .modal .credentials {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #10b981;
+      word-break: break-all;
+      margin: 12px 0;
+      user-select: all;
+    }
+    .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-copy {
+      flex: 1;
+      padding: 10px;
+      background: #10b981;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+      font-weight: 600;
+    }
+    .btn-close-modal {
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      z-index: 300;
+    }
+    #toast.show { display: block; }
+    #toast.success { background: #10b981; color: #fff; }
+    #toast.error   { background: #ef4444; color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">ACC<span style="color:#c4b5fd">DEE</span></a>
+  <div class="nav-right">
+    <span class="nav-balance" id="navBalance">฿ —</span>
+    <a href="/shop.html" class="nav-btn btn-outline">🛍️ ร้านค้า</a>
+    <a href="#" onclick="goTopup()" class="nav-btn btn-primary">+ เติมเงิน</a>
+    <a href="#" onclick="doLogout()" class="nav-btn btn-outline">ออก</a>
+  </div>
+</nav>
+
+<main>
+  <h1>🛍️ สินค้าทั้งหมด</h1>
+  <div class="product-grid" id="productGrid">
+    <div class="empty">กำลังโหลด...</div>
+  </div>
+</main>
+
+<!-- Modal แสดงผลหลังซื้อ -->
+<div class="modal-bg" id="successModal">
+  <div class="modal">
+    <h2>✅ สั่งซื้อสำเร็จ!</h2>
+    <p>สินค้า: <b id="modalProductName"></b></p>
+    <p>ยอดที่หัก: <b id="modalAmount" style="color:#ef4444"></b></p>
+    <p>ยอดคงเหลือ: <b id="modalBalance" style="color:#10b981"></b></p>
+    <p style="margin-top:12px">📋 ข้อมูลบัญชีของคุณ (กดที่กล่องเพื่อ copy):</p>
+    <div class="credentials" id="modalCredentials" onclick="copyCredentials()"></div>
+    <div class="modal-btns">
+      <button class="btn-copy" onclick="copyCredentials()">📋 Copy ข้อมูล</button>
+      <button class="btn-close-modal" onclick="closeModal()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const TOKEN_KEY = 'accdee_token';
+  const USER_KEY  = 'accdee_user';
+
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+  function getUser()  { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); }
+
+  function toast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + type;
+    setTimeout(() => el.className = '', 3000);
+  }
+
+  async function api(method, path, body) {
+    const res = await fetch('/api' + path, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getToken()
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'เกิดข้อผิดพลาด');
+    return data;
+  }
+
+  async function loadProducts() {
+    try {
+      const res  = await api('GET', '/shop/products');
+      const list = res.data || [];
+      const grid = document.getElementById('productGrid');
+
+      if (!list.length) {
+        grid.innerHTML = '<div class="empty">ยังไม่มีสินค้าในขณะนี้<br>กรุณาติดต่อ Admin</div>';
+        return;
+      }
+
+      grid.innerHTML = list.map(p => {
+        const stock = parseInt(p.stock) || 0;
+        const stockClass = stock === 0 ? 'out' : stock <= 3 ? 'low' : '';
+        const stockText  = stock === 0 ? 'หมดสต็อก' : stock <= 3 ? `เหลือ ${stock} ชิ้น` : `มี ${stock} ชิ้น`;
+        return `
+          <div class="product-card">
+            <div class="product-name">${esc(p.name)}</div>
+            ${p.description ? `<div class="product-desc">${esc(p.description)}</div>` : ''}
+            <div class="product-price">฿${parseFloat(p.price).toFixed(2)}</div>
+            <div class="product-stock ${stockClass}">${stockText}</div>
+            <button class="btn-buy" onclick="buyProduct('${esc(p.product_key)}', this)"
+              ${stock === 0 ? 'disabled' : ''}>
+              ${stock === 0 ? 'หมดสต็อก' : '🛒 ซื้อเลย'}
+            </button>
+          </div>`;
+      }).join('');
+    } catch (err) {
+      document.getElementById('productGrid').innerHTML =
+        `<div class="empty" style="color:#ef4444">โหลดสินค้าไม่ได้: ${err.message}</div>`;
+    }
+  }
+
+  async function buyProduct(productKey, btn) {
+    if (!confirm('ยืนยันการซื้อสินค้านี้?')) return;
+    btn.disabled = true;
+    btn.textContent = 'กำลังดำเนินการ...';
+    try {
+      const res = await api('POST', '/shop/buy', { productKey });
+      const d   = res.data;
+
+      document.getElementById('modalProductName').textContent = d.productName;
+      document.getElementById('modalAmount').textContent      = '฿' + d.amount;
+      document.getElementById('modalBalance').textContent     = '฿' + d.newBalance;
+      document.getElementById('modalCredentials').textContent = d.credentials;
+      document.getElementById('successModal').classList.add('open');
+
+      // อัปเดต balance ใน nav
+      document.getElementById('navBalance').textContent = '฿ ' + d.newBalance;
+
+      // อัปเดต user ใน localStorage
+      const user = getUser();
+      if (user) {
+        user.balance = d.newBalance;
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+      }
+
+      loadProducts(); // รีโหลดสต็อก
+    } catch (err) {
+      toast(err.message, 'error');
+      btn.disabled = false;
+      btn.textContent = '🛒 ซื้อเลย';
+    }
+  }
+
+  function copyCredentials() {
+    const text = document.getElementById('modalCredentials').textContent;
+    navigator.clipboard.writeText(text)
+      .then(() => toast('Copy สำเร็จแล้ว!'))
+      .catch(() => toast('Copy ไม่ได้ กรุณา copy ด้วยตัวเอง', 'error'));
+  }
+
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('open');
+  }
+
+  function goTopup() { location.href = '/'; }
+
+  function doLogout() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    location.href = '/';
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // เช็ค login
+  const token = getToken();
+  const user  = getUser();
+  if (!token || !user) {
+    location.href = '/';
+  } else {
+    document.getElementById('navBalance').textContent = '฿ ' + parseFloat(user.balance || 0).toFixed(2);
+    loadProducts();
+  }
+</script>
+
+</body>
+</html>
