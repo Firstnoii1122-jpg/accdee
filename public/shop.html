@@ -368,7 +368,14 @@
 
       loadProducts(); // รีโหลดสต็อก
     } catch (err) {
-      toast(err.message, 'error');
+      // ถ้า stock หมดระหว่างซื้อ → แสดง popup ติดต่อแทน error
+      if (err.message && err.message.includes('หมดสต็อก')) {
+        const cardName = btn.closest('.product-card')?.querySelector('.product-name')?.textContent || 'สินค้านี้';
+        showContact(cardName);
+        loadProducts(); // รีโหลด stock ให้ตรงกับความเป็นจริง
+      } else {
+        toast(err.message, 'error');
+      }
       btn.disabled = false;
       btn.textContent = '🛒 ซื้อเลย';
     }
