@@ -1,21 +1,15 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async ({ to, subject, html }) => {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.warn('Email skipped: GMAIL_USER or GMAIL_APP_PASSWORD not set');
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('Email skipped: RESEND_API_KEY not set');
     return;
   }
 
-  await transporter.sendMail({
-    from: `"Accdee" <${process.env.GMAIL_USER}>`,
+  await resend.emails.send({
+    from   : 'Accdee <onboarding@resend.dev>',
     to,
     subject,
     html
