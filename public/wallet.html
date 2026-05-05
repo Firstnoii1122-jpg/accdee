@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCDEE — กระเป๋าเงิน</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo { font-size: 20px; font-weight: 700; color: #a78bfa; text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .nav-balance { font-size: 14px; color: #10b981; font-weight: 600; }
+    .nav-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-outline { background: transparent; border: 1px solid #475569; color: #e2e8f0; }
+    .btn-primary { background: #6d28d9; color: #fff; }
+    .btn-active  { background: transparent; border: 1px solid #a78bfa; color: #a78bfa; }
+    .btn-primary:hover { background: #7c3aed; }
+    .btn-outline:hover { border-color: #a78bfa; color: #a78bfa; }
+
+    /* MAIN */
+    main { max-width: 720px; margin: 0 auto; padding: 32px 24px; }
+
+    /* BALANCE CARD */
+    .balance-card {
+      background: linear-gradient(135deg, #1e293b 0%, #1a1f3a 100%);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .balance-label { font-size: 13px; color: #64748b; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+    .balance-amount {
+      font-size: 38px;
+      font-weight: 700;
+      color: #10b981;
+      letter-spacing: -1px;
+    }
+    .balance-amount span { font-size: 20px; color: #64748b; font-weight: 400; }
+    .btn-topup {
+      padding: 12px 24px;
+      background: #6d28d9;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .btn-topup:hover { background: #7c3aed; }
+
+    /* FILTER TABS */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-tab {
+      padding: 7px 18px;
+      border-radius: 20px;
+      border: 1px solid #334155;
+      background: transparent;
+      color: #94a3b8;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .filter-tab.active {
+      background: #6d28d9;
+      border-color: #6d28d9;
+      color: #fff;
+      font-weight: 600;
+    }
+    .filter-tab:hover:not(.active) { border-color: #a78bfa; color: #a78bfa; }
+
+    /* TX LIST */
+    .tx-list { display: flex; flex-direction: column; gap: 1px; }
+
+    .tx-item {
+      background: #1e293b;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: background .15s;
+      border-radius: 0;
+    }
+    .tx-item:first-child { border-radius: 12px 12px 0 0; }
+    .tx-item:last-child  { border-radius: 0 0 12px 12px; }
+    .tx-item:only-child  { border-radius: 12px; }
+    .tx-item:hover { background: #243044; }
+
+    .tx-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .tx-icon.topup    { background: #052e16; }
+    .tx-icon.purchase { background: #2d1b00; }
+    .tx-icon.rejected { background: #2d1111; }
+
+    .tx-body { flex: 1; min-width: 0; }
+    .tx-desc {
+      font-size: 14px;
+      font-weight: 500;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tx-meta { font-size: 12px; color: #64748b; margin-top: 3px; }
+
+    .tx-right { text-align: right; flex-shrink: 0; }
+    .tx-amount {
+      font-size: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .tx-amount.plus  { color: #10b981; }
+    .tx-amount.minus { color: #ef4444; }
+    .tx-amount.muted { color: #64748b; }
+
+    /* STATUS BADGE */
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-top: 4px;
+      letter-spacing: .3px;
+    }
+    .badge-pending  { background: #422006; color: #fbbf24; }
+    .badge-approved { background: #052e16; color: #34d399; }
+    .badge-rejected { background: #3b0a0a; color: #f87171; }
+    .badge-purchase { background: #1e1b4b; color: #a5b4fc; }
+
+    /* EMPTY */
+    .empty {
+      text-align: center;
+      padding: 60px 0;
+      color: #64748b;
+      font-size: 15px;
+      line-height: 2;
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      z-index: 300;
+    }
+    #toast.show { display: block; }
+    #toast.success { background: #10b981; color: #fff; }
+    #toast.error   { background: #ef4444; color: #fff; }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">ACC<span style="color:#c4b5fd">DEE</span></a>
+  <div class="nav-right">
+    <span class="nav-balance" id="navBalance">฿ —</span>
+    <a href="/shop.html"   class="nav-btn btn-outline">🛍️ ร้านค้า</a>
+    <a href="/orders.html" class="nav-btn btn-outline">📋 ประวัติซื้อ</a>
+    <a href="/wallet.html" class="nav-btn btn-active">💰 กระเป๋าเงิน</a>
+    <a href="#" onclick="doLogout()" class="nav-btn btn-outline">ออก</a>
+  </div>
+</nav>
+
+<main>
+  <!-- ยอดเงินคงเหลือ -->
+  <div class="balance-card">
+    <div>
+      <div class="balance-label">ยอดเงินคงเหลือ</div>
+      <div class="balance-amount">
+        <span>฿ </span><span id="balanceDisplay">—</span>
+      </div>
+    </div>
+    <button class="btn-topup" onclick="goTopup()">+ เติมเงิน</button>
+  </div>
+
+  <!-- ฟิลเตอร์ -->
+  <div class="filter-row">
+    <button class="filter-tab active" onclick="filterTx(this, 'all')">ทั้งหมด</button>
+    <button class="filter-tab" onclick="filterTx(this, 'topup')">💳 เติมเงิน</button>
+    <button class="filter-tab" onclick="filterTx(this, 'purchase')">🛒 ซื้อสินค้า</button>
+  </div>
+
+  <div class="section-title">ประวัติธุรกรรม</div>
+  <div class="tx-list" id="txList">
+    <div class="empty">กำลังโหลด...</div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+  const TOKEN_KEY = 'accdee_token';
+  const USER_KEY  = 'accdee_user';
+
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+  function getUser()  { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); }
+
+  function toast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + type;
+    setTimeout(() => el.className = '', 3000);
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString('th-TH', {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  // ข้อมูลธุรกรรมทั้งหมด (เก็บไว้ filter ได้)
+  let allTx = [];
+
+  function renderTx(list) {
+    const el = document.getElementById('txList');
+    if (!list.length) {
+      el.innerHTML = '<div class="empty">ไม่มีรายการในหมวดนี้</div>';
+      return;
+    }
+
+    el.innerHTML = list.map(tx => {
+      const isTopup    = tx.type === 'topup';
+      const isPurchase = tx.type === 'purchase';
+      const isRejected = tx.status === 'rejected';
+      const isPending  = tx.status === 'pending';
+      const isApproved = tx.status === 'approved';
+
+      // icon
+      let icon = '💳';
+      if (isPurchase) icon = '🛒';
+      if (isRejected) icon = '❌';
+      if (isPending)  icon = '⏳';
+
+      // icon bg class
+      let iconClass = 'topup';
+      if (isPurchase)              iconClass = 'purchase';
+      if (isRejected)              iconClass = 'rejected';
+
+      // amount display
+      let amountClass = 'muted';
+      let amountSign  = '';
+      if (isTopup && isApproved)  { amountClass = 'plus';  amountSign = '+'; }
+      if (isPurchase && isApproved) { amountClass = 'minus'; amountSign = '-'; }
+      if (isPending)               { amountClass = 'muted'; amountSign = '+'; }
+      if (isRejected)              { amountClass = 'muted'; amountSign = '+'; }
+
+      // badge
+      let badge = '';
+      if (isTopup) {
+        if (isPending)  badge = '<span class="badge badge-pending">รอตรวจสอบ</span>';
+        if (isApproved) badge = '<span class="badge badge-approved">อนุมัติแล้ว</span>';
+        if (isRejected) badge = '<span class="badge badge-rejected">ถูกปฏิเสธ</span>';
+      } else {
+        badge = '<span class="badge badge-purchase">ซื้อสินค้า</span>';
+      }
+
+      // description
+      const desc = tx.note
+        ? tx.note
+        : isTopup ? 'เติมเงินเข้ากระเป๋า' : 'ซื้อสินค้า';
+
+      return `
+        <div class="tx-item" data-type="${tx.type}">
+          <div class="tx-icon ${iconClass}">${icon}</div>
+          <div class="tx-body">
+            <div class="tx-desc">${escHtml(desc)}</div>
+            <div class="tx-meta">${formatDate(tx.created_at)}</div>
+            ${badge}
+          </div>
+          <div class="tx-right">
+            <div class="tx-amount ${amountClass}">${amountSign}฿${parseFloat(tx.amount).toFixed(2)}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function filterTx(btn, type) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = type === 'all' ? allTx : allTx.filter(tx => tx.type === type);
+    renderTx(filtered);
+  }
+
+  async function loadHistory() {
+    try {
+      const res = await fetch('/api/wallet/history', {
+        headers: { 'Authorization': 'Bearer ' + getToken() }
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+
+      allTx = data.data || [];
+      if (!allTx.length) {
+        document.getElementById('txList').innerHTML =
+          '<div class="empty">ยังไม่มีรายการธุรกรรม<br>เริ่มต้นด้วยการเติมเงินได้เลย</div>';
+        return;
+      }
+      renderTx(allTx);
+    } catch (err) {
+      document.getElementById('txList').innerHTML =
+        `<div class="empty" style="color:#ef4444">โหลดข้อมูลไม่ได้: ${err.message}</div>`;
+    }
+  }
+
+  async function refreshBalance() {
+    const token = getToken();
+    const user  = getUser();
+    if (!token || !user) return;
+    try {
+      const res  = await fetch('/api/wallet/info', { headers: { 'Authorization': 'Bearer ' + token } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.success) return;
+      const bal = parseFloat(data.data.balance || 0).toFixed(2);
+      user.balance = bal;
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      document.getElementById('navBalance').textContent    = '฿ ' + bal;
+      document.getElementById('balanceDisplay').textContent = bal;
+    } catch { /* silent */ }
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function goTopup() { location.href = '/'; }
+
+  function doLogout() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    location.href = '/';
+  }
+
+  // เช็ค login
+  const token = getToken();
+  const user  = getUser();
+  if (!token || !user) {
+    location.href = '/';
+  } else {
+    const bal = parseFloat(user.balance || 0).toFixed(2);
+    document.getElementById('navBalance').textContent    = '฿ ' + bal;
+    document.getElementById('balanceDisplay').textContent = bal;
+    refreshBalance();
+    loadHistory();
+    setInterval(refreshBalance, 30000);
+  }
+</script>
+
+</body>
+</html>
