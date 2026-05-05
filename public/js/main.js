@@ -52,22 +52,22 @@ function closeAuthOuter(e) {
   if (e.target === document.getElementById('authOverlay')) closeAuth();
 }
 
-// เปลี่ยน tab Login <-> Register
+// เปลี่ยน tab Login / Register / Forgot
 function switchAuthTab(tab) {
-  const isLogin = tab === 'login';
-  document.getElementById('formLogin').style.display    = isLogin ? 'block' : 'none';
-  document.getElementById('formRegister').style.display = isLogin ? 'none'  : 'block';
-  document.getElementById('tabLogin').classList.toggle('active', isLogin);
-  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('formLogin').style.display    = tab === 'login'    ? 'block' : 'none';
+  document.getElementById('formRegister').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('formForgot').style.display   = tab === 'forgot'   ? 'block' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active',    tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
   clearAuthMsg();
 }
 
 // ล้างข้อความ error ทั้งหมด
 function clearAuthMsg() {
-  document.getElementById('loginMsg').className    = 'auth-msg';
-  document.getElementById('loginMsg').textContent  = '';
-  document.getElementById('registerMsg').className   = 'auth-msg';
-  document.getElementById('registerMsg').textContent = '';
+  ['loginMsg', 'registerMsg', 'forgotMsg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.className = 'auth-msg'; el.textContent = ''; }
+  });
 }
 
 // แสดงข้อความใน auth modal
@@ -165,6 +165,39 @@ async function doRegister() {
   } finally {
     btn.disabled    = false;
     btn.textContent = 'สมัครสมาชิก';
+  }
+}
+
+// ส่งลิงก์รีเซ็ตรหัสผ่าน
+async function doForgotPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!email) {
+    showAuthMsg('forgotMsg', 'กรุณากรอกอีเมลของคุณ');
+    return;
+  }
+
+  const btn = document.getElementById('forgotBtn');
+  btn.disabled    = true;
+  btn.textContent = 'กำลังส่ง...';
+
+  try {
+    const res  = await fetch(`${API_URL}/auth/forgot-password`, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showAuthMsg('forgotMsg', '✅ ส่งลิงก์แล้ว! ตรวจสอบอีเมลของคุณ (รวมถึงกล่อง spam)', 'success');
+    } else {
+      showAuthMsg('forgotMsg', data.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่');
+    }
+  } catch (err) {
+    showAuthMsg('forgotMsg', 'ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่');
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'ส่งลิงก์รีเซ็ต';
   }
 }
 

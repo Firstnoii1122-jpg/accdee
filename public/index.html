@@ -353,6 +353,7 @@
       <div class="auth-msg" id="loginMsg"></div>
       <button class="auth-btn" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
       <p class="auth-switch">ยังไม่มีบัญชี? <a onclick="switchAuthTab('register')">สมัครสมาชิก</a></p>
+      <p class="auth-switch"><a onclick="switchAuthTab('forgot')" style="color:#94a3b8;font-size:13px">ลืมรหัสผ่าน?</a></p>
     </div>
 
     <!-- Register Form -->
@@ -374,6 +375,20 @@
       <div class="auth-msg" id="registerMsg"></div>
       <button class="auth-btn" id="registerBtn" onclick="doRegister()">สมัครสมาชิก</button>
       <p class="auth-switch">มีบัญชีแล้ว? <a onclick="switchAuthTab('login')">เข้าสู่ระบบ</a></p>
+    </div>
+
+    <!-- Forgot Password Form -->
+    <div id="formForgot" style="display:none">
+      <div class="auth-logo">ACC<span>DEE</span></div>
+      <p class="auth-subtitle">รีเซ็ตรหัสผ่าน</p>
+      <p style="color:#94a3b8;font-size:13px;margin-bottom:16px">กรอกอีเมลที่ใช้สมัคร เราจะส่งลิงก์ตั้งรหัสใหม่ให้</p>
+      <div class="form-group">
+        <label>อีเมล</label>
+        <input type="email" id="forgotEmail" placeholder="your@email.com" class="auth-input">
+      </div>
+      <div class="auth-msg" id="forgotMsg"></div>
+      <button class="auth-btn" id="forgotBtn" onclick="doForgotPassword()">ส่งลิงก์รีเซ็ต</button>
+      <p class="auth-switch"><a onclick="switchAuthTab('login')">← กลับไปเข้าสู่ระบบ</a></p>
     </div>
   </div>
 </div>

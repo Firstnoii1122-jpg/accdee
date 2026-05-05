@@ -82,6 +82,20 @@ async function setupDatabase() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 
+  // สร้างตาราง password_resets (เก็บ token สำหรับรีเซ็ตรหัสผ่าน)
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS password_resets (
+      id         INT           NOT NULL AUTO_INCREMENT,
+      email      VARCHAR(100)  NOT NULL,
+      token      VARCHAR(255)  NOT NULL,
+      expires_at DATETIME      NOT NULL,
+      created_at TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      INDEX idx_token (token),
+      INDEX idx_email (email)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+
   // สร้าง Admin คนแรก ถ้ายังไม่มี (ทำแค่ครั้งเดียว ไม่ reset ทุก restart)
   const [adminRows] = await db.execute(
     'SELECT id FROM users WHERE email = ?',
