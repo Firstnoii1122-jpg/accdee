@@ -129,7 +129,7 @@ const forgotPassword = async (req, res) => {
     const siteUrl   = process.env.SITE_URL || 'https://www.accdee.shop';
     const resetLink = `${siteUrl}/reset-password.html?token=${token}`;
 
-    sendEmail({
+    await sendEmail({
       to     : email,
       subject: '[Accdee] รีเซ็ตรหัสผ่านของคุณ',
       html   : `
@@ -143,7 +143,7 @@ const forgotPassword = async (req, res) => {
       `
     });
 
-    res.json({ success: true, message: 'หากอีเมลนี้มีในระบบ เราจะส่งลิงก์รีเซ็ตให้ทันที' });
+    res.json({ success: true, message: 'ส่งลิงก์รีเซ็ตไปที่อีเมลแล้ว! ตรวจสอบกล่องจดหมาย (รวมถึง spam)' });
 
   } catch (error) {
     console.error('Forgot password error:', error);
