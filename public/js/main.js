@@ -298,8 +298,8 @@ function handleBuy(productId) {
     return;
   }
 
-  // login แล้ว — TODO: สร้าง order (จะพัฒนาในขั้นตอนถัดไป)
-  showToast('ระบบสั่งซื้ออยู่ระหว่างพัฒนา รอติดตามเร็วๆ นี้!');
+  // login แล้ว → ไปที่หน้าร้านค้าเพื่อซื้อ
+  window.location.href = '/shop.html';
 }
 
 // ── 6. CATEGORY FILTER ──────────────────────────
