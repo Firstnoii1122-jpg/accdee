@@ -371,7 +371,33 @@ async function handleBuy(productId) {
     `;
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = 'สั่งซื้อเลย'; }
-    showToast(err.message, 'error');
+
+    // ถ้าหมดสต็อก → เปลี่ยน modal เป็นหน้าติดต่อแทน
+    if (err.message && err.message.includes('หมดสต็อก')) {
+      document.getElementById('modalContent').innerHTML = `
+        <div style="text-align:center">
+          <div style="font-size:3rem;margin-bottom:8px">😔</div>
+          <div class="modal-title" style="margin-bottom:8px">สินค้าหมดชั่วคราว</div>
+          <p style="color:#a78bfa;font-weight:600;margin-bottom:4px">${p.title}</p>
+          <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:20px">
+            ติดต่อแอดมินเพื่อสั่งจองหรือสอบถาม<br>แอดมินจะเติมสต็อกให้โดยเร็ว 🚀
+          </p>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+            <a href="https://lin.ee/qpUaGmg" target="_blank" rel="noopener"
+               style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#06c755;color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px">
+              💬 ติดต่อผ่าน LINE OA
+            </a>
+            <a href="https://t.me/TheonXbot" target="_blank" rel="noopener"
+               style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#0ea5e9;color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px">
+              ✈️ ติดต่อผ่าน Telegram
+            </a>
+          </div>
+          <button class="btn-ghost" onclick="closeModal()">ปิด</button>
+        </div>
+      `;
+    } else {
+      showToast(err.message, 'error');
+    }
   }
 }
 
