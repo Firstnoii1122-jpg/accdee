@@ -5,8 +5,9 @@ const adminController = require('../controllers/adminController');
 
 router.get('/stats',               adminOnly, adminController.getStats);
 router.get('/members',             adminOnly, adminController.getMembers);
-router.post('/members/:id/credit',  adminOnly, adminController.adjustCredit);
-router.delete('/members/:id',       adminOnly, adminController.deleteMember);
+router.post('/members/:id/credit',          adminOnly, adminController.adjustCredit);
+router.post('/members/:id/reset-password',  adminOnly, adminController.resetMemberPassword);
+router.delete('/members/:id',               adminOnly, adminController.deleteMember);
 router.get('/topups',              adminOnly, adminController.getPendingTopups);
 router.get('/topups/history',      adminOnly, adminController.getTopupHistory);
 router.post('/topups/:id/approve', adminOnly, adminController.approveTopup);

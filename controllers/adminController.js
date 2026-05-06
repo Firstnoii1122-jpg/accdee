@@ -1,4 +1,5 @@
 const db               = require('../config/db');
+const bcrypt           = require('bcryptjs');
 const Transaction      = require('../models/transactionModel');
 const { sendEmail }    = require('../config/email');
 const { sendTelegram } = require('../config/telegram');
@@ -310,6 +311,30 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+// POST /api/admin/members/:id/reset-password — แอดมินรีเซ็ตรหัสผ่านให้ลูกค้า
+const resetMemberPassword = async (req, res) => {
+  try {
+    const userId  = parseInt(req.params.id);
+    const { password } = req.body;
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({ success: false, message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' });
+    }
+
+    const [[user]] = await db.execute('SELECT id, username, role FROM users WHERE id = ?', [userId]);
+    if (!user) return res.status(404).json({ success: false, message: 'ไม่พบสมาชิก' });
+    if (user.role === 'admin') return res.status(400).json({ success: false, message: 'ไม่สามารถรีเซ็ตรหัส admin ได้' });
+
+    const hashed = await bcrypt.hash(password, 12);
+    await db.execute('UPDATE users SET password = ? WHERE id = ?', [hashed, userId]);
+
+    res.json({ success: true, message: `รีเซ็ตรหัสผ่านของ ${user.username} สำเร็จ` });
+  } catch (err) {
+    console.error('resetMemberPassword error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 const deleteMember = async (req, res) => {
   try {
     const [[user]] = await db.execute("SELECT id, role FROM users WHERE id = ?", [req.params.id]);
@@ -323,4 +348,4 @@ const deleteMember = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct };
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct };

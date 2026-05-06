@@ -233,6 +233,7 @@ async function loadMembers(search = '') {
         <td>${new Date(m.created_at).toLocaleDateString('th-TH')}</td>
         <td>
           <button class="btn btn-outline btn-sm" onclick="adjustCredit(${m.id})">💰 ปรับยอด</button>
+          <button class="btn btn-warning btn-sm" onclick="openResetPassword(${m.id},'${escapeHtml(m.username)}')">🔑 รีเซ็ตรหัส</button>
           <button class="btn btn-danger btn-sm" onclick="deleteMember(${m.id},'${escapeHtml(m.username)}')">🗑️ ลบ</button>
         </td>
       </tr>`
@@ -455,6 +456,30 @@ async function loadOrders() {
   }
 }
 
+// ===== RESET MEMBER PASSWORD =====
+function openResetPassword(memberId, username) {
+  document.getElementById('resetPasswordMemberId').value = memberId;
+  document.getElementById('resetPasswordUsername').textContent = username;
+  document.getElementById('resetPasswordInput').value = '';
+  document.getElementById('resetPasswordModal').classList.add('show');
+}
+
+async function saveResetPassword() {
+  const memberId = document.getElementById('resetPasswordMemberId').value;
+  const password = document.getElementById('resetPasswordInput').value.trim();
+  const username = document.getElementById('resetPasswordUsername').textContent;
+
+  if (password.length < 6) { toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร', 'error'); return; }
+
+  try {
+    const res = await API.post(`/admin/members/${memberId}/reset-password`, { password });
+    toast('✅ ' + res.message, 'success');
+    document.getElementById('resetPasswordModal').classList.remove('show');
+  } catch (err) {
+    toast('❌ ' + err.message, 'error');
+  }
+}
+
 // ===== DELETE MEMBER =====
 async function deleteMember(id, username) {
   if (!confirm(`ลบสมาชิก "${username}" ออกจากระบบ?\nข้อมูลทั้งหมดจะหายถาวร`)) return;
@@ -516,7 +541,9 @@ window.loadInventory = loadInventory;
 window.saveInventory = saveInventory;
 window.deleteInv     = deleteInv;
 window.loadOrders    = loadOrders;
-window.deleteMember  = deleteMember;
+window.deleteMember        = deleteMember;
+window.openResetPassword   = openResetPassword;
+window.saveResetPassword   = saveResetPassword;
 window.loadProducts  = loadProducts;
 window.saveProduct   = saveProduct;
 window.deleteProduct = deleteProduct;

@@ -360,6 +360,28 @@
   </div>
 </div>
 
+<!-- ===== MODAL: RESET PASSWORD ===== -->
+<div class="modal-overlay" id="resetPasswordModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">🔑 รีเซ็ตรหัสผ่าน</h3>
+      <button class="modal-close" onclick="document.getElementById('resetPasswordModal').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="resetPasswordMemberId">
+      <div style="font-size:13px;color:#6b7280;margin-bottom:16px">สมาชิก: <b id="resetPasswordUsername"></b></div>
+      <div class="form-group">
+        <label>รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)</label>
+        <input type="text" id="resetPasswordInput" class="form-control" placeholder="กรอกรหัสผ่านใหม่">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('resetPasswordModal').classList.remove('show')">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveResetPassword()">✓ ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MODAL: ADD PRODUCT ===== -->
 <div class="modal-overlay" id="addProductModal">
   <div class="modal">
