@@ -8,24 +8,25 @@
 const API_URL = '/api';
 
 // ── 2. สินค้าทั้งหมด (Product Data) ───────────
+// productKey ต้องตรงกับที่ Admin เพิ่มใน Admin Panel
 const products = {
   'fb-blank': {
-    icon: '📘', platform: 'Facebook',
+    icon: '📘', platform: 'Facebook', productKey: 'fb-blank',
     title: 'บัญชี Facebook เปล่า', price: '50 ฿',
     desc: 'บัญชี Facebook ใหม่ ไม่มีแฟนเพจ ผ่านการตรวจสอบคุณภาพ พร้อมใช้งานทันที\n\n• ส่งทันทีหลังชำระเงิน\n• รับประกันบัญชีสามารถเข้าใช้งานได้\n• รองรับการสร้างแฟนเพจใหม่'
   },
   'fb-10page': {
-    icon: '📘', platform: 'Facebook',
+    icon: '📘', platform: 'Facebook', productKey: 'fb-10page',
     title: 'บัญชี Facebook พร้อม 10 แฟนเพจ', price: '100 ฿',
     desc: 'บัญชี Facebook ที่มีแฟนเพจครบ 10 เพจ เหมาะสำหรับงานโฆษณา Facebook Ads\n\n• 10 แฟนเพจพร้อมใช้\n• ส่งทันทีหลังชำระเงิน\n• เหมาะสำหรับโฆษณา Facebook'
   },
   'fb-5page': {
-    icon: '📘', platform: 'Facebook',
+    icon: '📘', platform: 'Facebook', productKey: 'fb-5page',
     title: 'บัญชี Facebook พร้อม 5 แฟนเพจ', price: '50 ฿',
     desc: 'บัญชี Facebook ที่มีแฟนเพจ 5 เพจ ราคาสุดคุ้ม เหมาะสำหรับผู้เริ่มต้น\n\n• 5 แฟนเพจพร้อมใช้\n• ส่งทันทีหลังชำระเงิน\n• ราคาประหยัด'
   },
   'tw-1k': {
-    icon: '🐦', platform: 'Twitter (X)',
+    icon: '🐦', platform: 'Twitter (X)', productKey: 'tw-1k',
     title: 'Twitter บัญชี 1,000+ ผู้ติดตาม', price: '800 ฿',
     desc: 'บัญชี Twitter ที่มีผู้ติดตามกว่า 1,000 คน เพิ่มความน่าเชื่อถือ\n\n• 1,000+ ผู้ติดตามจริง\n• บัญชีมีประวัติกิจกรรม\n• เหมาะสำหรับการตลาดระดับพรีเมียม'
   }
@@ -319,20 +320,59 @@ function closeModalOuter(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
 }
 
-// ปุ่มสั่งซื้อ — ตรวจสอบว่า login แล้วหรือยัง
-function handleBuy(productId) {
+// ปุ่มสั่งซื้อ — ซื้อจากหน้าแรกได้เลย ไม่ต้องไปหน้าร้าน
+async function handleBuy(productId) {
   const token = localStorage.getItem('accdee_token');
 
   if (!token) {
-    // ยังไม่ login — ปิด product modal แล้วเปิด auth modal
     closeModal();
     openAuth('login');
     showToast('กรุณาเข้าสู่ระบบก่อนสั่งซื้อ', 'error');
     return;
   }
 
-  // login แล้ว → ไปที่หน้าร้านค้าเพื่อซื้อ
-  window.location.href = '/shop.html';
+  const p   = products[productId];
+  const btn = document.querySelector('#modalContent .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'กำลังดำเนินการ...'; }
+
+  try {
+    const res  = await fetch(`${API_URL}/shop/buy`, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body   : JSON.stringify({ productKey: p.productKey })
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || 'เกิดข้อผิดพลาด');
+
+    const d = data.data;
+
+    // อัปเดต balance บน navbar
+    const balEl = document.getElementById('navBalance');
+    if (balEl) balEl.textContent = parseFloat(d.newBalance).toFixed(2);
+    const user = JSON.parse(localStorage.getItem('accdee_user') || 'null');
+    if (user) { user.balance = d.newBalance; localStorage.setItem('accdee_user', JSON.stringify(user)); }
+
+    // แสดงผลสำเร็จในโมดอลเดิม
+    document.getElementById('modalContent').innerHTML = `
+      <div style="text-align:center">
+        <div style="font-size:3rem;margin-bottom:8px">✅</div>
+        <div class="modal-title" style="margin-bottom:8px">สั่งซื้อสำเร็จ!</div>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:4px">สินค้า: <b>${d.productName}</b></p>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px">ยอดคงเหลือ: <b style="color:#10b981">${d.newBalance} ฿</b></p>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px">📋 ข้อมูลบัญชีของคุณ (แตะเพื่อ copy)</p>
+        <div onclick="navigator.clipboard.writeText(this.dataset.text).then(()=>showToast('Copy สำเร็จ!'))"
+             data-text="${d.credentials}"
+             style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:monospace;font-size:13px;color:#10b981;word-break:break-all;cursor:pointer;text-align:left;margin-bottom:16px">
+          ${d.credentials}
+        </div>
+        <button class="btn-primary" onclick="closeModal()">ปิด</button>
+      </div>
+    `;
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'สั่งซื้อเลย'; }
+    showToast(err.message, 'error');
+  }
 }
 
 // ── 6. CATEGORY FILTER ──────────────────────────
