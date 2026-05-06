@@ -118,6 +118,23 @@ async function setupDatabase() {
     console.log('Admin account created');
   }
 
+  // เพิ่มสินค้า default ถ้ายังไม่มี (ทำแค่ครั้งเดียว)
+  const defaultProducts = [
+    { key: 'fb-blank',  name: 'บัญชี Facebook เปล่า',              desc: 'บัญชี Facebook ใหม่ ไม่มีแฟนเพจ พร้อมใช้งานทันที เหมาะสำหรับเริ่มต้น',          price: 50  },
+    { key: 'fb-5page',  name: 'บัญชี Facebook พร้อม 5 แฟนเพจ',    desc: 'บัญชีที่มีแฟนเพจ 5 เพจ ราคาสุดคุ้ม เหมาะสำหรับผู้เริ่มยิงโฆษณา',               price: 50  },
+    { key: 'fb-10page', name: 'บัญชี Facebook พร้อม 10 แฟนเพจ',   desc: 'บัญชีที่มีแฟนเพจครบ 10 เพจ เหมาะสำหรับงานโฆษณา Facebook Ads',                  price: 100 },
+  ];
+
+  for (const p of defaultProducts) {
+    const [rows] = await db.execute('SELECT id FROM products WHERE product_key = ?', [p.key]);
+    if (rows.length === 0) {
+      await db.execute(
+        'INSERT INTO products (product_key, name, description, price) VALUES (?, ?, ?, ?)',
+        [p.key, p.name, p.desc, p.price]
+      );
+    }
+  }
+
   console.log('Database ready');
 }
 
