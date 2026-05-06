@@ -11,17 +11,19 @@ app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const authRoutes    = require('./routes/authRoutes');
-const profileRoutes = require('./routes/profileRoutes');
-const walletRoutes  = require('./routes/walletRoutes');
-const adminRoutes   = require('./routes/adminRoutes');
-const shopRoutes    = require('./routes/shopRoutes');
+const authRoutes     = require('./routes/authRoutes');
+const profileRoutes  = require('./routes/profileRoutes');
+const walletRoutes   = require('./routes/walletRoutes');
+const adminRoutes    = require('./routes/adminRoutes');
+const shopRoutes     = require('./routes/shopRoutes');
+const telegramRoutes = require('./routes/telegramRoutes');
 
-app.use('/api/auth',   authRoutes);
-app.use('/api',        profileRoutes);
-app.use('/api/wallet', walletRoutes);
-app.use('/api/admin',  adminRoutes);
-app.use('/api/shop',   shopRoutes);
+app.use('/api/auth',     authRoutes);
+app.use('/api',          profileRoutes);
+app.use('/api/wallet',   walletRoutes);
+app.use('/api/admin',    adminRoutes);
+app.use('/api/shop',     shopRoutes);
+app.use('/api/telegram', telegramRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

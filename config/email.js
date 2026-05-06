@@ -9,7 +9,7 @@ const sendEmail = async ({ to, subject, html }) => {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from   : 'Accdee <onboarding@resend.dev>',
+      from   : process.env.EMAIL_FROM || 'Accdee <onboarding@resend.dev>',
       to,
       subject,
       html
