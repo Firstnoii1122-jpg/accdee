@@ -86,4 +86,62 @@ const getPaymentInfo = async (req, res) => {
   });
 };
 
-module.exports = { getWalletInfo, requestTopup, getHistory, getPaymentInfo };
+// POST /api/wallet/coupon — ใช้โค้ดส่วนลด
+const useCoupon = async (req, res) => {
+  const code   = (req.body.code || '').trim().toUpperCase();
+  const userId = req.user.id;
+
+  if (!code) return res.status(400).json({ success: false, message: 'กรุณากรอกโค้ด' });
+
+  const conn = await require('../config/db').getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const [[coupon]] = await conn.execute(
+      'SELECT * FROM coupons WHERE code = ? AND is_active = 1',
+      [code]
+    );
+    if (!coupon) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, message: 'โค้ดไม่ถูกต้องหรือหมดอายุแล้ว' });
+    }
+    if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, message: 'โค้ดหมดอายุแล้ว' });
+    }
+    if (coupon.used_count >= coupon.max_uses) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, message: 'โค้ดถูกใช้ครบแล้ว' });
+    }
+
+    // เช็คว่าเคยใช้โค้ดนี้แล้วหรือยัง
+    const [[alreadyUsed]] = await conn.execute(
+      'SELECT id FROM coupon_uses WHERE coupon_id = ? AND user_id = ?',
+      [coupon.id, userId]
+    );
+    if (alreadyUsed) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, message: 'คุณเคยใช้โค้ดนี้แล้ว' });
+    }
+
+    // เพิ่มเงินเข้ากระเป๋า
+    await conn.execute('UPDATE users SET balance = balance + ? WHERE id = ?', [coupon.bonus_amount, userId]);
+    await conn.execute('UPDATE coupons SET used_count = used_count + 1 WHERE id = ?', [coupon.id]);
+    await conn.execute('INSERT INTO coupon_uses (coupon_id, user_id) VALUES (?, ?)', [coupon.id, userId]);
+    await conn.execute(
+      "INSERT INTO transactions (user_id, amount, type, status, note) VALUES (?, ?, 'topup', 'approved', ?)",
+      [userId, coupon.bonus_amount, `โค้ดส่วนลด: ${code}`]
+    );
+
+    await conn.commit();
+    res.json({ success: true, message: `ใช้โค้ดสำเร็จ! ได้รับเงิน ${coupon.bonus_amount} บาท`, data: { bonus: coupon.bonus_amount } });
+  } catch (err) {
+    await conn.rollback();
+    console.error('useCoupon error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  } finally {
+    conn.release();
+  }
+};
+
+module.exports = { getWalletInfo, requestTopup, getHistory, getPaymentInfo, useCoupon };

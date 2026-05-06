@@ -451,6 +451,14 @@
         <label>หมายเหตุ (ไม่บังคับ)</label>
         <input type="text" id="topupNote" placeholder="เช่น โอนเวลา 14:30" class="auth-input">
       </div>
+      <div class="form-group">
+        <label>โค้ดส่วนลด (ถ้ามี)</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="couponCode" placeholder="เช่น WELCOME50" class="auth-input" style="text-transform:uppercase;flex:1">
+          <button onclick="useCoupon()" style="padding:0 16px;background:#6d28d9;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;white-space:nowrap">ใช้โค้ด</button>
+        </div>
+        <div id="couponMsg" style="font-size:12px;margin-top:4px"></div>
+      </div>
 
       <div class="auth-msg" id="topupMsg"></div>
       <button class="auth-btn" id="topupBtn" onclick="submitTopup()">ส่งคำขอเติมเงิน</button>

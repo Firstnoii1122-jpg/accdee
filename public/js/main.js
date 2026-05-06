@@ -411,6 +411,47 @@ function filterCat(btn, cat) {
   });
 }
 
+// ── 6b. COUPON ──────────────────────────────────
+async function useCoupon() {
+  const code  = (document.getElementById('couponCode').value || '').trim().toUpperCase();
+  const msgEl = document.getElementById('couponMsg');
+  const token = localStorage.getItem('accdee_token');
+
+  if (!code) { msgEl.style.color = '#ef4444'; msgEl.textContent = 'กรุณากรอกโค้ด'; return; }
+  if (!token) { msgEl.style.color = '#ef4444'; msgEl.textContent = 'กรุณาเข้าสู่ระบบก่อน'; return; }
+
+  msgEl.style.color = '#94a3b8'; msgEl.textContent = 'กำลังตรวจสอบ...';
+
+  try {
+    const res  = await fetch(`${API_URL}/wallet/coupon`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      msgEl.style.color = '#10b981';
+      msgEl.textContent = `✅ ${data.message}`;
+      document.getElementById('couponCode').value = '';
+      // อัปเดต balance
+      const user = JSON.parse(localStorage.getItem('accdee_user') || 'null');
+      if (user && data.data) {
+        user.balance = (parseFloat(user.balance) + parseFloat(data.data.bonus)).toFixed(2);
+        localStorage.setItem('accdee_user', JSON.stringify(user));
+        const balEl = document.getElementById('navBalance');
+        if (balEl) balEl.textContent = user.balance;
+      }
+    } else {
+      msgEl.style.color = '#ef4444';
+      msgEl.textContent = '❌ ' + data.message;
+    }
+  } catch {
+    msgEl.style.color = '#ef4444';
+    msgEl.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  }
+}
+
 // ── 7. TOAST NOTIFICATION ───────────────────────
 
 // แสดงข้อความ popup ชั่วคราวที่ด้านล่าง

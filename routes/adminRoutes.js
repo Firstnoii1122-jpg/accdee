@@ -25,4 +25,9 @@ router.post('/inventory',       adminOnly, adminController.addInventory);
 router.delete('/inventory/:id', adminOnly, adminController.deleteInventory);
 router.get('/orders',           adminOnly, adminController.getAllOrders);
 
+// coupons
+router.get('/coupons',         adminOnly, adminController.getCoupons);
+router.post('/coupons',        adminOnly, adminController.addCoupon);
+router.delete('/coupons/:id',  adminOnly, adminController.deleteCoupon);
+
 module.exports = router;

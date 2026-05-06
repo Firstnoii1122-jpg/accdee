@@ -24,5 +24,6 @@ router.get('/info',         protect, walletController.getWalletInfo);
 router.get('/payment-info',          walletController.getPaymentInfo);
 router.post('/topup',       protect, upload.single('slip'), walletController.requestTopup);
 router.get('/history',      protect, walletController.getHistory);
+router.post('/coupon',      protect, walletController.useCoupon);
 
 module.exports = router;

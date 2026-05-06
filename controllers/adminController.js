@@ -350,4 +350,38 @@ const deleteMember = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct };
+// GET /api/admin/coupons
+const getCoupons = async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT * FROM coupons ORDER BY created_at DESC');
+    res.json({ success: true, data: rows });
+  } catch (err) { res.status(500).json({ success: false, message: 'Server error' }); }
+};
+
+// POST /api/admin/coupons
+const addCoupon = async (req, res) => {
+  const { code, bonus_amount, max_uses, expires_at } = req.body;
+  if (!code || !bonus_amount || parseFloat(bonus_amount) <= 0) {
+    return res.status(400).json({ success: false, message: 'กรอกข้อมูลให้ครบ' });
+  }
+  try {
+    await db.execute(
+      'INSERT INTO coupons (code, bonus_amount, max_uses, expires_at) VALUES (?, ?, ?, ?)',
+      [code.trim().toUpperCase(), parseFloat(bonus_amount), parseInt(max_uses) || 1, expires_at || null]
+    );
+    res.status(201).json({ success: true, message: 'สร้างโค้ดสำเร็จ' });
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'โค้ดนี้มีอยู่แล้ว' });
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// DELETE /api/admin/coupons/:id
+const deleteCoupon = async (req, res) => {
+  try {
+    await db.execute('DELETE FROM coupons WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'ลบโค้ดสำเร็จ' });
+  } catch (err) { res.status(500).json({ success: false, message: 'Server error' }); }
+};
+
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, getCoupons, addCoupon, deleteCoupon };

@@ -129,4 +129,32 @@ const getMyOrders = async (req, res) => {
   }
 };
 
-module.exports = { getProducts, buyProduct, getMyOrders };
+// POST /api/shop/orders/:id/review — ให้คะแนนหลังซื้อ
+const addReview = async (req, res) => {
+  const orderId = parseInt(req.params.id);
+  const userId  = req.user.id;
+  const rating  = parseInt(req.body.rating);
+  const comment = (req.body.comment || '').trim().slice(0, 500);
+
+  if (!rating || rating < 1 || rating > 5) {
+    return res.status(400).json({ success: false, message: 'คะแนนต้องอยู่ระหว่าง 1-5' });
+  }
+
+  try {
+    const [[order]] = await db.execute(
+      'SELECT id FROM orders WHERE id = ? AND user_id = ?', [orderId, userId]
+    );
+    if (!order) return res.status(404).json({ success: false, message: 'ไม่พบออเดอร์' });
+
+    await db.execute(
+      'INSERT INTO reviews (user_id, order_id, rating, comment) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE rating=VALUES(rating), comment=VALUES(comment)',
+      [userId, orderId, rating, comment || null]
+    );
+    res.json({ success: true, message: 'ขอบคุณสำหรับรีวิวครับ!' });
+  } catch (err) {
+    console.error('addReview error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { getProducts, buyProduct, getMyOrders, addReview };

@@ -118,6 +118,51 @@ async function setupDatabase() {
     console.log('Admin account created');
   }
 
+  // ตาราง reviews (คะแนนจากลูกค้า)
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      id         INT           NOT NULL AUTO_INCREMENT,
+      user_id    INT           NOT NULL,
+      order_id   INT           NOT NULL UNIQUE,
+      rating     TINYINT       NOT NULL,
+      comment    VARCHAR(500)  NULL,
+      created_at TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+      FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+
+  // ตาราง coupons (โค้ดส่วนลด)
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS coupons (
+      id             INT           NOT NULL AUTO_INCREMENT,
+      code           VARCHAR(50)   NOT NULL UNIQUE,
+      bonus_amount   DECIMAL(10,2) NOT NULL,
+      max_uses       INT           NOT NULL DEFAULT 1,
+      used_count     INT           NOT NULL DEFAULT 0,
+      expires_at     DATETIME      NULL,
+      is_active      TINYINT(1)    NOT NULL DEFAULT 1,
+      created_at     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      INDEX idx_code (code)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+
+  // ตาราง coupon_uses (ป้องกันคนเดิมใช้ซ้ำ)
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS coupon_uses (
+      id         INT NOT NULL AUTO_INCREMENT,
+      coupon_id  INT NOT NULL,
+      user_id    INT NOT NULL,
+      used_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY uq_coupon_user (coupon_id, user_id),
+      FOREIGN KEY (coupon_id) REFERENCES coupons(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id)   REFERENCES users(id)   ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+
   // เพิ่มสินค้า default ถ้ายังไม่มี (ทำแค่ครั้งเดียว)
   const defaultProducts = [
     { key: 'fb-blank',  name: 'บัญชี Facebook เปล่า',              desc: 'บัญชี Facebook ใหม่ ไม่มีแฟนเพจ พร้อมใช้งานทันที เหมาะสำหรับเริ่มต้น',          price: 50  },
