@@ -96,6 +96,12 @@ async function setupDatabase() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 
+  // เพิ่มคอลัมน์ telegram_chat_id ถ้ายังไม่มี (safe สำหรับ DB ที่มีอยู่แล้ว)
+  await db.execute(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS telegram_chat_id VARCHAR(50) NULL DEFAULT NULL
+  `);
+
   // สร้าง Admin คนแรก ถ้ายังไม่มี (ทำแค่ครั้งเดียว ไม่ reset ทุก restart)
   const [adminRows] = await db.execute(
     'SELECT id FROM users WHERE email = ?',

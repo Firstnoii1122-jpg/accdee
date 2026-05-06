@@ -1,8 +1,8 @@
 const db               = require('../config/db');
 const bcrypt           = require('bcryptjs');
 const Transaction      = require('../models/transactionModel');
-const { sendEmail }    = require('../config/email');
-const { sendTelegram } = require('../config/telegram');
+const { sendEmail }              = require('../config/email');
+const { sendTelegram, sendNotify } = require('../config/telegram');
 
 const getPendingTopups = async (req, res) => {
   try {
@@ -23,7 +23,7 @@ const approveTopup = async (req, res) => {
     }
     await Transaction.approveTopup(tx.id, tx.user_id, tx.amount);
 
-    const [[user]] = await db.execute('SELECT username, email FROM users WHERE id = ?', [tx.user_id]);
+    const [[user]] = await db.execute('SELECT username, email, telegram_chat_id FROM users WHERE id = ?', [tx.user_id]);
     sendEmail({
       to     : user.email,
       subject: '✅ เติมเงินสำเร็จ!',
@@ -36,6 +36,7 @@ const approveTopup = async (req, res) => {
         </div>
       `
     });
+    sendNotify(user.telegram_chat_id, `✅ <b>เติมเงินสำเร็จ!</b>\n💵 ${parseFloat(tx.amount).toFixed(2)} บาท เข้ากระเป๋าแล้วครับ\n<a href="https://www.accdee.shop/shop.html">ไปช้อปปิ้งเลย →</a>`);
     sendTelegram(`✅ <b>อนุมัติเติมเงินแล้ว</b>\n👤 ${user.username}\n💵 ${parseFloat(tx.amount).toFixed(2)} บาท`);
 
     res.json({ success: true, message: 'Approved and balance updated' });
@@ -54,7 +55,7 @@ const rejectTopup = async (req, res) => {
     }
     await Transaction.rejectTopup(tx.id);
 
-    const [[user]] = await db.execute('SELECT username, email FROM users WHERE id = ?', [tx.user_id]);
+    const [[user]] = await db.execute('SELECT username, email, telegram_chat_id FROM users WHERE id = ?', [tx.user_id]);
     sendEmail({
       to     : user.email,
       subject: '❌ ไม่สามารถอนุมัติการเติมเงินได้',
@@ -68,6 +69,7 @@ const rejectTopup = async (req, res) => {
         </div>
       `
     });
+    sendNotify(user.telegram_chat_id, `❌ <b>คำขอเติมเงินไม่ผ่าน</b>\n💵 ${parseFloat(tx.amount).toFixed(2)} บาท\nกรุณาติดต่อ Admin หากมีข้อสงสัย`);
 
     res.json({ success: true, message: 'Rejected' });
   } catch (err) {
