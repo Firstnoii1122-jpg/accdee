@@ -20,10 +20,11 @@ const upload = multer({
   limits  : { fileSize: 5 * 1024 * 1024 }
 });
 
-router.get('/info',         protect, walletController.getWalletInfo);
-router.get('/payment-info',          walletController.getPaymentInfo);
-router.post('/topup',       protect, upload.single('slip'), walletController.requestTopup);
-router.get('/history',      protect, walletController.getHistory);
-router.post('/coupon',      protect, walletController.useCoupon);
+router.get('/info',          protect, walletController.getWalletInfo);
+router.get('/payment-info',           walletController.getPaymentInfo);
+router.get('/site-settings',          walletController.getSiteSettings);
+router.post('/topup',        protect, upload.single('slip'), walletController.requestTopup);
+router.get('/history',       protect, walletController.getHistory);
+router.post('/coupon',       protect, walletController.useCoupon);
 
 module.exports = router;

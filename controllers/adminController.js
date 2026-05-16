@@ -384,4 +384,56 @@ const deleteCoupon = async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: 'Server error' }); }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, getCoupons, addCoupon, deleteCoupon };
+// PUT /api/admin/products/:key — แก้ไขสินค้า
+const editProduct = async (req, res) => {
+  const { name, description, price, is_active } = req.body;
+  const key = req.params.key;
+  if (!name || !price || isNaN(price) || parseFloat(price) <= 0) {
+    return res.status(400).json({ success: false, message: 'กรุณากรอกข้อมูลให้ครบ' });
+  }
+  try {
+    const [result] = await db.execute(
+      'UPDATE products SET name=?, description=?, price=?, is_active=? WHERE product_key=?',
+      [name.trim(), (description||'').trim(), parseFloat(price), is_active == null ? 1 : (is_active ? 1 : 0), key]
+    );
+    if (result.affectedRows === 0) return res.status(404).json({ success: false, message: 'ไม่พบสินค้า' });
+    res.json({ success: true, message: 'แก้ไขสินค้าสำเร็จ' });
+  } catch (err) {
+    console.error('editProduct error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// GET /api/admin/settings — ดึงตั้งค่าทั้งหมด
+const getSettings = async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT setting_key, setting_value FROM site_settings');
+    const data = {};
+    rows.forEach(r => { data[r.setting_key] = r.setting_value; });
+    res.json({ success: true, data });
+  } catch (err) {
+    console.error('getSettings error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// PUT /api/admin/settings — บันทึกตั้งค่า
+const updateSettings = async (req, res) => {
+  const allowed = ['alert_text','alert_active','line_url','telegram_url','facebook_url','promptpay','bank_name','bank_account','bank_holder'];
+  try {
+    const entries = Object.entries(req.body).filter(([k]) => allowed.includes(k));
+    if (!entries.length) return res.status(400).json({ success: false, message: 'ไม่มีข้อมูลที่จะบันทึก' });
+    for (const [k, v] of entries) {
+      await db.execute(
+        'INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value=?',
+        [k, String(v), String(v)]
+      );
+    }
+    res.json({ success: true, message: 'บันทึกการตั้งค่าสำเร็จ' });
+  } catch (err) {
+    console.error('updateSettings error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings };

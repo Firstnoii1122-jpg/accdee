@@ -16,7 +16,12 @@ router.post('/topups/:id/reject',  adminOnly, adminController.rejectTopup);
 // products
 router.get('/products',         adminOnly, adminController.getProducts);
 router.post('/products',        adminOnly, adminController.addProduct);
+router.put('/products/:key',    adminOnly, adminController.editProduct);
 router.delete('/products/:key', adminOnly, adminController.deleteProduct);
+
+// site settings
+router.get('/settings',  adminOnly, adminController.getSettings);
+router.put('/settings',  adminOnly, adminController.updateSettings);
 
 // inventory & orders
 router.get('/inventory/stock',  adminOnly, adminController.getStock);

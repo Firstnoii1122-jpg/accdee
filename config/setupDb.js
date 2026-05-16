@@ -180,6 +180,35 @@ async function setupDatabase() {
     }
   }
 
+  // ตาราง site_settings (เนื้อหาเว็บที่ Admin แก้ได้)
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      setting_key   VARCHAR(100) NOT NULL,
+      setting_value TEXT         NULL,
+      updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (setting_key)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+
+  // seed ค่าเริ่มต้นถ้ายังไม่มี
+  const defaults = [
+    ['alert_text',    '⚡ Verified Business · ส่งทันทีหลังชำระ · ระบบอัตโนมัติ 24 ชม. · LINE: @ACCDEE'],
+    ['alert_active',  '1'],
+    ['line_url',      'https://lin.ee/xLWi136'],
+    ['telegram_url',  'https://t.me/AccdeeNotifyBot'],
+    ['facebook_url',  ''],
+    ['promptpay',     process.env.PROMPTPAY_NUMBER || ''],
+    ['bank_name',     process.env.BANK_NAME || ''],
+    ['bank_account',  process.env.BANK_ACCOUNT_NUMBER || ''],
+    ['bank_holder',   process.env.BANK_ACCOUNT_NAME || ''],
+  ];
+  for (const [k, v] of defaults) {
+    await db.execute(
+      'INSERT IGNORE INTO site_settings (setting_key, setting_value) VALUES (?, ?)',
+      [k, v]
+    );
+  }
+
   console.log('Database ready');
 }
 

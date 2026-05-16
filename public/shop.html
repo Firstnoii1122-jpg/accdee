@@ -248,13 +248,13 @@
     </p>
 
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
-      <a href="https://lin.ee/qpUaGmg" target="_blank" rel="noopener"
+      <a id="contactLineBtn" href="https://lin.ee/xLWi136" target="_blank" rel="noopener"
          style="display:flex;align-items:center;justify-content:center;gap:8px;
                 padding:12px;background:#06c755;color:#fff;border-radius:10px;
                 text-decoration:none;font-weight:600;font-size:15px">
-        💬 ติดต่อผ่าน LINE OA
+        💬 ติดต่อผ่าน LINE @095guawr
       </a>
-      <a href="https://t.me/TheonXbot" target="_blank" rel="noopener"
+      <a id="contactTelegramBtn" href="https://t.me/AccdeeNotifyBot" target="_blank" rel="noopener"
          style="display:flex;align-items:center;justify-content:center;gap:8px;
                 padding:12px;background:#0ea5e9;color:#fff;border-radius:10px;
                 text-decoration:none;font-weight:600;font-size:15px">
@@ -413,6 +413,18 @@
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // โหลด LINE/Telegram URL จาก site_settings (ไม่ต้อง login)
+  async function loadContactLinks() {
+    try {
+      const res  = await fetch('/api/wallet/site-settings');
+      const data = await res.json();
+      if (!data.success) return;
+      const s = data.data;
+      if (s.line_url)     document.getElementById('contactLineBtn').href     = s.line_url;
+      if (s.telegram_url) document.getElementById('contactTelegramBtn').href = s.telegram_url;
+    } catch (e) { /* ใช้ default href แทน */ }
+  }
+
   // เช็ค login
   const token = getToken();
   const user  = getUser();
@@ -421,6 +433,7 @@
   } else {
     document.getElementById('navBalance').textContent = '฿ ' + parseFloat(user.balance || 0).toFixed(2);
     loadProducts();
+    loadContactLinks();
   }
 </script>
 

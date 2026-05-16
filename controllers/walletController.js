@@ -2,6 +2,7 @@ const cloudinary       = require('cloudinary').v2;
 const Transaction      = require('../models/transactionModel');
 const User             = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
+const db               = require('../config/db');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -75,15 +76,36 @@ const getHistory = async (req, res) => {
 };
 
 const getPaymentInfo = async (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      promptpay      : process.env.PROMPTPAY_NUMBER,
-      bankName       : process.env.BANK_NAME,
-      bankAccount    : process.env.BANK_ACCOUNT_NUMBER,
-      bankAccountName: process.env.BANK_ACCOUNT_NAME
-    }
-  });
+  try {
+    const [rows] = await db.execute('SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN (?, ?, ?, ?)',
+      ['promptpay', 'bank_name', 'bank_account', 'bank_holder']);
+    const s = {};
+    rows.forEach(r => { s[r.setting_key] = r.setting_value; });
+    res.json({
+      success: true,
+      data: {
+        promptpay      : s.promptpay       || process.env.PROMPTPAY_NUMBER       || '',
+        bankName       : s.bank_name       || process.env.BANK_NAME              || '',
+        bankAccount    : s.bank_account    || process.env.BANK_ACCOUNT_NUMBER    || '',
+        bankAccountName: s.bank_holder     || process.env.BANK_ACCOUNT_NAME      || ''
+      }
+    });
+  } catch (error) {
+    console.error('getPaymentInfo error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+const getSiteSettings = async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT setting_key, setting_value FROM site_settings');
+    const data = {};
+    rows.forEach(r => { data[r.setting_key] = r.setting_value; });
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('getSiteSettings error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };
 
 // POST /api/wallet/coupon — ใช้โค้ดส่วนลด
@@ -144,4 +166,4 @@ const useCoupon = async (req, res) => {
   }
 };
 
-module.exports = { getWalletInfo, requestTopup, getHistory, getPaymentInfo, useCoupon };
+module.exports = { getWalletInfo, requestTopup, getHistory, getPaymentInfo, getSiteSettings, useCoupon };

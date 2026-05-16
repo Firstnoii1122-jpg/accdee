@@ -41,10 +41,16 @@
     <a class="menu-item" onclick="showPage('orders', this)">
       <span class="icon">🛒</span> คำสั่งซื้อ
     </a>
+    <a class="menu-item" onclick="showPage('coupons', this)">
+      <span class="icon">🎟️</span> คูปอง
+    </a>
 
     <div class="menu-section">ระบบ</div>
     <a class="menu-item" onclick="showPage('members', this)">
       <span class="icon">👥</span> สมาชิก
+    </a>
+    <a class="menu-item" onclick="showPage('settings', this)">
+      <span class="icon">⚙️</span> ตั้งค่าเว็บไซต์
     </a>
   </nav>
 
@@ -321,6 +327,90 @@
       </div>
     </div><!-- end page-orders -->
 
+    <!-- =================== PAGE: COUPONS =================== -->
+    <div id="page-coupons" class="page">
+      <div class="filter-row">
+        <button class="btn btn-primary" onclick="document.getElementById('addCouponModal').classList.add('show')">+ สร้างคูปอง</button>
+        <button class="btn btn-outline btn-sm" onclick="loadCoupons()">🔄 รีเฟรช</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">คูปองทั้งหมด</span></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>โค้ด</th><th>โบนัส</th><th>ใช้แล้ว / ทั้งหมด</th><th>หมดอายุ</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+              <tbody id="couponsTable">
+                <tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:16px">กำลังโหลด...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!-- end page-coupons -->
+
+    <!-- =================== PAGE: SETTINGS =================== -->
+    <div id="page-settings" class="page">
+      <div class="card" style="max-width:720px">
+        <div class="card-header">
+          <span class="card-title">⚙️ ตั้งค่าเว็บไซต์</span>
+          <button class="btn btn-outline btn-sm" onclick="loadSettings()">🔄 โหลดใหม่</button>
+        </div>
+        <div class="card-body">
+
+          <div style="font-weight:600;margin-bottom:8px;color:#a78bfa">📢 ประกาศ / แบนเนอร์</div>
+          <div class="form-group">
+            <label class="form-label">ข้อความประกาศ (alert bar)</label>
+            <input type="text" id="cfg_alert_text" class="form-control" placeholder="ข้อความที่แสดงที่ด้านบนหน้าเว็บ">
+          </div>
+          <div class="form-group">
+            <label class="form-label">แสดงประกาศ</label>
+            <select id="cfg_alert_active" class="form-control">
+              <option value="1">เปิด</option>
+              <option value="0">ปิด</option>
+            </select>
+          </div>
+
+          <hr style="border:none;border-top:1px solid #2d3748;margin:20px 0">
+          <div style="font-weight:600;margin-bottom:8px;color:#a78bfa">📞 ช่องทางติดต่อ</div>
+          <div class="form-group">
+            <label class="form-label">LINE URL</label>
+            <input type="url" id="cfg_line_url" class="form-control" placeholder="https://lin.ee/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telegram URL</label>
+            <input type="url" id="cfg_telegram_url" class="form-control" placeholder="https://t.me/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Facebook URL (ไม่บังคับ)</label>
+            <input type="url" id="cfg_facebook_url" class="form-control" placeholder="https://facebook.com/...">
+          </div>
+
+          <hr style="border:none;border-top:1px solid #2d3748;margin:20px 0">
+          <div style="font-weight:600;margin-bottom:8px;color:#a78bfa">💳 ข้อมูลชำระเงิน</div>
+          <div class="form-group">
+            <label class="form-label">หมายเลข PromptPay</label>
+            <input type="text" id="cfg_promptpay" class="form-control" placeholder="0812345678">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อธนาคาร</label>
+            <input type="text" id="cfg_bank_name" class="form-control" placeholder="ธนาคารกสิกรไทย">
+          </div>
+          <div class="form-group">
+            <label class="form-label">เลขบัญชีธนาคาร</label>
+            <input type="text" id="cfg_bank_account" class="form-control" placeholder="xxx-x-xxxxx-x">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อเจ้าของบัญชี</label>
+            <input type="text" id="cfg_bank_holder" class="form-control" placeholder="นาย...">
+          </div>
+
+        </div>
+        <div class="modal-footer" style="padding:16px 24px">
+          <button class="btn btn-primary" onclick="saveSettings()" style="min-width:140px">💾 บันทึกการตั้งค่า</button>
+        </div>
+      </div>
+    </div><!-- end page-settings -->
+
   </div><!-- end content -->
 </div><!-- end main -->
 
@@ -436,6 +526,78 @@
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="document.getElementById('addInventoryModal').classList.remove('show')">ยกเลิก</button>
       <button class="btn btn-primary" onclick="saveInventory()">+ เพิ่มสต็อก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: EDIT PRODUCT ===== -->
+<div class="modal-overlay" id="editProductModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">✏️ แก้ไขสินค้า</span>
+      <button class="modal-close" onclick="document.getElementById('editProductModal').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editPrdKey">
+      <div class="form-group">
+        <label class="form-label">Product Key</label>
+        <input type="text" id="editPrdKeyDisplay" class="form-control" disabled style="opacity:.6">
+      </div>
+      <div class="form-group">
+        <label class="form-label">ชื่อสินค้า</label>
+        <input type="text" id="editPrdName" class="form-control">
+      </div>
+      <div class="form-group">
+        <label class="form-label">รายละเอียด</label>
+        <input type="text" id="editPrdDesc" class="form-control">
+      </div>
+      <div class="form-group">
+        <label class="form-label">ราคา (฿)</label>
+        <input type="number" id="editPrdPrice" class="form-control" min="1" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">สถานะ</label>
+        <select id="editPrdActive" class="form-control">
+          <option value="1">เปิดใช้งาน</option>
+          <option value="0">ปิดชั่วคราว</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('editProductModal').classList.remove('show')">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveEditProduct()">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: ADD COUPON ===== -->
+<div class="modal-overlay" id="addCouponModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🎟️ สร้างคูปองใหม่</span>
+      <button class="modal-close" onclick="document.getElementById('addCouponModal').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">โค้ดคูปอง</label>
+        <input type="text" id="cpnCode" class="form-control" placeholder="เช่น WELCOME50" style="text-transform:uppercase">
+      </div>
+      <div class="form-group">
+        <label class="form-label">โบนัสที่ได้รับ (฿)</label>
+        <input type="number" id="cpnBonus" class="form-control" placeholder="50.00" min="1" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">จำนวนสูงสุดที่ใช้ได้ (ครั้ง)</label>
+        <input type="number" id="cpnMaxUses" class="form-control" placeholder="1" min="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">วันหมดอายุ (ไม่บังคับ)</label>
+        <input type="datetime-local" id="cpnExpires" class="form-control">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('addCouponModal').classList.remove('show')">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveCoupon()">+ สร้างคูปอง</button>
     </div>
   </div>
 </div>

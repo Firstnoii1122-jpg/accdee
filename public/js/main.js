@@ -525,6 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();  // เปิด scroll animations
   initKeyboardSupport();   // เปิด keyboard shortcuts
   initTopupEvents();       // เปิด event สำหรับ topup modal
+  loadSiteSettings();      // โหลดค่าตั้งค่าจาก DB (alert, contact links)
 
   // refresh balance ทุก 30 วิ — ลูกค้าเห็นยอดล่าสุดหลัง admin อนุมัติ
   setInterval(refreshBalance, 30000);
@@ -642,6 +643,45 @@ async function submitTopup() {
   } finally {
     btn.disabled    = false;
     btn.textContent = 'ส่งคำขอเติมเงิน';
+  }
+}
+
+// ── 14. SITE SETTINGS (dynamic content from DB) ──
+
+async function loadSiteSettings() {
+  try {
+    const res  = await fetch(`${API_URL}/wallet/site-settings`);
+    const data = await res.json();
+    if (!data.success) return;
+    const s = data.data;
+
+    // Alert banner
+    const banner = document.getElementById('alertBanner');
+    if (banner) {
+      if (s.alert_active === '0') {
+        banner.style.display = 'none';
+      } else {
+        if (s.alert_text) banner.textContent = s.alert_text;
+        banner.style.display = '';
+      }
+    }
+
+    // Contact links
+    if (s.line_url) {
+      const el = document.getElementById('contactLine');
+      if (el) el.href = s.line_url;
+    }
+    if (s.telegram_url) {
+      const el = document.getElementById('contactTelegram');
+      if (el) el.href = s.telegram_url;
+    }
+    if (s.facebook_url) {
+      const el = document.getElementById('contactFacebook');
+      if (el && s.facebook_url !== '') el.href = s.facebook_url;
+    }
+  } catch (err) {
+    // ถ้าโหลดไม่ได้ ใช้ค่า default ในหน้า HTML ต่อไป
+    console.warn('loadSiteSettings failed, using defaults:', err.message);
   }
 }
 

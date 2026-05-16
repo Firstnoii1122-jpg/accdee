@@ -39,7 +39,9 @@ function showPage(id, menuEl) {
     members:   'สมาชิก',
     products:  'จัดการสินค้า',
     inventory: 'สต็อก',
-    orders:    'คำสั่งซื้อ'
+    orders:    'คำสั่งซื้อ',
+    coupons:   'คูปอง',
+    settings:  'ตั้งค่าเว็บไซต์'
   };
   document.getElementById('pageTitle').textContent = titleMap[id] || id;
   if (menuEl) menuEl.classList.add('active');
@@ -49,6 +51,8 @@ function showPage(id, menuEl) {
   if (id === 'products')  loadProducts();
   if (id === 'inventory') loadInventory();
   if (id === 'orders')    loadOrders();
+  if (id === 'coupons')   loadCoupons();
+  if (id === 'settings')  loadSettings();
   if (id === 'dashboard') loadDashboardStats();
 }
 
@@ -326,7 +330,10 @@ async function loadProducts() {
           <td style="color:#9ca3af">${p.description ? escapeHtml(p.description) : '-'}</td>
           <td class="text-success fw-bold">฿${fmt(p.price)}</td>
           <td>${parseInt(p.stock) > 0 ? `<span class="badge badge-success">${p.stock} ชิ้น</span>` : '<span class="badge badge-danger">หมด</span>'}</td>
-          <td><button class="btn btn-danger btn-sm" onclick="deleteProduct('${escapeHtml(p.product_key)}')">ลบ</button></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="openEditProduct('${escapeHtml(p.product_key)}','${escapeHtml(p.name).replace(/'/g,"\\'")}','${escapeHtml(p.description||'').replace(/'/g,"\\'")}',${parseFloat(p.price)},${p.is_active})">✏️ แก้ไข</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteProduct('${escapeHtml(p.product_key)}')">ลบ</button>
+          </td>
         </tr>`).join('')
       : '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:16px">ยังไม่มีสินค้า กด "+ เพิ่มสินค้า" ได้เลย</td></tr>';
   } catch (err) {
@@ -456,6 +463,129 @@ async function loadOrders() {
   }
 }
 
+// ===== EDIT PRODUCT =====
+function openEditProduct(key, name, desc, price, isActive) {
+  document.getElementById('editPrdKey').value        = key;
+  document.getElementById('editPrdKeyDisplay').value = key;
+  document.getElementById('editPrdName').value       = name;
+  document.getElementById('editPrdDesc').value       = desc;
+  document.getElementById('editPrdPrice').value      = price;
+  document.getElementById('editPrdActive').value     = isActive ? '1' : '0';
+  document.getElementById('editProductModal').classList.add('show');
+}
+
+async function saveEditProduct() {
+  const key      = document.getElementById('editPrdKey').value;
+  const name     = document.getElementById('editPrdName').value.trim();
+  const desc     = document.getElementById('editPrdDesc').value.trim();
+  const price    = document.getElementById('editPrdPrice').value;
+  const isActive = document.getElementById('editPrdActive').value;
+
+  if (!name || !price) { toast('กรุณากรอกชื่อและราคา', 'error'); return; }
+  try {
+    const res = await API.put(`/admin/products/${key}`, { name, description: desc, price: parseFloat(price), is_active: parseInt(isActive) });
+    toast('✅ ' + res.message, 'success');
+    document.getElementById('editProductModal').classList.remove('show');
+    loadProducts();
+  } catch (err) {
+    toast('❌ ' + err.message, 'error');
+  }
+}
+
+// ===== COUPONS =====
+async function loadCoupons() {
+  const tbody = document.getElementById('couponsTable');
+  if (!tbody) return;
+  try {
+    const res  = await API.get('/admin/coupons');
+    const list = res?.data || [];
+    tbody.innerHTML = list.length
+      ? list.map(c => `<tr>
+          <td><code>${escapeHtml(c.code)}</code></td>
+          <td class="text-success fw-bold">฿${fmt(c.bonus_amount)}</td>
+          <td>${c.used_count} / ${c.max_uses}</td>
+          <td>${c.expires_at ? new Date(c.expires_at).toLocaleString('th-TH') : '<span style="color:#9ca3af">ไม่หมดอายุ</span>'}</td>
+          <td>${c.is_active ? '<span class="badge badge-success">เปิด</span>' : '<span class="badge badge-danger">ปิด</span>'}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteCoupon(${c.id},'${escapeHtml(c.code)}')">ลบ</button></td>
+        </tr>`).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:16px">ยังไม่มีคูปอง</td></tr>';
+  } catch (err) {
+    console.error('loadCoupons error:', err);
+  }
+}
+
+async function saveCoupon() {
+  const code     = document.getElementById('cpnCode').value.trim().toUpperCase();
+  const bonus    = document.getElementById('cpnBonus').value;
+  const maxUses  = document.getElementById('cpnMaxUses').value || '1';
+  const expires  = document.getElementById('cpnExpires').value;
+
+  if (!code || !bonus) { toast('กรุณากรอกโค้ดและโบนัส', 'error'); return; }
+  try {
+    const body = { code, bonus_amount: parseFloat(bonus), max_uses: parseInt(maxUses) };
+    if (expires) body.expires_at = expires;
+    const res = await API.post('/admin/coupons', body);
+    toast('✅ ' + res.message, 'success');
+    document.getElementById('addCouponModal').classList.remove('show');
+    ['cpnCode','cpnBonus','cpnMaxUses','cpnExpires'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    loadCoupons();
+  } catch (err) {
+    toast('❌ ' + err.message, 'error');
+  }
+}
+
+async function deleteCoupon(id, code) {
+  if (!confirm(`ลบคูปอง "${code}"?`)) return;
+  try {
+    const res = await API.del(`/admin/coupons/${id}`);
+    toast('✅ ' + res.message, 'success');
+    loadCoupons();
+  } catch (err) {
+    toast('❌ ' + err.message, 'error');
+  }
+}
+
+// ===== SITE SETTINGS =====
+async function loadSettings() {
+  try {
+    const res = await API.get('/admin/settings');
+    const s = res?.data || {};
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+    set('cfg_alert_text',    s.alert_text);
+    set('cfg_alert_active',  s.alert_active);
+    set('cfg_line_url',      s.line_url);
+    set('cfg_telegram_url',  s.telegram_url);
+    set('cfg_facebook_url',  s.facebook_url);
+    set('cfg_promptpay',     s.promptpay);
+    set('cfg_bank_name',     s.bank_name);
+    set('cfg_bank_account',  s.bank_account);
+    set('cfg_bank_holder',   s.bank_holder);
+  } catch (err) {
+    toast('❌ โหลดตั้งค่าไม่สำเร็จ', 'error');
+  }
+}
+
+async function saveSettings() {
+  const get = id => document.getElementById(id)?.value ?? '';
+  const body = {
+    alert_text:   get('cfg_alert_text'),
+    alert_active: get('cfg_alert_active'),
+    line_url:     get('cfg_line_url'),
+    telegram_url: get('cfg_telegram_url'),
+    facebook_url: get('cfg_facebook_url'),
+    promptpay:    get('cfg_promptpay'),
+    bank_name:    get('cfg_bank_name'),
+    bank_account: get('cfg_bank_account'),
+    bank_holder:  get('cfg_bank_holder')
+  };
+  try {
+    const res = await API.put('/admin/settings', body);
+    toast('✅ ' + res.message, 'success');
+  } catch (err) {
+    toast('❌ ' + err.message, 'error');
+  }
+}
+
 // ===== RESET MEMBER PASSWORD =====
 function openResetPassword(memberId, username) {
   document.getElementById('resetPasswordMemberId').value = memberId;
@@ -544,6 +674,13 @@ window.loadOrders    = loadOrders;
 window.deleteMember        = deleteMember;
 window.openResetPassword   = openResetPassword;
 window.saveResetPassword   = saveResetPassword;
-window.loadProducts  = loadProducts;
-window.saveProduct   = saveProduct;
-window.deleteProduct = deleteProduct;
+window.loadProducts     = loadProducts;
+window.saveProduct      = saveProduct;
+window.deleteProduct    = deleteProduct;
+window.openEditProduct  = openEditProduct;
+window.saveEditProduct  = saveEditProduct;
+window.loadCoupons      = loadCoupons;
+window.saveCoupon       = saveCoupon;
+window.deleteCoupon     = deleteCoupon;
+window.loadSettings     = loadSettings;
+window.saveSettings     = saveSettings;

@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ACCDEE — ร้านบัญชีโซเชียลมีเดียพรีเมียม</title>
+  <title>ACCDEE — บัญชีโซเชียลมีเดียพรีเมียม</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Orbitron:wght@700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <!-- ALERT BANNER -->
-<div class="alert-banner">
-  ✅ เปิดให้บริการปกติ &nbsp;•&nbsp; ระบบตรวจสอบออเดอร์อัตโนมัติ 24 ชม. &nbsp;•&nbsp; ติดต่อ @accdee_th บน Telegram
+<div class="alert-banner" id="alertBanner">
+  ⚡ Verified Business · ส่งทันทีหลังชำระ · ระบบอัตโนมัติ 24 ชม. · LINE: @ACCDEE
 </div>
 
 <!-- NAVBAR -->
@@ -19,21 +19,20 @@
   <a class="nav-logo" href="#">ACC<span>DEE</span></a>
   <ul class="nav-links">
     <li><a href="#products">สินค้า</a></li>
+    <li><a href="#highbudget">วงเงินสูง</a></li>
     <li><a href="#features">ทำไมต้องเรา</a></li>
     <li><a href="#contact">ติดต่อ</a></li>
   </ul>
   <div class="nav-cta">
-    <!-- แสดงเมื่อยังไม่ได้ login -->
     <div id="guestNav">
       <button class="btn-ghost" onclick="openAuth('login')">เข้าสู่ระบบ</button>
       <button class="btn-primary" onclick="openAuth('register')">สมัครฟรี</button>
     </div>
-    <!-- แสดงเมื่อ login แล้ว -->
     <div id="userNav">
       <span class="nav-balance" onclick="openTopup()" title="คลิกเพื่อเติมเงิน" style="cursor:pointer">💰 <span id="navBalance">0.00</span> ฿</span>
       <button class="btn-primary" style="padding:6px 14px;font-size:0.8rem" onclick="openTopup()">เติมเงิน</button>
       <span class="nav-username" id="navUsername"></span>
-      <button class="btn-ghost" onclick="doLogout()">ออกจากระบบ</button>
+      <button class="btn-ghost" onclick="doLogout()">ออก</button>
     </div>
   </div>
   <button class="nav-hamburger" id="navHamburger" onclick="toggleDrawer()" aria-label="เมนู">
@@ -48,9 +47,10 @@
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
     <a class="nav-logo drawer-logo" href="#" onclick="closeDrawer()">ACC<span>DEE</span></a>
     <nav class="drawer-nav">
-      <a href="#products" onclick="closeDrawer()">🛍️&nbsp; สินค้า</a>
-      <a href="#features" onclick="closeDrawer()">⭐&nbsp; ทำไมต้องเรา</a>
-      <a href="#contact"  onclick="closeDrawer()">📞&nbsp; ติดต่อ</a>
+      <a href="#products"   onclick="closeDrawer()">🛍️ สินค้า</a>
+      <a href="#highbudget" onclick="closeDrawer()">💰 วงเงินสูง</a>
+      <a href="#features"   onclick="closeDrawer()">⭐ ทำไมต้องเรา</a>
+      <a href="#contact"    onclick="closeDrawer()">📞 ติดต่อ</a>
     </nav>
     <div class="drawer-auth" id="drawerGuest">
       <button class="auth-btn" style="margin-bottom:12px" onclick="closeDrawer();openAuth('login')">เข้าสู่ระบบ</button>
@@ -65,283 +65,473 @@
   </div>
 </div>
 
-<!-- HERO CAROUSEL -->
+<!-- ═══════════════════════════════════════════
+     HERO CAROUSEL
+═══════════════════════════════════════════ -->
 <div class="hero-car" id="heroCar">
   <div class="hc-track" id="hcTrack">
 
-    <!-- Slide 1 — Main Banner -->
     <div class="hc-slide">
-      <img class="hc-img" src="images/hero-main.jpg" alt="ACCDEE บัญชีโซเชียลมีเดียพรีเมียม">
-      <div class="hc-overlay">
-        <div class="hero-badge">✓ ธุรกิจที่ได้รับการรับรอง · ดำเนินการถูกกฎหมาย</div>
-        <h1 class="hero-title">
-          <span class="line1">ACCDEE</span>
-          <span class="line2">บัญชีโซเชียลมีเดียพรีเมียม</span>
-        </h1>
-        <p class="hero-sub">
-          แหล่งรวมบัญชีโซเชียลมีเดียที่มีคุณภาพสูง<br>
-          <strong>Facebook · Twitter(X) · Instagram · TikTok</strong><br>
-          พร้อมส่งทันที — ระบบอัตโนมัติ 24 ชั่วโมง
-        </p>
-        <div class="hero-actions">
-          <a href="#products" class="btn-primary btn-hero">ดูสินค้าทั้งหมด</a>
-          <a href="#contact" class="btn-ghost btn-hero">ติดต่อทีมงาน</a>
-        </div>
-      </div>
+      <img class="hc-img" src="images/hero-main.png" alt="ACCDEE บัญชีโซเชียลมีเดียพรีเมียม">
     </div>
 
-    <!-- Slide 2 — Hero Alt -->
     <div class="hc-slide">
-      <img class="hc-img" src="images/hero-alt.png" alt="ACCDEE Premium">
-      <div class="hc-overlay">
-        <div class="hero-badge">🔥 สต็อกใหม่เข้าทุกวัน</div>
-        <h1 class="hero-title">
-          <span class="line1">บัญชีพรีเมียม</span>
-          <span class="line2">คุณภาพสูง ราคาเหมาะสม</span>
-        </h1>
-        <p class="hero-sub">
-          ตรวจสอบทุกบัญชีก่อนส่ง<br>
-          มีการรับประกัน 24 ชั่วโมง
-        </p>
-        <div class="hero-actions">
-          <a href="#products" class="btn-primary btn-hero">เลือกซื้อเลย</a>
-          <a href="#contact" class="btn-ghost btn-hero">ติดต่อทีมงาน</a>
-        </div>
-      </div>
+      <img class="hc-img" src="images/banner-facebook.jpg" alt="Facebook Account พรีเมียม">
     </div>
 
-    <!-- Slide 3 — Facebook Promo -->
     <div class="hc-slide">
-      <img class="hc-img" src="images/banner-facebook.jpg" alt="Facebook Account">
-      <div class="hc-overlay">
-        <div class="hero-badge">📘 Facebook Premium ราคาพิเศษ</div>
-        <h1 class="hero-title">
-          <span class="line1">Facebook Account</span>
-          <span class="line2">บัญชีเฟสบุ๊คพรีเมียมพร้อมส่ง</span>
-        </h1>
-        <p class="hero-sub">
-          มีสต็อกพร้อมส่งทันที<br>
-          ราคาเริ่มต้นเพียง <strong>50 บาท</strong>
-        </p>
-        <div class="hero-actions">
-          <a href="#products" class="btn-primary btn-hero">สั่งซื้อเลย</a>
-        </div>
-      </div>
+      <img class="hc-img" src="images/banner-bm-premium.jpg" alt="Business Manager พรีเมียม">
     </div>
 
-  </div><!-- /hc-track -->
+    <div class="hc-slide">
+      <img class="hc-img" src="images/banner-instagram.jpg" alt="Instagram Account พรีเมียม">
+    </div>
 
-  <div class="hc-dots" id="hcDots"></div>
+  </div>
+
+  <div class="hc-bottom">
+    <div class="hc-dots" id="hcDots"></div>
+    <div class="hc-cta">
+      <a href="#products" class="btn-primary btn-hero">ดูสินค้าทั้งหมด</a>
+      <a href="#contact"  class="btn-ghost  btn-hero">ติดต่อทีมงาน</a>
+    </div>
+  </div>
+
   <button class="hc-arrow hc-prev" onclick="hcMove(-1)" aria-label="ก่อนหน้า">&#10094;</button>
   <button class="hc-arrow hc-next" onclick="hcMove(1)"  aria-label="ถัดไป">&#10095;</button>
 </div>
 
-<!-- STATS -->
+<!-- ═══════════════════════════════════════════
+     STATS
+═══════════════════════════════════════════ -->
 <div class="stats-bar">
-  <div class="stat-item"><span class="stat-num">ทันที</span><span class="stat-label">ส่งสินค้าหลังชำระ</span></div>
-  <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">ระบบอัตโนมัติ</span></div>
-  <div class="stat-item"><span class="stat-num">24 ชม.</span><span class="stat-label">รับประกันสินค้า</span></div>
-  <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">ตรวจสอบก่อนขาย</span></div>
+  <div class="stat-item">
+    <span class="stat-ico">⚡</span>
+    <span class="stat-num">ทันที</span>
+    <span class="stat-label">ส่งสินค้าอัตโนมัติ</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-ico">🛡️</span>
+    <span class="stat-num">100%</span>
+    <span class="stat-label">ตรวจสอบก่อนขาย</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-ico">⏰</span>
+    <span class="stat-num">24/7</span>
+    <span class="stat-label">ระบบอัตโนมัติ</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-ico">✅</span>
+    <span class="stat-num">Verified</span>
+    <span class="stat-label">Business รับรองแล้ว</span>
+  </div>
 </div>
 
 <!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track">
-    <div class="marquee-item"><span class="dot"></span> FACEBOOK ACCOUNT</div>
-    <div class="marquee-item"><span class="dot"></span> TWITTER(X)</div>
-    <div class="marquee-item"><span class="dot"></span> INSTAGRAM</div>
-    <div class="marquee-item"><span class="dot"></span> TIKTOK</div>
-    <div class="marquee-item"><span class="dot"></span> GMAIL</div>
-    <div class="marquee-item"><span class="dot"></span> FACEBOOK ADS</div>
-    <div class="marquee-item"><span class="dot"></span> FANPAGE</div>
-    <div class="marquee-item"><span class="dot"></span> BM BUSINESS MANAGER</div>
-    <!-- ทำซ้ำเพื่อให้ marquee วนได้ไม่ขาด -->
-    <div class="marquee-item"><span class="dot"></span> FACEBOOK ACCOUNT</div>
-    <div class="marquee-item"><span class="dot"></span> TWITTER(X)</div>
-    <div class="marquee-item"><span class="dot"></span> INSTAGRAM</div>
-    <div class="marquee-item"><span class="dot"></span> TIKTOK</div>
-    <div class="marquee-item"><span class="dot"></span> GMAIL</div>
-    <div class="marquee-item"><span class="dot"></span> FACEBOOK ADS</div>
-    <div class="marquee-item"><span class="dot"></span> FANPAGE</div>
-    <div class="marquee-item"><span class="dot"></span> BM BUSINESS MANAGER</div>
+    <div class="marquee-item"><span class="dot fb"></span> FACEBOOK ACCOUNT</div>
+    <div class="marquee-item"><span class="dot bm"></span> FACEBOOK ADS / BM</div>
+    <div class="marquee-item"><span class="dot fb"></span> FANPAGE พรีเมียม</div>
+    <div class="marquee-item"><span class="dot tw"></span> TWITTER(X)</div>
+    <div class="marquee-item"><span class="dot ig"></span> INSTAGRAM</div>
+    <div class="marquee-item"><span class="dot tt"></span> TIKTOK วงเงินสูง</div>
+    <div class="marquee-item"><span class="dot nt"></span> NETFLIX</div>
+    <div class="marquee-item"><span class="dot gm"></span> GMAIL</div>
+    <div class="marquee-item"><span class="dot bm"></span> BUSINESS MANAGER</div>
+    <div class="marquee-item"><span class="dot fb"></span> FACEBOOK PERSONAL</div>
+    <div class="marquee-item"><span class="dot ig"></span> INSTAGRAM PERSONAL</div>
+    <!-- ซ้ำ -->
+    <div class="marquee-item"><span class="dot fb"></span> FACEBOOK ACCOUNT</div>
+    <div class="marquee-item"><span class="dot bm"></span> FACEBOOK ADS / BM</div>
+    <div class="marquee-item"><span class="dot fb"></span> FANPAGE พรีเมียม</div>
+    <div class="marquee-item"><span class="dot tw"></span> TWITTER(X)</div>
+    <div class="marquee-item"><span class="dot ig"></span> INSTAGRAM</div>
+    <div class="marquee-item"><span class="dot tt"></span> TIKTOK วงเงินสูง</div>
+    <div class="marquee-item"><span class="dot nt"></span> NETFLIX</div>
+    <div class="marquee-item"><span class="dot gm"></span> GMAIL</div>
+    <div class="marquee-item"><span class="dot bm"></span> BUSINESS MANAGER</div>
+    <div class="marquee-item"><span class="dot fb"></span> FACEBOOK PERSONAL</div>
+    <div class="marquee-item"><span class="dot ig"></span> INSTAGRAM PERSONAL</div>
   </div>
 </div>
 
-<!-- PRODUCTS -->
+<!-- ═══════════════════════════════════════════
+     บัญชีพรีเมียม
+═══════════════════════════════════════════ -->
 <section class="section" id="products">
   <div class="section-header">
     <div class="section-tag">สินค้าทั้งหมด</div>
-    <h2 class="section-title">เลือกสินค้าที่ต้องการ</h2>
-    <p class="section-desc">บัญชีคุณภาพสูง ราคาเหมาะสม ส่งทันทีหลังชำระเงิน</p>
+    <h2 class="section-title">บัญชีโซเชียลมีเดียพรีเมียม</h2>
+    <p class="section-desc">คุณภาพสูง ตรวจสอบก่อนขายทุกบัญชี พร้อมส่งทันทีหลังชำระเงิน</p>
   </div>
 
   <div class="cat-tabs">
     <button class="cat-tab active" onclick="filterCat(this,'all')">ทั้งหมด</button>
     <button class="cat-tab" onclick="filterCat(this,'facebook')">Facebook</button>
     <button class="cat-tab" onclick="filterCat(this,'twitter')">Twitter(X)</button>
-    <button class="cat-tab" onclick="filterCat(this,'coming')">เร็วๆ นี้</button>
+    <button class="cat-tab" onclick="filterCat(this,'instagram')">Instagram</button>
+    <button class="cat-tab" onclick="filterCat(this,'tiktok')">TikTok</button>
+    <button class="cat-tab" onclick="filterCat(this,'other')">อื่นๆ</button>
   </div>
 
   <div class="product-grid" id="productGrid">
 
+    <!-- Facebook Account พรีเมียม -->
     <div class="product-card" data-cat="facebook" onclick="openModal('fb-blank')">
       <div class="product-img-wrap">
-        <img src="images/banner-facebook.jpg" alt="Facebook Account" class="product-img">
+        <img src="images/banner-facebook.jpg" alt="Facebook Account พรีเมียม" class="product-img">
+        <span class="pc-badge pc-badge-blue">ส่งทันที</span>
       </div>
-      <div class="product-platform">Facebook</div>
-      <div class="product-name">บัญชี Facebook เปล่า</div>
-      <div class="product-desc">บัญชี Facebook ใหม่ ไม่มีแฟนเพจ พร้อมใช้งานทันที เหมาะสำหรับเริ่มต้น</div>
-      <div class="product-tags">
-        <span class="tag tag-blue">ใหม่</span>
-        <span class="tag tag-green">ส่งทันที</span>
-      </div>
-      <div class="product-footer">
-        <div class="price-block">
-          <div class="price-label">ราคา</div>
-          <div class="price">50<span class="currency"> ฿</span></div>
+      <div class="pc-body">
+        <div class="pc-platform fb-color">Facebook</div>
+        <div class="product-name">Facebook Account พรีเมียม</div>
+        <div class="product-desc">บัญชี Facebook คุณภาพสูง พร้อมใช้ยิงแอด สร้างเพจ ธุรกิจออนไลน์</div>
+        <div class="product-tags">
+          <span class="tag tag-blue">พร้อมใช้</span>
+          <span class="tag tag-green">ส่งทันที</span>
         </div>
-        <button class="buy-btn">สั่งซื้อ</button>
+        <div class="product-footer">
+          <div class="price-block">
+            <div class="price-label">ราคา</div>
+            <div class="price">50<span class="currency"> ฿</span></div>
+          </div>
+          <button class="buy-btn">สั่งซื้อ</button>
+        </div>
       </div>
     </div>
 
+    <!-- Facebook Ads / BM -->
     <div class="product-card featured" data-cat="facebook" onclick="openModal('fb-10page')">
       <div class="product-img-wrap">
-        <img src="images/banner-fb-ads.jpg" alt="Facebook Ads BM" class="product-img">
+        <img src="images/banner-fb-ads.jpg" alt="Facebook Ads / BM" class="product-img">
+        <span class="pc-badge pc-badge-green">ยอดนิยม</span>
       </div>
-      <div class="product-platform">Facebook</div>
-      <div class="product-name">บัญชี Facebook พร้อม 10 แฟนเพจ</div>
-      <div class="product-desc">บัญชีที่มีแฟนเพจครบ 10 เพจพร้อมใช้งาน เหมาะสำหรับงานโฆษณาและการตลาด</div>
-      <div class="product-tags">
-        <span class="tag tag-blue">10 แฟนเพจ</span>
-        <span class="tag tag-green">ส่งทันที</span>
-        <span class="tag tag-purple">โฆษณา</span>
-      </div>
-      <div class="product-footer">
-        <div class="price-block">
-          <div class="price-label">ราคา</div>
-          <div class="price">100<span class="currency"> ฿</span></div>
+      <div class="pc-body">
+        <div class="pc-platform fb-color">Facebook Ads / BM</div>
+        <div class="product-name">Facebook Ads / Business Manager</div>
+        <div class="product-desc">บัญชี Business Manager คุณภาพสูง เหมาะสำหรับยิงโฆษณา ขยายธุรกิจ</div>
+        <div class="product-tags">
+          <span class="tag tag-blue">Business Manager</span>
+          <span class="tag tag-purple">โฆษณา</span>
         </div>
-        <button class="buy-btn">สั่งซื้อ</button>
+        <div class="product-footer">
+          <div class="price-block">
+            <div class="price-label">ราคา</div>
+            <div class="price">100<span class="currency"> ฿</span></div>
+          </div>
+          <button class="buy-btn">สั่งซื้อ</button>
+        </div>
       </div>
     </div>
 
+    <!-- Fanpage พรีเมียม -->
     <div class="product-card" data-cat="facebook" onclick="openModal('fb-5page')">
       <div class="product-img-wrap">
-        <img src="images/banner-fanpage.jpg" alt="Fanpage" class="product-img">
+        <img src="images/banner-fanpage.jpg" alt="Fanpage พรีเมียม" class="product-img">
+        <span class="pc-badge pc-badge-blue">Build Your Brand</span>
       </div>
-      <div class="product-platform">Facebook</div>
-      <div class="product-name">บัญชี Facebook พร้อม 5 แฟนเพจ</div>
-      <div class="product-desc">บัญชีที่มีแฟนเพจ 5 เพจ ราคาสุดคุ้ม เหมาะสำหรับผู้เริ่มยิงโฆษณา</div>
-      <div class="product-tags">
-        <span class="tag tag-blue">5 แฟนเพจ</span>
-        <span class="tag tag-green">ส่งทันที</span>
-      </div>
-      <div class="product-footer">
-        <div class="price-block">
-          <div class="price-label">ราคา</div>
-          <div class="price">50<span class="currency"> ฿</span></div>
+      <div class="pc-body">
+        <div class="pc-platform fb-color">Facebook</div>
+        <div class="product-name">Fanpage พรีเมียม</div>
+        <div class="product-desc">แฟนเพจ Facebook คุณภาพสูง สร้างแบรนด์ ขยายธุรกิจ Real Audience</div>
+        <div class="product-tags">
+          <span class="tag tag-blue">Real Audience</span>
+          <span class="tag tag-green">ส่งทันที</span>
         </div>
-        <button class="buy-btn">สั่งซื้อ</button>
+        <div class="product-footer">
+          <div class="price-block">
+            <div class="price-label">ราคา</div>
+            <div class="price">50<span class="currency"> ฿</span></div>
+          </div>
+          <button class="buy-btn">สั่งซื้อ</button>
+        </div>
       </div>
     </div>
 
+    <!-- Twitter(X) Premium -->
     <div class="product-card featured" data-cat="twitter" onclick="openModal('tw-1k')">
       <div class="product-img-wrap">
-        <img src="images/banner-twitter.jpg" alt="Twitter Premium" class="product-img">
+        <img src="images/banner-twitter.jpg" alt="Twitter(X) Account พรีเมียม" class="product-img">
+        <span class="pc-badge pc-badge-green">พรีเมียม</span>
       </div>
-      <div class="product-platform">Twitter (X)</div>
-      <div class="product-name">Twitter บัญชี 1,000+ ผู้ติดตาม</div>
-      <div class="product-desc">บัญชี Twitter ที่มีผู้ติดตามกว่า 1,000 คน มีความน่าเชื่อถือสูง เหมาะทำการตลาด</div>
-      <div class="product-tags">
-        <span class="tag tag-blue">1,000+ ผู้ติดตาม</span>
-        <span class="tag tag-yellow">พรีเมียม</span>
-      </div>
-      <div class="product-footer">
-        <div class="price-block">
-          <div class="price-label">ราคา</div>
-          <div class="price">800<span class="currency"> ฿</span></div>
+      <div class="pc-body">
+        <div class="pc-platform tw-color">Twitter (X)</div>
+        <div class="product-name">Twitter(X) Account พรีเมียม</div>
+        <div class="product-desc">บัญชี Twitter(X) คุณภาพสูง เพิ่มความน่าเชื่อถือ สร้างแบรนด์มืออาชีพ</div>
+        <div class="product-tags">
+          <span class="tag tag-blue">1,000+ ผู้ติดตาม</span>
+          <span class="tag tag-yellow">Verified Quality</span>
         </div>
-        <button class="buy-btn">สั่งซื้อ</button>
+        <div class="product-footer">
+          <div class="price-block">
+            <div class="price-label">ราคา</div>
+            <div class="price">800<span class="currency"> ฿</span></div>
+          </div>
+          <button class="buy-btn">สั่งซื้อ</button>
+        </div>
       </div>
     </div>
 
-    <div class="product-card coming-soon" data-cat="coming">
+    <!-- Instagram Premium -->
+    <div class="product-card" data-cat="instagram" onclick="openModal('ig-premium')">
       <div class="product-img-wrap">
-        <img src="images/banner-instagram.jpg" alt="Instagram" class="product-img">
+        <img src="images/banner-instagram.jpg" alt="Instagram Account พรีเมียม" class="product-img">
+        <span class="pc-badge pc-badge-purple">50K+ Followers</span>
       </div>
-      <div class="product-platform">Instagram</div>
-      <div class="product-name">บัญชี Instagram ใหม่</div>
-      <div class="product-desc">บัญชี Instagram พร้อมใช้งาน — กำลังเตรียมสต็อก</div>
-      <div class="product-tags"><span class="tag tag-purple">เร็วๆ นี้</span></div>
-      <div class="product-footer">
-        <div class="price-block"><div class="price-label">ราคา</div><div class="price">— <span class="currency">฿</span></div></div>
-        <button class="buy-btn" disabled>เร็วๆ นี้</button>
+      <div class="pc-body">
+        <div class="pc-platform ig-color">Instagram</div>
+        <div class="product-name">Instagram Account พรีเมียม</div>
+        <div class="product-desc">บัญชี Instagram คุณภาพสูง Build Your Brand · Grow Your Audience</div>
+        <div class="product-tags">
+          <span class="tag tag-purple">Premium</span>
+          <span class="tag tag-green">ส่งทันที</span>
+        </div>
+        <div class="product-footer">
+          <div class="price-block">
+            <div class="price-label">ราคา</div>
+            <div class="price contact-price">ติดต่อ</div>
+          </div>
+          <button class="buy-btn contact-btn">สอบถาม</button>
+        </div>
       </div>
     </div>
 
-    <div class="product-card coming-soon" data-cat="coming">
+    <!-- Business Manager พรีเมียม -->
+    <div class="product-card" data-cat="other" onclick="openModal('bm-premium')">
       <div class="product-img-wrap">
-        <img src="images/banner-tiktok.jpg" alt="TikTok" class="product-img">
+        <img src="images/banner-bm-premium.jpg" alt="Business Manager พรีเมียม" class="product-img">
+        <span class="pc-badge pc-badge-blue">Ad Management</span>
       </div>
-      <div class="product-platform">TikTok</div>
-      <div class="product-name">บัญชี TikTok ใหม่ / Live</div>
-      <div class="product-desc">บัญชี TikTok พร้อม Live — กำลังเตรียมสต็อก</div>
-      <div class="product-tags"><span class="tag tag-yellow">เร็วๆ นี้</span></div>
-      <div class="product-footer">
-        <div class="price-block"><div class="price-label">ราคา</div><div class="price">— <span class="currency">฿</span></div></div>
-        <button class="buy-btn" disabled>เร็วๆ นี้</button>
+      <div class="pc-body">
+        <div class="pc-platform bm-color">Business Manager</div>
+        <div class="product-name">Business Manager พรีเมียม</div>
+        <div class="product-desc">บัญชี BM คุณภาพสูง บริหารโฆษณา ขยายแบรนด์ Automation System</div>
+        <div class="product-tags">
+          <span class="tag tag-blue">Verified Business</span>
+          <span class="tag tag-green">ส่งทันที</span>
+        </div>
+        <div class="product-footer">
+          <div class="price-block">
+            <div class="price-label">ราคา</div>
+            <div class="price contact-price">ติดต่อ</div>
+          </div>
+          <button class="buy-btn contact-btn">สอบถาม</button>
+        </div>
       </div>
     </div>
 
+    <!-- Gmail พรีเมียม -->
+    <div class="product-card" data-cat="other" onclick="openModal('gmail')">
+      <div class="product-img-wrap">
+        <img src="images/banner-gmail.jpg" alt="Gmail Account พรีเมียม" class="product-img">
+        <span class="pc-badge pc-badge-blue">Global Access</span>
+      </div>
+      <div class="pc-body">
+        <div class="pc-platform gm-color">Gmail</div>
+        <div class="product-name">Gmail Account พรีเมียม</div>
+        <div class="product-desc">บัญชี Gmail คุณภาพสูง Business Communication · Productivity Growth</div>
+        <div class="product-tags">
+          <span class="tag tag-red">Gmail</span>
+          <span class="tag tag-green">ส่งทันที</span>
+        </div>
+        <div class="product-footer">
+          <div class="price-block">
+            <div class="price-label">ราคา</div>
+            <div class="price contact-price">ติดต่อ</div>
+          </div>
+          <button class="buy-btn contact-btn">สอบถาม</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /product-grid -->
+</section>
+
+<!-- ═══════════════════════════════════════════
+     วงเงินสูง พร้อมยิง
+═══════════════════════════════════════════ -->
+<section class="section highbudget-section" id="highbudget">
+  <div class="section-header">
+    <div class="section-tag hb-tag">💰 วงเงินสูง พร้อมยิง</div>
+    <h2 class="section-title">Personal เก่า พร้อมยิงโฆษณา</h2>
+    <p class="section-desc">บัญชีเก่าวงเงินสูง $250 – $1,500 ยิงแอดลื่น อนุมัติไว ติดต่อ LINE @ACCDEE</p>
+  </div>
+
+  <div class="hb-grid">
+
+    <!-- Facebook Personal วงเงินสูง -->
+    <div class="hb-card" onclick="openModal('fb-personal')">
+      <div class="hb-img-wrap">
+        <img src="images/banner-fb-personal.jpg" alt="Facebook Personal วงเงินสูง" class="hb-img">
+      </div>
+      <div class="hb-body">
+        <div class="hb-platform fb-color">Facebook Personal</div>
+        <div class="hb-name">Facebook Personal เก่า พร้อมยิง</div>
+        <div class="hb-budget">💰 วงเงิน $250 – $1,500</div>
+        <div class="hb-features">
+          <span>✓ ยิงแอดลื่น</span>
+          <span>✓ อนุมัติไว</span>
+          <span>✓ ปลอดภัย 100%</span>
+        </div>
+        <button class="hb-btn">💬 ติดต่อ LINE @ACCDEE</button>
+      </div>
+    </div>
+
+    <!-- Instagram Personal วงเงินสูง -->
+    <div class="hb-card" onclick="openModal('ig-personal')">
+      <div class="hb-img-wrap">
+        <img src="images/banner-ig-personal.jpg" alt="Instagram Personal วงเงินสูง" class="hb-img">
+      </div>
+      <div class="hb-body">
+        <div class="hb-platform ig-color">Instagram Personal</div>
+        <div class="hb-name">Instagram Personal เก่า พร้อมยิง</div>
+        <div class="hb-budget">💰 วงเงิน $250 – $1,500</div>
+        <div class="hb-features">
+          <span>✓ ยิงแอดลื่น</span>
+          <span>✓ อนุมัติไว</span>
+          <span>✓ ซัพพอร์ต 24 ชม.</span>
+        </div>
+        <button class="hb-btn ig-btn">💬 ติดต่อ LINE @ACCDEE</button>
+      </div>
+    </div>
+
+    <!-- TikTok Personal วงเงินสูง -->
+    <div class="hb-card" onclick="openModal('tt-personal')">
+      <div class="hb-img-wrap">
+        <img src="images/banner-tiktok.jpg" alt="TikTok Personal วงเงินสูง" class="hb-img" style="object-position:center center">
+      </div>
+      <div class="hb-body">
+        <div class="hb-platform tt-color">TikTok Personal</div>
+        <div class="hb-name">TikTok Personal เก่า พร้อมยิง</div>
+        <div class="hb-budget">💰 วงเงิน $250 – $1,500</div>
+        <div class="hb-features">
+          <span>✓ ยิงแอดลื่น</span>
+          <span>✓ อนุมัติไว</span>
+          <span>✓ ยิงแอดได้ถึงผลจริง</span>
+        </div>
+        <button class="hb-btn tt-btn">💬 ติดต่อ LINE @ACCDEE</button>
+      </div>
+    </div>
+
+    <!-- Netflix Personal วงเงินสูง -->
+    <div class="hb-card" onclick="openModal('netflix')">
+      <div class="hb-img-wrap">
+        <img src="images/banner-netflix.jpg" alt="Netflix Personal วงเงินสูง" class="hb-img" style="object-position:center center">
+      </div>
+      <div class="hb-body">
+        <div class="hb-platform nt-color">Netflix Personal</div>
+        <div class="hb-name">Netflix Personal เก่า พร้อมยิง</div>
+        <div class="hb-budget">💰 วงเงิน $250 – $1,500</div>
+        <div class="hb-features">
+          <span>✓ ดูได้ทุกอุปกรณ์</span>
+          <span>✓ ความคมชัด 4K</span>
+          <span>✓ ซัพพอร์ต 24 ชม.</span>
+        </div>
+        <button class="hb-btn nt-btn">💬 ติดต่อ LINE @ACCDEE</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hb-notice">
+    <span>📌</span>
+    สินค้าประเภทวงเงินสูง ติดต่อสอบถามและสั่งซื้อผ่าน <strong>LINE OA @ACCDEE</strong> หรือ <strong>Telegram @AccdeeNotifyBot</strong>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- FEATURES -->
+<!-- ═══════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════ -->
 <section class="section" id="features">
   <div class="section-header">
     <div class="section-tag">ทำไมต้องเลือกเรา</div>
-    <h2 class="section-title">มาตรฐานที่คุณไว้วางใจได้</h2>
-    <p class="section-desc">เราใส่ใจในคุณภาพและความปลอดภัยของลูกค้าเป็นอันดับหนึ่ง</p>
+    <h2 class="section-title">มาตรฐาน ACCDEE Premium</h2>
+    <p class="section-desc">Verified Business · ดำเนินการถูกกฎหมาย · ระบบอัตโนมัติ 24 ชั่วโมง</p>
   </div>
   <div class="features-grid">
-    <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">ส่งทันทีอัตโนมัติ</div><div class="feature-desc">ระบบจัดส่งอัตโนมัติ 24 ชั่วโมง ได้รับสินค้าทันทีหลังชำระเงิน ไม่ต้องรอทีมงาน</div></div>
-    <div class="feature-card"><div class="feature-icon">🔒</div><div class="feature-title">ปลอดภัย 100%</div><div class="feature-desc">ดำเนินการถูกกฎหมาย ไม่มีการหลอกลวง มีนโยบาย Anti-Fraud ชัดเจน</div></div>
-    <div class="feature-card"><div class="feature-icon">💎</div><div class="feature-title">คุณภาพสูง</div><div class="feature-desc">คัดสรรบัญชีคุณภาพ ตรวจสอบมาตรฐานก่อนส่งทุกออเดอร์ มีการรับประกัน</div></div>
-    <div class="feature-card"><div class="feature-icon">🎯</div><div class="feature-title">ราคาเหมาะสม</div><div class="feature-desc">ราคาถูกกว่าตลาดทั่วไป ไม่มีค่าธรรมเนียมซ่อนเร้น ชำระง่ายผ่านพร้อมเพย์</div></div>
-    <div class="feature-card"><div class="feature-icon">🛠️</div><div class="feature-title">API พร้อมใช้</div><div class="feature-desc">รองรับการเชื่อมต่อ API สำหรับนักพัฒนาและธุรกิจที่ต้องการระบบอัตโนมัติ</div></div>
-    <div class="feature-card"><div class="feature-icon">📞</div><div class="feature-title">ทีมงานพร้อมช่วยเหลือ</div><div class="feature-desc">ติดต่อได้ทาง Telegram, LINE, Facebook มีเวลาทำการชัดเจน ตอบเร็ว</div></div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">ส่งทันทีอัตโนมัติ</div>
+      <div class="feature-desc">ระบบจัดส่งอัตโนมัติ 24 ชั่วโมง ได้รับสินค้าทันทีหลังชำระเงิน ไม่ต้องรอทีมงาน</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">ปลอดภัย 100%</div>
+      <div class="feature-desc">Verified Business ดำเนินการถูกกฎหมาย ไม่มีการหลอกลวง Anti-Fraud ชัดเจน</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💎</div>
+      <div class="feature-title">Verified Quality</div>
+      <div class="feature-desc">ตรวจสอบมาตรฐานก่อนส่งทุกออเดอร์ พร้อมใช้งานทันที รับประกัน 24 ชั่วโมง</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <div class="feature-title">วงเงินสูง พร้อมยิง</div>
+      <div class="feature-desc">บัญชี Personal เก่าวงเงิน $250–$1,500 ยิงแอดลื่น อนุมัติไว ได้ผลจริง</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛠️</div>
+      <div class="feature-title">Automation System</div>
+      <div class="feature-desc">รองรับ API สำหรับนักพัฒนาและธุรกิจที่ต้องการระบบอัตโนมัติ</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📞</div>
+      <div class="feature-title">ซัพพอร์ต 24 ชั่วโมง</div>
+      <div class="feature-desc">ทีมงานพร้อมดูแล LINE · Telegram · Facebook ตอบเร็วทุกวัน</div>
+    </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- CONTACT -->
+<!-- ═══════════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════════ -->
 <section class="section" id="contact">
   <div class="section-header">
     <div class="section-tag">ช่องทางติดต่อ</div>
-    <h2 class="section-title">ช่องทางติดต่อ</h2>
-    <p class="section-desc">กรุณาติดต่อผ่านช่องทางที่ระบุเท่านั้น เพื่อป้องกันการแอบอ้าง</p>
+    <h2 class="section-title">ติดต่อ ACCDEE</h2>
+    <p class="section-desc">ติดต่อผ่านช่องทางที่ระบุเท่านั้น เพื่อป้องกันการแอบอ้าง</p>
   </div>
+
   <div class="contact-grid">
-    <a href="https://t.me/AccdeeNotifyBot" class="contact-card" target="_blank" rel="noopener">
-      <div class="contact-ico">✈️</div>
-      <div class="contact-info"><div class="contact-platform">Telegram</div><div class="contact-handle">@AccdeeNotifyBot</div></div>
-    </a>
-    <a href="https://lin.ee/qpUaGmg" class="contact-card" target="_blank" rel="noopener">
+    <a href="https://lin.ee/xLWi136" class="contact-card line-card" id="contactLine" target="_blank" rel="noopener">
       <div class="contact-ico">💬</div>
-      <div class="contact-info"><div class="contact-platform">LINE OA</div><div class="contact-handle">@accdee</div></div>
+      <div class="contact-info">
+        <div class="contact-platform">LINE OA</div>
+        <div class="contact-handle">@ACCDEE</div>
+        <div class="contact-note">สำหรับสั่งซื้อวงเงินสูง</div>
+      </div>
     </a>
-    <a href="#" class="contact-card">
+    <a href="https://t.me/AccdeeNotifyBot" class="contact-card" id="contactTelegram" target="_blank" rel="noopener">
+      <div class="contact-ico">✈️</div>
+      <div class="contact-info">
+        <div class="contact-platform">Telegram</div>
+        <div class="contact-handle">@AccdeeNotifyBot</div>
+        <div class="contact-note">แจ้งเตือนออเดอร์</div>
+      </div>
+    </a>
+    <a href="#" class="contact-card" id="contactFacebook">
       <div class="contact-ico">📘</div>
-      <div class="contact-info"><div class="contact-platform">Facebook</div><div class="contact-handle">Accdee Official</div></div>
+      <div class="contact-info">
+        <div class="contact-platform">Facebook</div>
+        <div class="contact-handle">Accdee Official</div>
+        <div class="contact-note">ข่าวสารและโปรโมชัน</div>
+      </div>
     </a>
     <a href="mailto:support@accdee.shop" class="contact-card">
       <div class="contact-ico">✉️</div>
-      <div class="contact-info"><div class="contact-platform">Email</div><div class="contact-handle">support@accdee.shop</div></div>
+      <div class="contact-info">
+        <div class="contact-platform">Email</div>
+        <div class="contact-handle">support@accdee.shop</div>
+        <div class="contact-note">สอบถามทั่วไป</div>
+      </div>
     </a>
   </div>
+
   <div class="hours-block">
     <div class="hours-title">⏰ เวลาทำการ (ไทย)</div>
     <div class="hour-row"><span>ช่วงเช้า</span><span class="hour-time">09:00 – 12:00</span></div>
@@ -356,31 +546,33 @@
   <div class="footer-grid">
     <div class="footer-brand">
       <a class="nav-logo" href="#">ACC<span>DEE</span></a>
-      <p>ผู้ให้บริการบัญชีโซเชียลมีเดียและโซลูชันการตลาดออนไลน์ครบวงจร เน้นความปลอดภัยและความเป็นมืออาชีพ</p>
+      <p>แหล่งรวมบัญชีโซเชียลมีเดียพรีเมียม Verified Business ดำเนินการถูกกฎหมาย ระบบอัตโนมัติ 24 ชั่วโมง</p>
     </div>
     <div>
       <div class="footer-col-title">สินค้า</div>
       <ul class="footer-links">
         <li><a href="#">Facebook Account</a></li>
         <li><a href="#">Facebook Ads / BM</a></li>
-        <li><a href="#">Fanpage</a></li>
-        <li><a href="#">Twitter (X)</a></li>
-        <li><a href="#">TikTok</a></li>
+        <li><a href="#">Fanpage พรีเมียม</a></li>
+        <li><a href="#">Twitter(X)</a></li>
         <li><a href="#">Instagram</a></li>
+        <li><a href="#">TikTok วงเงินสูง</a></li>
+        <li><a href="#">Netflix วงเงินสูง</a></li>
       </ul>
     </div>
     <div>
       <div class="footer-col-title">ข้อมูล</div>
       <ul class="footer-links">
-        <li><a href="#">นโยบาย</a></li>
+        <li><a href="#">นโยบายการให้บริการ</a></li>
         <li><a href="#">คำถามที่พบบ่อย</a></li>
-        <li><a href="#">ติดต่อเรา</a></li>
+        <li><a href="#contact">ติดต่อเรา</a></li>
+        <li><a href="#">LINE @ACCDEE</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2568 ACCDEE · สงวนลิขสิทธิ์ทุกประการ</p>
-    <div class="made-with">สร้างเพื่อประสิทธิภาพสูงสุด</div>
+    <p>© 2568 ACCDEE · Verified Business · สงวนลิขสิทธิ์ทุกประการ</p>
+    <div class="made-with">PREMIUM DIGITAL SOLUTIONS</div>
   </div>
 </footer>
 
@@ -392,18 +584,14 @@
   </div>
 </div>
 
-<!-- AUTH MODAL (Login / Register) -->
+<!-- AUTH MODAL -->
 <div class="auth-overlay" id="authOverlay" onclick="closeAuthOuter(event)">
   <div class="auth-modal">
     <button class="modal-close" onclick="closeAuth()">✕</button>
-
-    <!-- แท็บเปลี่ยนระหว่าง Login / Register -->
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">เข้าสู่ระบบ</button>
-      <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">สมัครสมาชิก</button>
+      <button class="auth-tab active" id="tabLogin"    onclick="switchAuthTab('login')">เข้าสู่ระบบ</button>
+      <button class="auth-tab"        id="tabRegister" onclick="switchAuthTab('register')">สมัครสมาชิก</button>
     </div>
-
-    <!-- Login Form -->
     <div id="formLogin">
       <div class="auth-logo">ACC<span>DEE</span></div>
       <p class="auth-subtitle">ยินดีต้อนรับกลับ</p>
@@ -420,8 +608,6 @@
       <p class="auth-switch">ยังไม่มีบัญชี? <a onclick="switchAuthTab('register')">สมัครสมาชิก</a></p>
       <p class="auth-switch"><a onclick="switchAuthTab('forgot')" style="color:#94a3b8;font-size:13px">ลืมรหัสผ่าน?</a></p>
     </div>
-
-    <!-- Register Form -->
     <div id="formRegister" style="display:none">
       <div class="auth-logo">ACC<span>DEE</span></div>
       <p class="auth-subtitle">สร้างบัญชีใหม่ฟรี</p>
@@ -441,8 +627,6 @@
       <button class="auth-btn" id="registerBtn" onclick="doRegister()">สมัครสมาชิก</button>
       <p class="auth-switch">มีบัญชีแล้ว? <a onclick="switchAuthTab('login')">เข้าสู่ระบบ</a></p>
     </div>
-
-    <!-- Forgot Password Form -->
     <div id="formForgot" style="display:none">
       <div class="auth-logo">ACC<span>DEE</span></div>
       <p class="auth-subtitle">รีเซ็ตรหัสผ่าน</p>
@@ -458,20 +642,16 @@
   </div>
 </div>
 
-<!-- TOAST NOTIFICATION -->
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- TOPUP MODAL (เติมเงิน) -->
+<!-- TOPUP MODAL -->
 <div class="auth-overlay" id="topupOverlay" onclick="closeTopupOuter(event)">
   <div class="auth-modal" style="max-width:480px">
     <button class="modal-close" onclick="closeTopup()">✕</button>
-
-    <!-- Step 1: เลือกจำนวนเงิน -->
     <div id="topupStep1">
       <div class="auth-logo">ACC<span>DEE</span></div>
       <p class="auth-subtitle">เติมเงินเข้า Wallet</p>
-
-      <!-- ข้อมูลช่องทางชำระเงิน -->
       <div class="payment-info" id="paymentInfoBox">
         <div class="payment-row">
           <span class="payment-label">💳 PromptPay</span>
@@ -496,11 +676,9 @@
           <span class="payment-value" id="payAccountName">กำลังโหลด...</span>
         </div>
       </div>
-
       <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:20px;text-align:center">
         โอนเงินตามช่องทางด้านบน แล้วกรอกข้อมูลด้านล่าง
       </p>
-
       <div class="form-group">
         <label>จำนวนเงิน (บาท)</label>
         <input type="number" id="topupAmount" placeholder="เช่น 100" min="10" class="auth-input">
@@ -524,45 +702,33 @@
         </div>
         <div id="couponMsg" style="font-size:12px;margin-top:4px"></div>
       </div>
-
       <div class="auth-msg" id="topupMsg"></div>
       <button class="auth-btn" id="topupBtn" onclick="submitTopup()">ส่งคำขอเติมเงิน</button>
-      <p style="text-align:center;font-size:0.8rem;color:var(--text-muted)">
-        Admin จะตรวจสอบและอนุมัติภายใน 5–30 นาที
-      </p>
+      <p style="text-align:center;font-size:0.8rem;color:var(--text-muted)">Admin จะตรวจสอบและอนุมัติภายใน 5–30 นาที</p>
     </div>
-
-    <!-- Step 2: ส่งสำเร็จ -->
     <div id="topupStep2" style="display:none;text-align:center">
       <div style="font-size:3rem;margin-bottom:16px">✅</div>
       <div class="auth-logo">สำเร็จ!</div>
-      <p style="color:var(--text-muted);margin:12px 0 24px;line-height:1.7">
-        ส่งคำขอเติมเงินเรียบร้อยแล้ว<br>
-        Admin จะตรวจสอบและอนุมัติเร็วๆ นี้
-      </p>
+      <p style="color:var(--text-muted);margin:12px 0 24px;line-height:1.7">ส่งคำขอเติมเงินเรียบร้อยแล้ว<br>Admin จะตรวจสอบและอนุมัติเร็วๆ นี้</p>
       <button class="auth-btn" onclick="closeTopup()">ปิด</button>
     </div>
   </div>
 </div>
 
-<!-- โหลด JavaScript -->
 <script src="js/main.js"></script>
-
 <script>
-// ── Hero Carousel ──
+// Hero Carousel
 (function () {
   var track = document.getElementById('hcTrack');
   var dotsEl = document.getElementById('hcDots');
   if (!track || !dotsEl) return;
-
   var slides = track.querySelectorAll('.hc-slide');
   var idx = 0, timer;
 
-  // สร้าง dot buttons
   slides.forEach(function (_, i) {
     var d = document.createElement('button');
     d.className = 'hc-dot' + (i === 0 ? ' active' : '');
-    d.setAttribute('aria-label', 'ไปที่สไลด์ ' + (i + 1));
+    d.setAttribute('aria-label', 'สไลด์ ' + (i + 1));
     d.addEventListener('click', function () { hcGo(i); });
     dotsEl.appendChild(d);
   });
@@ -574,12 +740,11 @@
       d.classList.toggle('active', i === idx);
     });
     clearInterval(timer);
-    timer = setInterval(function () { hcGo(idx + 1); }, 4500);
+    timer = setInterval(function () { hcGo(idx + 1); }, 5000);
   }
 
   window.hcMove = function (dir) { hcGo(idx + dir); };
 
-  // Swipe support สำหรับมือถือ
   var startX = 0;
   track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
   track.addEventListener('touchend', function (e) {
@@ -587,8 +752,7 @@
     if (Math.abs(diff) > 50) hcGo(idx + (diff > 0 ? 1 : -1));
   }, { passive: true });
 
-  // เริ่ม auto-play
-  timer = setInterval(function () { hcGo(idx + 1); }, 4500);
+  timer = setInterval(function () { hcGo(idx + 1); }, 5000);
 })();
 </script>
 </body>
