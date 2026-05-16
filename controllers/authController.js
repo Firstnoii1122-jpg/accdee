@@ -6,7 +6,8 @@ const User             = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
 const { sendEmail }    = require('../config/email');
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const usernameRegex = /^[a-zA-Z0-9_ก-๙]{3,30}$/;
 
 const register = async (req, res) => {
   try {
@@ -15,21 +16,28 @@ const register = async (req, res) => {
     const password =  req.body.password || '';
 
     if (!username || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide username, email and password' });
+      return res.status(400).json({ success: false, message: 'กรุณากรอกข้อมูลให้ครบ' });
+    }
+    if (!usernameRegex.test(username)) {
+      return res.status(400).json({ success: false, message: 'ชื่อผู้ใช้ต้องมี 3-30 ตัวอักษร (ตัวอักษร ตัวเลข _ หรือภาษาไทย)' });
     }
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ success: false, message: 'Invalid email format' });
+      return res.status(400).json({ success: false, message: 'รูปแบบอีเมลไม่ถูกต้อง' });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
-    }
-
-    const existingUser = await User.findUserByEmail(email);
-    if (existingUser) {
-      return res.status(409).json({ success: false, message: 'Email already in use' });
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, message: 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const existingEmail = await User.findUserByEmail(email);
+    if (existingEmail) {
+      return res.status(409).json({ success: false, message: 'อีเมลนี้ถูกใช้งานแล้ว' });
+    }
+    const existingUsername = await User.findUserByUsername(username);
+    if (existingUsername) {
+      return res.status(409).json({ success: false, message: 'ชื่อผู้ใช้นี้ถูกใช้งานแล้ว' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
     const newUserId      = await User.createUser(username, email, hashedPassword);
 
     sendTelegram(`🆕 <b>สมาชิกใหม่!</b>\n👤 ${username}\n📧 ${email}`);
@@ -85,7 +93,7 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
     res.status(200).json({
@@ -173,7 +181,7 @@ const resetPassword = async (req, res) => {
     }
 
     const { email } = rows[0];
-    const hashed    = await bcrypt.hash(newPassword, 10);
+    const hashed    = await bcrypt.hash(newPassword, 12);
 
     await db.execute('UPDATE users SET password = ? WHERE email = ?', [hashed, email]);
     await db.execute('DELETE FROM password_resets WHERE token = ?', [token]);

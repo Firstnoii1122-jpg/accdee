@@ -25,7 +25,7 @@ const getWalletInfo = async (req, res) => {
 const requestTopup = async (req, res) => {
   try {
     const amount = parseFloat(req.body.amount);
-    const note   = (req.body.note || '').trim();
+    const note   = (req.body.note || '').trim().slice(0, 500);
 
     if (!amount || amount < 10) {
       return res.status(400).json({ success: false, message: 'จำนวนเงินขั้นต่ำ 10 บาท' });

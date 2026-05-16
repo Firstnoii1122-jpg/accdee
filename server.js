@@ -42,9 +42,9 @@ const telegramRoutes = require('./routes/telegramRoutes');
 app.use('/api/auth',     authLimiter, authRoutes);
 app.use('/api',          apiLimiter, profileRoutes);
 app.use('/api/wallet',   apiLimiter, walletRoutes);
-app.use('/api/admin',    adminRoutes);
+app.use('/api/admin',    apiLimiter, adminRoutes);
 app.use('/api/shop',     apiLimiter, shopRoutes);
-app.use('/api/telegram', telegramRoutes);
+app.use('/api/telegram', apiLimiter, telegramRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

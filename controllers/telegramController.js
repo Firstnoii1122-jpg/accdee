@@ -3,9 +3,10 @@ const { sendNotify } = require('../config/telegram');
 
 // POST /api/telegram/webhook — รับข้อความจาก AccdeeNotifyBot
 const handleWebhook = async (req, res) => {
-  // ตรวจสอบ secret ที่ Telegram ส่งมาใน header
-  const incoming = req.headers['x-telegram-bot-api-secret-token'];
-  if (incoming !== process.env.TELEGRAM_WEBHOOK_SECRET) {
+  // Fail-secure: ถ้าไม่ได้ตั้ง TELEGRAM_WEBHOOK_SECRET → reject ทุก request
+  const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  const incoming       = req.headers['x-telegram-bot-api-secret-token'];
+  if (!expectedSecret || incoming !== expectedSecret) {
     return res.status(403).end();
   }
 
