@@ -1456,11 +1456,11 @@ footer {
   .nav-hamburger { display: flex; }
   .nav-drawer { display: block; }
 
-  /* hero carousel — แสดงรูปเต็มภาพบนมือถือ */
-  .hero-car  { height: auto; }
-  .hc-track  { height: auto; }
-  .hc-slide  { height: auto; }
-  .hc-img    { height: auto; object-fit: unset; max-height: none; }
+  /* hero carousel mobile */
+  .hero-car  { height: 300px; }
+  .hc-track  { height: 100%; }
+  .hc-slide  { height: 100%; }
+  .hc-img    { height: 100%; object-fit: cover; object-position: center; }
   .hc-cta { flex-direction: column; align-items: stretch; }
   .btn-hero { text-align: center; padding: 14px 28px; font-size: 0.92rem; }
 
@@ -1511,8 +1511,8 @@ footer {
   .modal-actions { flex-direction: column; }
   .highbudget-section .section-header { padding: 0 16px; }
 
-  /* hero carousel — mobile เล็ก (รูปเต็มภาพเหมือนกัน) */
-  .hero-car { height: auto; }
+  /* hero carousel — mobile เล็ก */
+  .hero-car { height: 220px; }
   .hc-arrow { width: 36px; height: 36px; font-size: 13px; }
   .hc-prev  { left: 8px; }
   .hc-next  { right: 8px; }
