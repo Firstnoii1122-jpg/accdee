@@ -65,23 +65,76 @@
   </div>
 </div>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">✓ ธุรกิจที่ได้รับการรับรอง · ดำเนินการถูกกฎหมาย</div>
-  <h1 class="hero-title">
-    <span class="line1">ACCDEE</span>
-    <span class="line2">บัญชีโซเชียลมีเดียพรีเมียม</span>
-  </h1>
-  <p class="hero-sub">
-    แหล่งรวมบัญชีโซเชียลมีเดียที่มีคุณภาพสูง<br>
-    <strong>Facebook · Twitter(X) · Instagram · TikTok</strong><br>
-    พร้อมส่งทันที — ระบบอัตโนมัติ 24 ชั่วโมง
-  </p>
-  <div class="hero-actions">
-    <a href="#products" class="btn-primary btn-hero">ดูสินค้าทั้งหมด</a>
-    <a href="#contact" class="btn-ghost btn-hero">ติดต่อทีมงาน</a>
-  </div>
-</section>
+<!-- HERO CAROUSEL -->
+<div class="hero-car" id="heroCar">
+  <div class="hc-track" id="hcTrack">
+
+    <!-- Slide 1 — Main Banner -->
+    <div class="hc-slide">
+      <img class="hc-img" src="images/hero-main.jpg" alt="ACCDEE บัญชีโซเชียลมีเดียพรีเมียม">
+      <div class="hc-overlay">
+        <div class="hero-badge">✓ ธุรกิจที่ได้รับการรับรอง · ดำเนินการถูกกฎหมาย</div>
+        <h1 class="hero-title">
+          <span class="line1">ACCDEE</span>
+          <span class="line2">บัญชีโซเชียลมีเดียพรีเมียม</span>
+        </h1>
+        <p class="hero-sub">
+          แหล่งรวมบัญชีโซเชียลมีเดียที่มีคุณภาพสูง<br>
+          <strong>Facebook · Twitter(X) · Instagram · TikTok</strong><br>
+          พร้อมส่งทันที — ระบบอัตโนมัติ 24 ชั่วโมง
+        </p>
+        <div class="hero-actions">
+          <a href="#products" class="btn-primary btn-hero">ดูสินค้าทั้งหมด</a>
+          <a href="#contact" class="btn-ghost btn-hero">ติดต่อทีมงาน</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2 — Hero Alt -->
+    <div class="hc-slide">
+      <img class="hc-img" src="images/hero-alt.png" alt="ACCDEE Premium">
+      <div class="hc-overlay">
+        <div class="hero-badge">🔥 สต็อกใหม่เข้าทุกวัน</div>
+        <h1 class="hero-title">
+          <span class="line1">บัญชีพรีเมียม</span>
+          <span class="line2">คุณภาพสูง ราคาเหมาะสม</span>
+        </h1>
+        <p class="hero-sub">
+          ตรวจสอบทุกบัญชีก่อนส่ง<br>
+          มีการรับประกัน 24 ชั่วโมง
+        </p>
+        <div class="hero-actions">
+          <a href="#products" class="btn-primary btn-hero">เลือกซื้อเลย</a>
+          <a href="#contact" class="btn-ghost btn-hero">ติดต่อทีมงาน</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 — Facebook Promo -->
+    <div class="hc-slide">
+      <img class="hc-img" src="images/banner-facebook.jpg" alt="Facebook Account">
+      <div class="hc-overlay">
+        <div class="hero-badge">📘 Facebook Premium ราคาพิเศษ</div>
+        <h1 class="hero-title">
+          <span class="line1">Facebook Account</span>
+          <span class="line2">บัญชีเฟสบุ๊คพรีเมียมพร้อมส่ง</span>
+        </h1>
+        <p class="hero-sub">
+          มีสต็อกพร้อมส่งทันที<br>
+          ราคาเริ่มต้นเพียง <strong>50 บาท</strong>
+        </p>
+        <div class="hero-actions">
+          <a href="#products" class="btn-primary btn-hero">สั่งซื้อเลย</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /hc-track -->
+
+  <div class="hc-dots" id="hcDots"></div>
+  <button class="hc-arrow hc-prev" onclick="hcMove(-1)" aria-label="ก่อนหน้า">&#10094;</button>
+  <button class="hc-arrow hc-next" onclick="hcMove(1)"  aria-label="ถัดไป">&#10095;</button>
+</div>
 
 <!-- STATS -->
 <div class="stats-bar">
@@ -132,7 +185,9 @@
   <div class="product-grid" id="productGrid">
 
     <div class="product-card" data-cat="facebook" onclick="openModal('fb-blank')">
-      <div class="product-icon icon-fb">📘</div>
+      <div class="product-img-wrap">
+        <img src="images/banner-facebook.jpg" alt="Facebook Account" class="product-img">
+      </div>
       <div class="product-platform">Facebook</div>
       <div class="product-name">บัญชี Facebook เปล่า</div>
       <div class="product-desc">บัญชี Facebook ใหม่ ไม่มีแฟนเพจ พร้อมใช้งานทันที เหมาะสำหรับเริ่มต้น</div>
@@ -150,7 +205,9 @@
     </div>
 
     <div class="product-card featured" data-cat="facebook" onclick="openModal('fb-10page')">
-      <div class="product-icon icon-fb">📘</div>
+      <div class="product-img-wrap">
+        <img src="images/banner-fb-ads.jpg" alt="Facebook Ads BM" class="product-img">
+      </div>
       <div class="product-platform">Facebook</div>
       <div class="product-name">บัญชี Facebook พร้อม 10 แฟนเพจ</div>
       <div class="product-desc">บัญชีที่มีแฟนเพจครบ 10 เพจพร้อมใช้งาน เหมาะสำหรับงานโฆษณาและการตลาด</div>
@@ -169,7 +226,9 @@
     </div>
 
     <div class="product-card" data-cat="facebook" onclick="openModal('fb-5page')">
-      <div class="product-icon icon-fb">📘</div>
+      <div class="product-img-wrap">
+        <img src="images/banner-fanpage.jpg" alt="Fanpage" class="product-img">
+      </div>
       <div class="product-platform">Facebook</div>
       <div class="product-name">บัญชี Facebook พร้อม 5 แฟนเพจ</div>
       <div class="product-desc">บัญชีที่มีแฟนเพจ 5 เพจ ราคาสุดคุ้ม เหมาะสำหรับผู้เริ่มยิงโฆษณา</div>
@@ -187,7 +246,9 @@
     </div>
 
     <div class="product-card featured" data-cat="twitter" onclick="openModal('tw-1k')">
-      <div class="product-icon icon-tw">🐦</div>
+      <div class="product-img-wrap">
+        <img src="images/banner-twitter.jpg" alt="Twitter Premium" class="product-img">
+      </div>
       <div class="product-platform">Twitter (X)</div>
       <div class="product-name">Twitter บัญชี 1,000+ ผู้ติดตาม</div>
       <div class="product-desc">บัญชี Twitter ที่มีผู้ติดตามกว่า 1,000 คน มีความน่าเชื่อถือสูง เหมาะทำการตลาด</div>
@@ -205,7 +266,9 @@
     </div>
 
     <div class="product-card coming-soon" data-cat="coming">
-      <div class="product-icon icon-ig">📸</div>
+      <div class="product-img-wrap">
+        <img src="images/banner-instagram.jpg" alt="Instagram" class="product-img">
+      </div>
       <div class="product-platform">Instagram</div>
       <div class="product-name">บัญชี Instagram ใหม่</div>
       <div class="product-desc">บัญชี Instagram พร้อมใช้งาน — กำลังเตรียมสต็อก</div>
@@ -217,7 +280,9 @@
     </div>
 
     <div class="product-card coming-soon" data-cat="coming">
-      <div class="product-icon icon-tt">🎵</div>
+      <div class="product-img-wrap">
+        <img src="images/banner-tiktok.jpg" alt="TikTok" class="product-img">
+      </div>
       <div class="product-platform">TikTok</div>
       <div class="product-name">บัญชี TikTok ใหม่ / Live</div>
       <div class="product-desc">บัญชี TikTok พร้อม Live — กำลังเตรียมสต็อก</div>
@@ -482,5 +547,49 @@
 
 <!-- โหลด JavaScript -->
 <script src="js/main.js"></script>
+
+<script>
+// ── Hero Carousel ──
+(function () {
+  var track = document.getElementById('hcTrack');
+  var dotsEl = document.getElementById('hcDots');
+  if (!track || !dotsEl) return;
+
+  var slides = track.querySelectorAll('.hc-slide');
+  var idx = 0, timer;
+
+  // สร้าง dot buttons
+  slides.forEach(function (_, i) {
+    var d = document.createElement('button');
+    d.className = 'hc-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'ไปที่สไลด์ ' + (i + 1));
+    d.addEventListener('click', function () { hcGo(i); });
+    dotsEl.appendChild(d);
+  });
+
+  function hcGo(n) {
+    idx = (n + slides.length) % slides.length;
+    track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    dotsEl.querySelectorAll('.hc-dot').forEach(function (d, i) {
+      d.classList.toggle('active', i === idx);
+    });
+    clearInterval(timer);
+    timer = setInterval(function () { hcGo(idx + 1); }, 4500);
+  }
+
+  window.hcMove = function (dir) { hcGo(idx + dir); };
+
+  // Swipe support สำหรับมือถือ
+  var startX = 0;
+  track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    var diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) hcGo(idx + (diff > 0 ? 1 : -1));
+  }, { passive: true });
+
+  // เริ่ม auto-play
+  timer = setInterval(function () { hcGo(idx + 1); }, 4500);
+})();
+</script>
 </body>
 </html>
