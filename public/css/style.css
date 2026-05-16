@@ -117,6 +117,8 @@ nav {
   padding: 4px 12px;
 }
 
+.nav-profile-btn { font-size: 0.82rem; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .nav-username {
   font-size: 0.82rem;
   color: var(--muted);
@@ -1457,4 +1459,24 @@ footer {
   .hc-arrow { width: 36px; height: 36px; font-size: 13px; }
   .hc-prev  { left: 8px; }
   .hc-next  { right: 8px; }
+
+  /* Auth / Profile modals — full screen on tiny phones */
+  .auth-overlay { padding: 0; align-items: flex-end; }
+  .auth-modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+    max-width: 100%;
+    padding: 24px 20px 32px;
+  }
+
+  /* Navbar profile button — compact */
+  .nav-profile-btn { font-size: 0.78rem; padding: 5px 10px; }
+
+  /* Topup overlay same treatment */
+  #topupOverlay { padding: 0; align-items: flex-end; }
+  #topupOverlay .auth-modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+    max-width: 100%;
+  }
 }

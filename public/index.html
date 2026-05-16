@@ -31,7 +31,7 @@
     <div id="userNav">
       <span class="nav-balance" onclick="openTopup()" title="คลิกเพื่อเติมเงิน" style="cursor:pointer">💰 <span id="navBalance">0.00</span> ฿</span>
       <button class="btn-primary" style="padding:6px 14px;font-size:0.8rem" onclick="openTopup()">เติมเงิน</button>
-      <span class="nav-username" id="navUsername"></span>
+      <button class="btn-ghost nav-profile-btn" onclick="openProfile()" title="โปรไฟล์"><span id="navUsername"></span> ⚙️</button>
       <button class="btn-ghost" onclick="doLogout()">ออก</button>
     </div>
   </div>
@@ -60,6 +60,7 @@
       <div class="drawer-balance">💰 <span id="drawerBalance">0.00</span> ฿</div>
       <div class="drawer-username" id="drawerUsername"></div>
       <button class="auth-btn" style="margin-bottom:12px" onclick="closeDrawer();openTopup()">เติมเงิน</button>
+      <button class="btn-ghost" style="width:100%;padding:12px;text-align:center;margin-bottom:10px" onclick="closeDrawer();openProfile()">⚙️ โปรไฟล์</button>
       <button class="btn-ghost" style="width:100%;padding:12px;text-align:center" onclick="closeDrawer();doLogout()">ออกจากระบบ</button>
     </div>
   </div>
@@ -650,6 +651,54 @@
       <div class="auth-msg" id="otpMsg"></div>
       <button class="auth-btn" id="otpBtn" onclick="doVerifyOtp()">ยืนยัน OTP</button>
       <p class="auth-switch"><a onclick="switchAuthTab('login')" style="color:#94a3b8;font-size:13px">← กลับ / เข้าสู่ระบบใหม่</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="auth-overlay" id="profileOverlay" onclick="closeProfileOuter(event)">
+  <div class="auth-modal" style="max-width:440px">
+    <button class="modal-close" onclick="closeProfile()">✕</button>
+    <div class="auth-logo">ACC<span>DEE</span></div>
+    <p class="auth-subtitle">โปรไฟล์ของคุณ</p>
+
+    <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:14px;margin-bottom:18px;font-size:0.85rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <span style="color:var(--muted)">อีเมล</span>
+        <span id="profileEmail" style="color:var(--text-main)">—</span>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="color:var(--muted)">ยอดเงิน</span>
+        <span id="profileBalance" style="color:var(--neon-green);font-weight:700">—</span>
+      </div>
+    </div>
+
+    <!-- Change Username -->
+    <div style="margin-bottom:20px">
+      <p style="font-size:0.8rem;font-weight:700;color:var(--neon-blue);margin-bottom:10px">เปลี่ยนชื่อผู้ใช้</p>
+      <div class="form-group">
+        <label>ชื่อผู้ใช้ใหม่</label>
+        <input type="text" id="profileUsername" class="auth-input" placeholder="ชื่อผู้ใช้ 3-30 ตัวอักษร">
+      </div>
+      <div class="auth-msg" id="profileUsernameMsg"></div>
+      <button class="auth-btn" id="profileUsernameBtn" onclick="saveUsername()" style="padding:10px">บันทึกชื่อผู้ใช้</button>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:20px 0">
+
+    <!-- Change Password -->
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:var(--neon-blue);margin-bottom:10px">เปลี่ยนรหัสผ่าน</p>
+      <div class="form-group">
+        <label>รหัสผ่านปัจจุบัน</label>
+        <input type="password" id="profileCurrentPw" class="auth-input" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label>รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)</label>
+        <input type="password" id="profileNewPw" class="auth-input" placeholder="••••••••">
+      </div>
+      <div class="auth-msg" id="profilePasswordMsg"></div>
+      <button class="auth-btn" id="profilePasswordBtn" onclick="savePassword()" style="padding:10px">เปลี่ยนรหัสผ่าน</button>
     </div>
   </div>
 </div>

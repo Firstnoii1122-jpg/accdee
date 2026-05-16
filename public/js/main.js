@@ -548,7 +548,7 @@ function initKeyboardSupport() {
     if (e.key === 'Enter') doVerifyOtp();
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeAuth(); closeTopup(); closeDrawer(); }
+    if (e.key === 'Escape') { closeModal(); closeAuth(); closeTopup(); closeDrawer(); closeProfile(); }
   });
 }
 
@@ -757,4 +757,101 @@ function initTopupEvents() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeTopup();
   });
+}
+
+// ── 14. PROFILE MODAL ──────────────────────────
+
+function openProfile() {
+  const user = JSON.parse(localStorage.getItem('accdee_user') || 'null');
+  if (!user) { openAuth('login'); return; }
+
+  document.getElementById('profileEmail').textContent   = user.email    || '—';
+  document.getElementById('profileBalance').textContent = '฿' + parseFloat(user.balance || 0).toFixed(2);
+  document.getElementById('profileUsername').value      = user.username || '';
+  document.getElementById('profileCurrentPw').value     = '';
+  document.getElementById('profileNewPw').value         = '';
+  document.getElementById('profileUsernameMsg').textContent = '';
+  document.getElementById('profilePasswordMsg').textContent = '';
+
+  document.getElementById('profileOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProfile() {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeProfileOuter(e) {
+  if (e.target === document.getElementById('profileOverlay')) closeProfile();
+}
+
+async function saveUsername() {
+  const username = document.getElementById('profileUsername').value.trim();
+  const msgEl    = document.getElementById('profileUsernameMsg');
+  const btn      = document.getElementById('profileUsernameBtn');
+  const token    = localStorage.getItem('accdee_token');
+
+  msgEl.textContent = '';
+  msgEl.className   = 'auth-msg';
+
+  if (!username) { msgEl.textContent = 'กรุณากรอกชื่อผู้ใช้'; msgEl.className = 'auth-msg error'; return; }
+
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  try {
+    const res  = await fetch(`${API_URL}/profile/username`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ username })
+    });
+    const data = await res.json();
+    if (data.success) {
+      msgEl.textContent = data.message;
+      msgEl.className   = 'auth-msg success';
+      // อัปเดต localStorage + navbar
+      const user = JSON.parse(localStorage.getItem('accdee_user') || '{}');
+      user.username = data.username;
+      localStorage.setItem('accdee_user', JSON.stringify(user));
+      document.getElementById('navUsername').textContent    = data.username;
+      document.getElementById('drawerUsername').textContent = data.username;
+    } else {
+      msgEl.textContent = data.message;
+      msgEl.className   = 'auth-msg error';
+    }
+  } catch { msgEl.textContent = 'เชื่อมต่อไม่ได้'; msgEl.className = 'auth-msg error'; }
+  finally { btn.disabled = false; btn.textContent = 'บันทึกชื่อผู้ใช้'; }
+}
+
+async function savePassword() {
+  const currentPw = document.getElementById('profileCurrentPw').value;
+  const newPw     = document.getElementById('profileNewPw').value;
+  const msgEl     = document.getElementById('profilePasswordMsg');
+  const btn       = document.getElementById('profilePasswordBtn');
+  const token     = localStorage.getItem('accdee_token');
+
+  msgEl.textContent = '';
+  msgEl.className   = 'auth-msg';
+
+  if (!currentPw || !newPw) { msgEl.textContent = 'กรุณากรอกข้อมูลให้ครบ'; msgEl.className = 'auth-msg error'; return; }
+  if (newPw.length < 8)     { msgEl.textContent = 'รหัสผ่านใหม่ต้องมีอย่างน้อย 8 ตัวอักษร'; msgEl.className = 'auth-msg error'; return; }
+
+  btn.disabled = true; btn.textContent = 'กำลังเปลี่ยน...';
+  try {
+    const res  = await fetch(`${API_URL}/profile/change-password`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw })
+    });
+    const data = await res.json();
+    if (data.success) {
+      msgEl.textContent = data.message;
+      msgEl.className   = 'auth-msg success';
+      document.getElementById('profileCurrentPw').value = '';
+      document.getElementById('profileNewPw').value     = '';
+    } else {
+      msgEl.textContent = data.message;
+      msgEl.className   = 'auth-msg error';
+    }
+  } catch { msgEl.textContent = 'เชื่อมต่อไม่ได้'; msgEl.className = 'auth-msg error'; }
+  finally { btn.disabled = false; btn.textContent = 'เปลี่ยนรหัสผ่าน'; }
 }
