@@ -220,7 +220,7 @@ const getStock = async (req, res) => {
   }
 };
 
-// POST /api/admin/inventory — เพิ่มสต็อก
+// POST /api/admin/inventory — เพิ่มสต็อก (ทีละชิ้น)
 const addInventory = async (req, res) => {
   const { productKey, credentials } = req.body;
   if (!productKey || !credentials || !credentials.trim()) {
@@ -234,6 +234,36 @@ const addInventory = async (req, res) => {
     res.status(201).json({ success: true, message: 'เพิ่มสต็อกสำเร็จ', data: { id: result.insertId } });
   } catch (err) {
     console.error('addInventory error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// POST /api/admin/inventory/bulk — เพิ่มสต็อกทีละหลายชิ้น (แต่ละบรรทัด = 1 ชิ้น)
+const bulkAddInventory = async (req, res) => {
+  const { productKey, credentialsList } = req.body;
+  if (!productKey || !credentialsList) {
+    return res.status(400).json({ success: false, message: 'กรุณากรอกข้อมูลให้ครบ' });
+  }
+
+  const lines = String(credentialsList)
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 0);
+
+  if (lines.length === 0) {
+    return res.status(400).json({ success: false, message: 'ไม่พบข้อมูลที่จะเพิ่ม' });
+  }
+  if (lines.length > 500) {
+    return res.status(400).json({ success: false, message: 'เพิ่มได้สูงสุด 500 ชิ้นต่อครั้ง' });
+  }
+
+  try {
+    const placeholders = lines.map(() => '(?, ?)').join(', ');
+    const values       = lines.flatMap(cred => [productKey, cred]);
+    await db.execute(`INSERT INTO inventory (product_key, credentials) VALUES ${placeholders}`, values);
+    res.status(201).json({ success: true, message: `เพิ่มสต็อกสำเร็จ ${lines.length} ชิ้น`, count: lines.length });
+  } catch (err) {
+    console.error('bulkAddInventory error:', err);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
@@ -522,4 +552,4 @@ const toggle2FA = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole, toggle2FA };
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, bulkAddInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole, toggle2FA };

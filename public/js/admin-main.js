@@ -419,13 +419,21 @@ async function loadInventory() {
 }
 
 async function saveInventory() {
-  const productKey  = document.getElementById('invProductKey')?.value.trim().toLowerCase();
-  const credentials = document.getElementById('invCredentials')?.value.trim();
-  if (!productKey || !credentials) { toast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
-  if (/\s/.test(productKey)) { toast('product key ห้ามมีช่องว่าง', 'error'); return; }
+  const productKey = document.getElementById('invProductKey')?.value.trim().toLowerCase();
+  const raw        = document.getElementById('invCredentials')?.value || '';
+  const lines      = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+  if (!productKey || lines.length === 0) { toast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+  if (/\s/.test(productKey))             { toast('product key ห้ามมีช่องว่าง', 'error'); return; }
+
   try {
-    const res = await API.post('/admin/inventory', { productKey, credentials });
-    toast('✅ ' + res.message, 'success');
+    let res;
+    if (lines.length === 1) {
+      res = await API.post('/admin/inventory', { productKey, credentials: lines[0] });
+    } else {
+      res = await API.post('/admin/inventory/bulk', { productKey, credentialsList: lines.join('\n') });
+    }
+    toast(`✅ ${res.message}`, 'success');
     document.getElementById('addInventoryModal').classList.remove('show');
     document.getElementById('invProductKey').value  = '';
     document.getElementById('invCredentials').value = '';

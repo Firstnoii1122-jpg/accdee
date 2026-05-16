@@ -157,4 +157,26 @@ const addReview = async (req, res) => {
   }
 };
 
-module.exports = { getProducts, buyProduct, getMyOrders, addReview };
+// GET /api/shop/reviews/public — รีวิวล่าสุดสำหรับแสดงหน้าแรก (ไม่ต้อง login)
+const getPublicReviews = async (req, res) => {
+  try {
+    const [rows] = await db.execute(`
+      SELECT r.rating, r.comment, r.created_at,
+             u.username,
+             p.name AS product_name
+      FROM reviews r
+      JOIN users  u ON u.id = r.user_id
+      JOIN orders o ON o.id = r.order_id
+      JOIN products p ON p.product_key = o.product_key
+      WHERE r.rating >= 4
+      ORDER BY r.created_at DESC
+      LIMIT 12
+    `);
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('getPublicReviews error:', err);
+    res.status(500).json({ success: false, data: [] });
+  }
+};
+
+module.exports = { getProducts, buyProduct, getMyOrders, addReview, getPublicReviews };

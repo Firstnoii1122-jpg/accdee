@@ -580,6 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initKeyboardSupport();   // เปิด keyboard shortcuts
   initTopupEvents();       // เปิด event สำหรับ topup modal
   loadSiteSettings();      // โหลดค่าตั้งค่าจาก DB (alert, contact links)
+  loadPublicReviews();     // โหลดรีวิวจริงจาก DB
 
   // refresh balance ทุก 30 วิ — ลูกค้าเห็นยอดล่าสุดหลัง admin อนุมัติ
   setInterval(refreshBalance, 30000);
@@ -759,7 +760,46 @@ function initTopupEvents() {
   });
 }
 
-// ── 14. PROFILE MODAL ──────────────────────────
+// ── 14. PUBLIC REVIEWS ─────────────────────────
+
+async function loadPublicReviews() {
+  const grid = document.getElementById('reviewGrid');
+  if (!grid) return;
+  try {
+    const res  = await fetch(`${API_URL}/shop/reviews/public`);
+    const data = await res.json();
+    const list = data.data || [];
+
+    if (!list.length) {
+      grid.innerHTML = '<p style="color:var(--muted);text-align:center;grid-column:1/-1">ยังไม่มีรีวิว</p>';
+      return;
+    }
+
+    grid.innerHTML = list.map(r => {
+      const stars   = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+      const comment = r.comment ? escapeHtml(r.comment) : 'ไม่มีความคิดเห็นเพิ่มเติม';
+      const date    = new Date(r.created_at).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+      const user    = escapeHtml(r.username.slice(0, 2) + '***');
+      return `
+        <div class="review-card">
+          <div class="review-stars">${stars}</div>
+          <div class="review-comment">"${comment}"</div>
+          <div class="review-meta">
+            <span>👤 ${user}</span>
+            <span>${escapeHtml(r.product_name)} · ${date}</span>
+          </div>
+        </div>`;
+    }).join('');
+  } catch {
+    grid.innerHTML = '<p style="color:var(--muted);text-align:center;grid-column:1/-1">ไม่สามารถโหลดรีวิวได้</p>';
+  }
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── 15. PROFILE MODAL ──────────────────────────
 
 function openProfile() {
   const user = JSON.parse(localStorage.getItem('accdee_user') || 'null');

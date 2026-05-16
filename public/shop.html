@@ -197,6 +197,37 @@
     #toast.show { display: block; }
     #toast.success { background: #10b981; color: #fff; }
     #toast.error   { background: #ef4444; color: #fff; }
+
+    /* LOADING SPINNER */
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #334155;
+      border-top-color: #a78bfa;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 60px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 0 16px; }
+      .nav-right { gap: 8px; }
+      .nav-btn { padding: 6px 10px; font-size: 13px; }
+      main { padding: 20px 16px; }
+      .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .product-card { padding: 16px; gap: 8px; }
+      .product-name { font-size: 14px; }
+      .product-price { font-size: 18px; }
+      .btn-buy, .btn-contact { padding: 10px; font-size: 14px; }
+      /* modal full-width */
+      .modal { width: 95%; padding: 20px 16px; }
+    }
+    @media (max-width: 480px) {
+      .product-grid { grid-template-columns: 1fr; }
+      /* nav — hide some links, show essential only */
+      .nav-right a[href="/faq.html"] { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -299,10 +330,11 @@
   }
 
   async function loadProducts() {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '<div class="spinner"></div>';
     try {
       const res  = await api('GET', '/shop/products');
       const list = res.data || [];
-      const grid = document.getElementById('productGrid');
 
       if (!list.length) {
         grid.innerHTML = '<div class="empty">ยังไม่มีสินค้าในขณะนี้<br>กรุณาติดต่อ Admin</div>';

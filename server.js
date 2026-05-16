@@ -4,13 +4,31 @@ const express    = require('express');
 const cors       = require('cors');
 const path       = require('path');
 const helmet     = require('helmet');
+const morgan     = require('morgan');
 const rateLimit  = require('express-rate-limit');
 const setupDb    = require('./config/setupDb');
 
 const app = express();
 
+// Request logging
+app.use(morgan('[:date[iso]] :method :url :status :res[content-length]B :response-time ms'));
+
 // Security headers
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc:     ["'self'"],
+      scriptSrc:      ["'self'", "'unsafe-inline'"],
+      styleSrc:       ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc:        ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc:         ["'self'", 'data:', 'https://res.cloudinary.com'],
+      connectSrc:     ["'self'"],
+      frameSrc:       ["'none'"],
+      objectSrc:      ["'none'"],
+    }
+  },
+  crossOriginEmbedderPolicy: false,
+}));
 
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 app.use(express.json({ limit: '2mb' }));

@@ -3,6 +3,7 @@ const router         = express.Router();
 const { protect }    = require('../middleware/authMiddleware');
 const shopController = require('../controllers/shopController');
 
+router.get('/reviews/public',     shopController.getPublicReviews); // ไม่ต้อง login
 router.get('/products',           protect, shopController.getProducts);
 router.post('/buy',               protect, shopController.buyProduct);
 router.get('/orders',             protect, shopController.getMyOrders);

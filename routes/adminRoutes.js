@@ -32,7 +32,8 @@ router.post('/members/:id/toggle-2fa',  adminOnly, adminController.toggle2FA);
 // inventory & orders
 router.get('/inventory/stock',  adminOnly, adminController.getStock);
 router.get('/inventory',        adminOnly, adminController.getInventory);
-router.post('/inventory',       adminOnly, adminController.addInventory);
+router.post('/inventory',        adminOnly, adminController.addInventory);
+router.post('/inventory/bulk',   adminOnly, adminController.bulkAddInventory);
 router.delete('/inventory/:id', adminOnly, adminController.deleteInventory);
 router.get('/orders',           adminOnly, adminController.getAllOrders);
 
