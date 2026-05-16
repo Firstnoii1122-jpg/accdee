@@ -49,6 +49,9 @@
     <a class="menu-item" onclick="showPage('members', this)">
       <span class="icon">👥</span> สมาชิก
     </a>
+    <a class="menu-item" onclick="showPage('admins', this)">
+      <span class="icon">👑</span> จัดการแอดมิน
+    </a>
     <a class="menu-item" onclick="showPage('settings', this)">
       <span class="icon">⚙️</span> ตั้งค่าเว็บไซต์
     </a>
@@ -348,6 +351,34 @@
       </div>
     </div><!-- end page-coupons -->
 
+    <!-- =================== PAGE: ADMINS =================== -->
+    <div id="page-admins" class="page">
+      <div class="filter-row">
+        <button class="btn btn-primary" onclick="document.getElementById('addAdminModal').classList.add('show')">+ เพิ่มแอดมินใหม่</button>
+        <button class="btn btn-outline btn-sm" onclick="loadAdmins()">🔄 รีเฟรช</button>
+      </div>
+      <div class="card" style="max-width:720px">
+        <div class="card-header"><span class="card-title">👑 แอดมินทั้งหมด</span></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>ยูสเซอร์</th><th>อีเมล</th><th>วันที่สร้าง</th><th>จัดการ</th></tr></thead>
+              <tbody id="adminsTable">
+                <tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:16px">กำลังโหลด...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="max-width:720px;margin-top:16px">
+        <div class="card-header"><span class="card-title">🔼 Promote User เป็น Admin</span></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:#9ca3af;margin-bottom:12px">ไปที่หน้า <b>สมาชิก</b> แล้วกดปุ่ม "👑 Promote" ที่แถวของ user ที่ต้องการ</p>
+        </div>
+      </div>
+    </div><!-- end page-admins -->
+
     <!-- =================== PAGE: SETTINGS =================== -->
     <div id="page-settings" class="page">
       <div class="card" style="max-width:720px">
@@ -526,6 +557,34 @@
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="document.getElementById('addInventoryModal').classList.remove('show')">ยกเลิก</button>
       <button class="btn btn-primary" onclick="saveInventory()">+ เพิ่มสต็อก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: ADD ADMIN ===== -->
+<div class="modal-overlay" id="addAdminModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">👑 เพิ่มแอดมินใหม่</span>
+      <button class="modal-close" onclick="document.getElementById('addAdminModal').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">ชื่อผู้ใช้ (Username)</label>
+        <input type="text" id="newAdminUsername" class="form-control" placeholder="ชื่อผู้ใช้แอดมิน">
+      </div>
+      <div class="form-group">
+        <label class="form-label">อีเมล</label>
+        <input type="email" id="newAdminEmail" class="form-control" placeholder="admin@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)</label>
+        <input type="password" id="newAdminPassword" class="form-control" placeholder="รหัสผ่าน">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('addAdminModal').classList.remove('show')">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveAdmin()">+ สร้างแอดมิน</button>
     </div>
   </div>
 </div>

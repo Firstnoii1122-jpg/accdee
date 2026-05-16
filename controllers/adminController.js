@@ -436,4 +436,72 @@ const updateSettings = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings };
+// GET /api/admin/admins — รายชื่อ admin ทั้งหมด
+const getAdmins = async (req, res) => {
+  try {
+    const [rows] = await db.execute(
+      "SELECT id, username, email, created_at FROM users WHERE role = 'admin' ORDER BY created_at ASC"
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('getAdmins error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// POST /api/admin/admins — สร้าง admin ใหม่
+const createAdmin = async (req, res) => {
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) {
+    return res.status(400).json({ success: false, message: 'กรุณากรอกข้อมูลให้ครบ' });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ success: false, message: 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร' });
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ success: false, message: 'รูปแบบอีเมลไม่ถูกต้อง' });
+  }
+  try {
+    const [[existing]] = await db.execute('SELECT id FROM users WHERE email = ? OR username = ?', [email.toLowerCase(), username]);
+    if (existing) return res.status(409).json({ success: false, message: 'อีเมลหรือชื่อผู้ใช้นี้มีอยู่แล้ว' });
+
+    const hashed = await bcrypt.hash(password, 12);
+    await db.execute(
+      "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'admin')",
+      [username.trim(), email.trim().toLowerCase(), hashed]
+    );
+    res.status(201).json({ success: true, message: `สร้าง admin "${username}" สำเร็จ` });
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'อีเมลหรือชื่อผู้ใช้นี้มีอยู่แล้ว' });
+    console.error('createAdmin error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// POST /api/admin/members/:id/set-role — promote/demote user ↔ admin
+const setMemberRole = async (req, res) => {
+  const targetId  = parseInt(req.params.id);
+  const selfId    = req.user.id;
+  const { role }  = req.body;
+
+  if (!['user', 'admin'].includes(role)) {
+    return res.status(400).json({ success: false, message: 'role ต้องเป็น user หรือ admin เท่านั้น' });
+  }
+  if (targetId === selfId) {
+    return res.status(400).json({ success: false, message: 'ไม่สามารถเปลี่ยน role ของตัวเองได้' });
+  }
+  try {
+    const [[target]] = await db.execute('SELECT id, username FROM users WHERE id = ?', [targetId]);
+    if (!target) return res.status(404).json({ success: false, message: 'ไม่พบผู้ใช้' });
+
+    await db.execute('UPDATE users SET role = ? WHERE id = ?', [role, targetId]);
+    const action = role === 'admin' ? 'เลื่อนเป็น Admin' : 'ลดเป็น User';
+    res.json({ success: true, message: `${action} "${target.username}" สำเร็จ` });
+  } catch (err) {
+    console.error('setMemberRole error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole };

@@ -23,6 +23,11 @@ router.delete('/products/:key', adminOnly, adminController.deleteProduct);
 router.get('/settings',  adminOnly, adminController.getSettings);
 router.put('/settings',  adminOnly, adminController.updateSettings);
 
+// admin management
+router.get('/admins',                    adminOnly, adminController.getAdmins);
+router.post('/admins',                   adminOnly, adminController.createAdmin);
+router.post('/members/:id/set-role',     adminOnly, adminController.setMemberRole);
+
 // inventory & orders
 router.get('/inventory/stock',  adminOnly, adminController.getStock);
 router.get('/inventory',        adminOnly, adminController.getInventory);

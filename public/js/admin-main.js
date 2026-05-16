@@ -41,6 +41,7 @@ function showPage(id, menuEl) {
     inventory: 'สต็อก',
     orders:    'คำสั่งซื้อ',
     coupons:   'คูปอง',
+    admins:    'จัดการแอดมิน',
     settings:  'ตั้งค่าเว็บไซต์'
   };
   document.getElementById('pageTitle').textContent = titleMap[id] || id;
@@ -52,6 +53,7 @@ function showPage(id, menuEl) {
   if (id === 'inventory') loadInventory();
   if (id === 'orders')    loadOrders();
   if (id === 'coupons')   loadCoupons();
+  if (id === 'admins')    loadAdmins();
   if (id === 'settings')  loadSettings();
   if (id === 'dashboard') loadDashboardStats();
 }
@@ -238,6 +240,7 @@ async function loadMembers(search = '') {
         <td>
           <button class="btn btn-outline btn-sm" onclick="adjustCredit(${m.id})">💰 ปรับยอด</button>
           <button class="btn btn-warning btn-sm" onclick="openResetPassword(${m.id},'${escapeHtml(m.username)}')">🔑 รีเซ็ตรหัส</button>
+          <button class="btn btn-outline btn-sm" style="border-color:#a78bfa;color:#a78bfa" onclick="promoteToAdmin(${m.id},'${escapeHtml(m.username)}')">👑 Promote</button>
           <button class="btn btn-danger btn-sm" onclick="deleteMember(${m.id},'${escapeHtml(m.username)}')">🗑️ ลบ</button>
         </td>
       </tr>`
@@ -622,6 +625,61 @@ async function deleteMember(id, username) {
   }
 }
 
+// ===== ADMIN MANAGEMENT =====
+async function loadAdmins() {
+  const tbody = document.getElementById('adminsTable');
+  if (!tbody) return;
+  try {
+    const res  = await API.get('/admin/admins');
+    const list = res?.data || [];
+    const selfId = API_CONFIG.getUser()?.id;
+    tbody.innerHTML = list.length
+      ? list.map((a, i) => `<tr>
+          <td>${i + 1}</td>
+          <td><b>${escapeHtml(a.username)}</b></td>
+          <td>${escapeHtml(a.email)}</td>
+          <td>${new Date(a.created_at).toLocaleDateString('th-TH')}</td>
+          <td>${a.id == selfId
+            ? '<span style="color:#9ca3af;font-size:12px">(คุณ)</span>'
+            : `<button class="btn btn-danger btn-sm" onclick="demoteAdmin(${a.id},'${escapeHtml(a.username)}')">ลด Role</button>`
+          }</td>
+        </tr>`).join('')
+      : '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:16px">ไม่มีข้อมูล</td></tr>';
+  } catch (err) { console.error('loadAdmins error:', err); }
+}
+
+async function saveAdmin() {
+  const username = document.getElementById('newAdminUsername').value.trim();
+  const email    = document.getElementById('newAdminEmail').value.trim();
+  const password = document.getElementById('newAdminPassword').value;
+  if (!username || !email || !password) { toast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+  try {
+    const res = await API.post('/admin/admins', { username, email, password });
+    toast('✅ ' + res.message, 'success');
+    document.getElementById('addAdminModal').classList.remove('show');
+    ['newAdminUsername','newAdminEmail','newAdminPassword'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    loadAdmins();
+  } catch (err) { toast('❌ ' + err.message, 'error'); }
+}
+
+async function promoteToAdmin(id, username) {
+  if (!confirm(`เลื่อน "${username}" เป็น Admin?\nเขาจะเข้าถึง Admin Panel ได้ทันที`)) return;
+  try {
+    const res = await API.post(`/admin/members/${id}/set-role`, { role: 'admin' });
+    toast('✅ ' + res.message, 'success');
+    loadMembers();
+  } catch (err) { toast('❌ ' + err.message, 'error'); }
+}
+
+async function demoteAdmin(id, username) {
+  if (!confirm(`ลด "${username}" กลับเป็น User?\nเขาจะเข้า Admin Panel ไม่ได้อีก`)) return;
+  try {
+    const res = await API.post(`/admin/members/${id}/set-role`, { role: 'user' });
+    toast('✅ ' + res.message, 'success');
+    loadAdmins();
+  } catch (err) { toast('❌ ' + err.message, 'error'); }
+}
+
 // ===== LOGOUT =====
 async function logout() {
   if (!confirm('ต้องการออกจากระบบหรือไม่?')) return;
@@ -684,3 +742,7 @@ window.saveCoupon       = saveCoupon;
 window.deleteCoupon     = deleteCoupon;
 window.loadSettings     = loadSettings;
 window.saveSettings     = saveSettings;
+window.loadAdmins       = loadAdmins;
+window.saveAdmin        = saveAdmin;
+window.promoteToAdmin   = promoteToAdmin;
+window.demoteAdmin      = demoteAdmin;
