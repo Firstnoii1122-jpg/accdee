@@ -309,11 +309,19 @@ nav {
   left: 0;
   right: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  padding: 16px 20px 14px;
+  background: linear-gradient(to top, rgba(5,13,26,0.75) 0%, transparent 100%);
+}
+
+/* ปุ่ม CTA ใต้ carousel */
+.hero-cta-bar {
+  display: flex;
+  justify-content: center;
   gap: 14px;
-  padding: 32px 20px 28px;
-  background: linear-gradient(to top, rgba(5,13,26,0.97) 0%, rgba(5,13,26,0.55) 55%, transparent 100%);
+  padding: 20px 16px;
+  background: var(--bg-dark);
+  border-bottom: 1px solid var(--border);
 }
 
 .hc-dots {
@@ -1461,7 +1469,7 @@ footer {
   .hc-track  { height: 100%; }
   .hc-slide  { height: 100%; }
   .hc-img    { height: 100%; object-fit: cover; object-position: center; }
-  .hc-cta { flex-direction: column; align-items: stretch; }
+  .hero-cta-bar { flex-direction: column; align-items: stretch; padding: 16px; }
   .btn-hero { text-align: center; padding: 14px 28px; font-size: 0.92rem; }
 
   .stat-item { flex: 0 0 50%; padding: 12px 16px; }
