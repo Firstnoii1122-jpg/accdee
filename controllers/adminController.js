@@ -93,6 +93,15 @@ const getStats = async (req, res) => {
     const [[{ topupToday }]] = await db.execute(
       "SELECT COALESCE(SUM(amount),0) as topupToday FROM transactions WHERE type='topup' AND status='approved' AND DATE(created_at)=CURDATE()"
     );
+    const [[{ ordersToday }]] = await db.execute(
+      "SELECT COUNT(*) as ordersToday FROM orders WHERE DATE(created_at) = CURDATE()"
+    );
+    const [[{ totalRevenue }]] = await db.execute(
+      "SELECT COALESCE(SUM(amount),0) as totalRevenue FROM transactions WHERE type='topup' AND status='approved'"
+    );
+    const [[{ totalOrders }]] = await db.execute(
+      "SELECT COUNT(*) as totalOrders FROM orders"
+    );
     const [recentTransactions] = await db.execute(
       `SELECT t.id, t.amount, t.type, t.status, t.created_at,
               u.username, u.email
@@ -101,7 +110,9 @@ const getStats = async (req, res) => {
     );
     res.json({
       success: true,
-      data: { totalMembers, newToday, pendingCount, topupToday: parseFloat(topupToday), recentTransactions }
+      data: { totalMembers, newToday, pendingCount, topupToday: parseFloat(topupToday),
+              ordersToday, totalRevenue: parseFloat(totalRevenue), totalOrders,
+              recentTransactions }
     });
   } catch (err) {
     console.error('getStats error:', err);

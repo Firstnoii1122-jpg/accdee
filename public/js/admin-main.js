@@ -77,6 +77,8 @@ async function loadDashboardStats() {
     set('statNewToday',     (d.newToday     || 0).toLocaleString('th-TH'));
     set('statPending',      (d.pendingCount || 0).toLocaleString('th-TH'));
     set('statTopupToday',   '฿' + fmt(d.topupToday || 0));
+    set('statOrdersToday',  (d.ordersToday  || 0).toLocaleString('th-TH') + ' ออเดอร์');
+    set('statTotalRevenue', '฿' + fmt(d.totalRevenue || 0));
 
     const badge = document.getElementById('pendingBadge');
     if (badge) badge.textContent = d.pendingCount || 0;
@@ -333,7 +335,11 @@ async function loadProducts() {
           <td><b>${escapeHtml(p.name)}</b></td>
           <td style="color:#9ca3af">${p.description ? escapeHtml(p.description) : '-'}</td>
           <td class="text-success fw-bold">฿${fmt(p.price)}</td>
-          <td>${parseInt(p.stock) > 0 ? `<span class="badge badge-success">${p.stock} ชิ้น</span>` : '<span class="badge badge-danger">หมด</span>'}</td>
+          <td>${
+            parseInt(p.stock) === 0  ? '<span class="badge badge-danger">หมด</span>' :
+            parseInt(p.stock) <= 3   ? `<span class="badge" style="background:#422006;color:#fb923c">⚠️ ${p.stock} ชิ้น (ใกล้หมด)</span>` :
+                                       `<span class="badge badge-success">${p.stock} ชิ้น</span>`
+          }</td>
           <td>
             <button class="btn btn-outline btn-sm" onclick="openEditProduct('${escapeHtml(p.product_key)}','${escapeHtml(p.name).replace(/'/g,"\\'")}','${escapeHtml(p.description||'').replace(/'/g,"\\'")}',${parseFloat(p.price)},${p.is_active})">✏️ แก้ไข</button>
             <button class="btn btn-danger btn-sm" onclick="deleteProduct('${escapeHtml(p.product_key)}')">ลบ</button>

@@ -217,6 +217,23 @@
     .contact-banner-text { font-size: 13px; color: #94a3b8; }
     .contact-banner-text b { color: #e2e8f0; }
     .contact-banner-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 14px; }
+      .nav-right { gap: 6px; }
+      .nav-btn { padding: 5px 9px; font-size: 12px; }
+      .nav-right a[href="/faq.html"] { display: none; }
+      .nav-right a[href="/wallet.html"] { display: none; }
+      main { padding: 20px 14px; }
+      .order-card { padding: 16px; }
+      .order-name { font-size: 14px; }
+      .order-amount { font-size: 16px; }
+      .cred-box { font-size: 12px; padding: 10px; }
+      .contact-banner { flex-direction: column; }
+      .contact-btns { flex-direction: column; }
+      .btn-line, .btn-tg { width: 100%; justify-content: center; }
+      #toast { right: 12px; bottom: 12px; font-size: 13px; }
+    }
   </style>
 </head>
 <body>
