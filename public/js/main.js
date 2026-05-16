@@ -53,11 +53,12 @@ function closeAuthOuter(e) {
   if (e.target === document.getElementById('authOverlay')) closeAuth();
 }
 
-// เปลี่ยน tab Login / Register / Forgot
+// เปลี่ยน tab Login / Register / Forgot / OTP
 function switchAuthTab(tab) {
   document.getElementById('formLogin').style.display    = tab === 'login'    ? 'block' : 'none';
   document.getElementById('formRegister').style.display = tab === 'register' ? 'block' : 'none';
   document.getElementById('formForgot').style.display   = tab === 'forgot'   ? 'block' : 'none';
+  document.getElementById('formOtp').style.display      = tab === 'otp'      ? 'block' : 'none';
   document.getElementById('tabLogin').classList.toggle('active',    tab === 'login');
   document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
   clearAuthMsg();
@@ -79,11 +80,12 @@ function showAuthMsg(id, text, type = 'error') {
 }
 
 // Login — เรียก POST /api/auth/login
+let _pendingTempToken = null; // เก็บ tempToken ระหว่างรอ OTP
+
 async function doLogin() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
 
-  // ตรวจสอบเบื้องต้นฝั่ง frontend
   if (!email || !password) {
     showAuthMsg('loginMsg', 'กรุณากรอกอีเมลและรหัสผ่าน');
     return;
@@ -101,8 +103,14 @@ async function doLogin() {
     });
     const data = await res.json();
 
+    if (data.success && data.requires2FA) {
+      // 2FA enabled → เก็บ tempToken แล้วแสดง OTP form
+      _pendingTempToken = data.tempToken;
+      switchAuthTab('otp');
+      return;
+    }
+
     if (data.success) {
-      // บันทึก token และข้อมูล user ลง localStorage
       localStorage.setItem('accdee_token', data.token);
       localStorage.setItem('accdee_user',  JSON.stringify(data.data));
       closeAuth();
@@ -116,6 +124,49 @@ async function doLogin() {
   } finally {
     btn.disabled    = false;
     btn.textContent = 'เข้าสู่ระบบ';
+  }
+}
+
+// OTP Verification — เรียก POST /api/auth/verify-otp
+async function doVerifyOtp() {
+  const otp = (document.getElementById('otpCode').value || '').trim();
+  if (!otp || otp.length !== 6) {
+    showAuthMsg('otpMsg', 'กรุณากรอก OTP 6 หลัก');
+    return;
+  }
+  if (!_pendingTempToken) {
+    showAuthMsg('otpMsg', 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่');
+    switchAuthTab('login');
+    return;
+  }
+
+  const btn = document.getElementById('otpBtn');
+  btn.disabled    = true;
+  btn.textContent = 'กำลังยืนยัน...';
+
+  try {
+    const res  = await fetch(`${API_URL}/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tempToken: _pendingTempToken, otp })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      _pendingTempToken = null;
+      localStorage.setItem('accdee_token', data.token);
+      localStorage.setItem('accdee_user',  JSON.stringify(data.data));
+      closeAuth();
+      updateNavbar(data.data);
+      showToast('เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ' + data.data.username);
+    } else {
+      showAuthMsg('otpMsg', data.message || 'OTP ไม่ถูกต้อง');
+    }
+  } catch (err) {
+    showAuthMsg('otpMsg', 'ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่');
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'ยืนยัน OTP';
   }
 }
 
@@ -492,6 +543,9 @@ function initKeyboardSupport() {
   });
   document.getElementById('regPassword').addEventListener('keydown', e => {
     if (e.key === 'Enter') doRegister();
+  });
+  document.getElementById('otpCode').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doVerifyOtp();
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeModal(); closeAuth(); closeTopup(); closeDrawer(); }

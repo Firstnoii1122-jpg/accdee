@@ -27,6 +27,7 @@ router.put('/settings',  adminOnly, adminController.updateSettings);
 router.get('/admins',                    adminOnly, adminController.getAdmins);
 router.post('/admins',                   adminOnly, adminController.createAdmin);
 router.post('/members/:id/set-role',     adminOnly, adminController.setMemberRole);
+router.post('/members/:id/toggle-2fa',  adminOnly, adminController.toggle2FA);
 
 // inventory & orders
 router.get('/inventory/stock',  adminOnly, adminController.getStock);

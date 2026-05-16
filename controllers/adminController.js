@@ -504,4 +504,22 @@ const setMemberRole = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole };
+// POST /api/admin/members/:id/toggle-2fa — enable/disable 2FA for a user
+const toggle2FA = async (req, res) => {
+  const targetId = parseInt(req.params.id);
+  try {
+    const [[user]] = await db.execute('SELECT id, username, two_fa_enabled FROM users WHERE id = ?', [targetId]);
+    if (!user) return res.status(404).json({ success: false, message: 'ไม่พบผู้ใช้' });
+
+    const newState = user.two_fa_enabled ? 0 : 1;
+    await db.execute('UPDATE users SET two_fa_enabled = ? WHERE id = ?', [newState, targetId]);
+
+    const stateText = newState ? 'เปิด' : 'ปิด';
+    res.json({ success: true, message: `${stateText} 2FA สำหรับ "${user.username}" สำเร็จ`, two_fa_enabled: newState });
+  } catch (err) {
+    console.error('toggle2FA error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole, toggle2FA };

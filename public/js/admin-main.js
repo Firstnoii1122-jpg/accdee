@@ -241,6 +241,7 @@ async function loadMembers(search = '') {
           <button class="btn btn-outline btn-sm" onclick="adjustCredit(${m.id})">💰 ปรับยอด</button>
           <button class="btn btn-warning btn-sm" onclick="openResetPassword(${m.id},'${escapeHtml(m.username)}')">🔑 รีเซ็ตรหัส</button>
           <button class="btn btn-outline btn-sm" style="border-color:#a78bfa;color:#a78bfa" onclick="promoteToAdmin(${m.id},'${escapeHtml(m.username)}')">👑 Promote</button>
+          <button class="btn btn-outline btn-sm" style="border-color:#22d3ee;color:#22d3ee" onclick="toggle2FA(${m.id},'${escapeHtml(m.username)}',${m.two_fa_enabled ? 1 : 0})" title="2FA ${m.two_fa_enabled ? 'เปิดอยู่' : 'ปิดอยู่'}">${m.two_fa_enabled ? '🔒 2FA ON' : '🔓 2FA OFF'}</button>
           <button class="btn btn-danger btn-sm" onclick="deleteMember(${m.id},'${escapeHtml(m.username)}')">🗑️ ลบ</button>
         </td>
       </tr>`
@@ -680,6 +681,16 @@ async function demoteAdmin(id, username) {
   } catch (err) { toast('❌ ' + err.message, 'error'); }
 }
 
+async function toggle2FA(id, username, currentState) {
+  const action = currentState ? 'ปิด' : 'เปิด';
+  if (!confirm(`${action} 2FA สำหรับ "${username}"?`)) return;
+  try {
+    const res = await API.post(`/admin/members/${id}/toggle-2fa`, {});
+    toast('✅ ' + res.message, 'success');
+    loadMembers();
+  } catch (err) { toast('❌ ' + err.message, 'error'); }
+}
+
 // ===== LOGOUT =====
 async function logout() {
   if (!confirm('ต้องการออกจากระบบหรือไม่?')) return;
@@ -746,3 +757,4 @@ window.loadAdmins       = loadAdmins;
 window.saveAdmin        = saveAdmin;
 window.promoteToAdmin   = promoteToAdmin;
 window.demoteAdmin      = demoteAdmin;
+window.toggle2FA        = toggle2FA;

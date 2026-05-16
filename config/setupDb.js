@@ -96,11 +96,15 @@ async function setupDatabase() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 
-  // เพิ่มคอลัมน์ telegram_chat_id ถ้ายังไม่มี (ถ้ามีแล้วจะ ignore error)
-  try {
-    await db.execute(`ALTER TABLE users ADD COLUMN telegram_chat_id VARCHAR(50) NULL DEFAULT NULL`);
-  } catch (e) {
-    if (e.code !== 'ER_DUP_FIELDNAME') throw e;
+  // เพิ่มคอลัมน์ที่อาจยังไม่มี (ถ้ามีแล้วจะ ignore error)
+  const optionalColumns = [
+    `ALTER TABLE users ADD COLUMN telegram_chat_id VARCHAR(50)  NULL DEFAULT NULL`,
+    `ALTER TABLE users ADD COLUMN two_fa_enabled   TINYINT(1)   NOT NULL DEFAULT 0`,
+    `ALTER TABLE users ADD COLUMN two_fa_otp       VARCHAR(6)   NULL`,
+    `ALTER TABLE users ADD COLUMN two_fa_expires   DATETIME     NULL`,
+  ];
+  for (const sql of optionalColumns) {
+    try { await db.execute(sql); } catch (e) { if (e.code !== 'ER_DUP_FIELDNAME') throw e; }
   }
 
   // สร้าง Admin คนแรก ถ้ายังไม่มี (ทำแค่ครั้งเดียว ไม่ reset ทุก restart)

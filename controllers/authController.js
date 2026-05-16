@@ -80,16 +80,50 @@ const login = async (req, res) => {
     const password =  req.body.password || '';
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide email and password' });
+      return res.status(400).json({ success: false, message: 'กรุณากรอกอีเมลและรหัสผ่าน' });
     }
 
     const user = await User.findUserByEmail(email);
     const passwordMatch = user && await bcrypt.compare(password, user.password);
 
     if (!user || !passwordMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({ success: false, message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
     }
 
+    // ถ้าเปิด 2FA → ส่ง OTP แล้ว return tempToken แทน JWT จริง
+    if (user.two_fa_enabled) {
+      const otp     = String(Math.floor(100000 + Math.random() * 900000));
+      const expires = new Date(Date.now() + 5 * 60 * 1000); // 5 นาที
+
+      await db.execute(
+        'UPDATE users SET two_fa_otp = ?, two_fa_expires = ? WHERE id = ?',
+        [otp, expires, user.id]
+      );
+
+      await sendEmail({
+        to     : user.email,
+        subject: '[ACCDEE] รหัส OTP สำหรับเข้าสู่ระบบ',
+        html   : `
+          <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #eee;border-radius:8px">
+            <h2 style="color:#4f46e5">รหัส OTP ของคุณ</h2>
+            <p>สวัสดี <b>${user.username}</b></p>
+            <p>รหัส OTP สำหรับเข้าสู่ระบบ ACCDEE:</p>
+            <div style="font-size:36px;font-weight:900;letter-spacing:8px;color:#4f46e5;text-align:center;padding:20px;background:#f5f3ff;border-radius:8px;margin:16px 0">${otp}</div>
+            <p style="color:#888;font-size:12px">รหัสนี้หมดอายุใน 5 นาที<br>หากคุณไม่ได้ล็อกอิน กรุณาเปลี่ยนรหัสผ่านทันที</p>
+          </div>`
+      });
+
+      // tempToken ใช้แทน JWT จริง — payload บอกว่ายัง pending 2FA
+      const tempToken = jwt.sign(
+        { id: user.id, pending2FA: true },
+        process.env.JWT_SECRET,
+        { expiresIn: '10m' }
+      );
+
+      return res.json({ success: true, requires2FA: true, tempToken });
+    }
+
+    // ไม่มี 2FA → login ปกติ
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
@@ -98,7 +132,7 @@ const login = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: 'เข้าสู่ระบบสำเร็จ',
       token,
       data: { id: user.id, username: user.username, email: user.email, role: user.role, balance: user.balance }
     });
@@ -106,6 +140,58 @@ const login = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ success: false, message: 'Server error, please try again' });
+  }
+};
+
+// POST /api/auth/verify-otp — ยืนยัน OTP แลก JWT จริง
+const verifyOtp = async (req, res) => {
+  try {
+    const { tempToken, otp } = req.body;
+    if (!tempToken || !otp) {
+      return res.status(400).json({ success: false, message: 'ข้อมูลไม่ครบ' });
+    }
+
+    // ตรวจ tempToken
+    let decoded;
+    try {
+      decoded = jwt.verify(tempToken, process.env.JWT_SECRET);
+    } catch {
+      return res.status(401).json({ success: false, message: 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่' });
+    }
+    if (!decoded.pending2FA) {
+      return res.status(401).json({ success: false, message: 'Token ไม่ถูกต้อง' });
+    }
+
+    const user = await User.findUserById(decoded.id);
+    if (!user) return res.status(404).json({ success: false, message: 'ไม่พบบัญชีผู้ใช้' });
+
+    // ตรวจ OTP
+    if (!user.two_fa_otp || String(otp).trim() !== user.two_fa_otp) {
+      return res.status(401).json({ success: false, message: 'รหัส OTP ไม่ถูกต้อง' });
+    }
+    if (!user.two_fa_expires || new Date() > new Date(user.two_fa_expires)) {
+      return res.status(401).json({ success: false, message: 'รหัส OTP หมดอายุแล้ว กรุณาเข้าสู่ระบบใหม่' });
+    }
+
+    // clear OTP
+    await db.execute('UPDATE users SET two_fa_otp = NULL, two_fa_expires = NULL WHERE id = ?', [user.id]);
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    res.json({
+      success: true,
+      message: 'เข้าสู่ระบบสำเร็จ',
+      token,
+      data: { id: user.id, username: user.username, email: user.email, role: user.role, balance: user.balance }
+    });
+
+  } catch (error) {
+    console.error('verifyOtp error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
@@ -194,4 +280,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, forgotPassword, resetPassword };
+module.exports = { register, login, verifyOtp, forgotPassword, resetPassword };
