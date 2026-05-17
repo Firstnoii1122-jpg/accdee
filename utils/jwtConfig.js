@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { isProductionRuntime } = require('./runtimeEnv');
 
 const JWT_ALGORITHM = 'HS256';
 const DEFAULT_JWT_EXPIRES_IN = '15m';
@@ -8,7 +9,7 @@ const MIN_PRODUCTION_SECRET_LENGTH = 32;
 function getJwtSecret() {
   const secret = process.env.JWT_SECRET;
 
-  if (process.env.NODE_ENV === 'production') {
+  if (isProductionRuntime()) {
     if (!secret || secret.length < MIN_PRODUCTION_SECRET_LENGTH) {
       throw new Error('JWT_SECRET is required in production and must be at least 32 characters');
     }

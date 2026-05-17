@@ -78,6 +78,8 @@ GET https://www.accdee.shop/api/health
 ```
 UptimeRobot จะ check ทุก 5 นาที ถ้าไม่ได้ 200 → แจ้งเตือน
 
+ถ้า response แสดง `"environment":"development"` บนเว็บจริง ให้ตรวจ Railway Variables และตั้ง `NODE_ENV=production` ทันที เพราะ production security mode ควรทำงานบนเว็บจริงเท่านั้น
+
 ---
 
 ## 5. ดู Login ล้มเหลว

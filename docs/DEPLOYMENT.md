@@ -55,6 +55,15 @@ Do not commit:
 - payment credentials
 - third-party API keys
 
+Required production runtime variables:
+
+- `NODE_ENV=production`
+- `JWT_SECRET` with at least 32 characters
+- `FRONTEND_URL=https://www.accdee.shop`
+- `SITE_URL=https://www.accdee.shop`
+
+The app also treats Railway runtime variables as a production signal, but `NODE_ENV=production` should still be set explicitly in Railway for clarity.
+
 Use `.env.example` only for placeholder names and safe examples.
 
 ## Safe Deployment Flow

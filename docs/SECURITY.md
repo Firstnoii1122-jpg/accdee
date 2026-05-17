@@ -8,6 +8,7 @@
 - Suspicious admin access is logged when an admin endpoint is accessed without a token or by a non-admin user.
 - JWT signing and verification are locked to HS256.
 - Production requires `JWT_SECRET` to exist and be at least 32 characters.
+- Railway runtime is treated as production security mode even if `NODE_ENV` is missing.
 - JWT expiry is configurable with `JWT_EXPIRES_IN`; the safe fallback is now `15m`.
 - Payment slip uploads validate both allowed MIME type and image file signature before Cloudinary upload.
 - Admin money actions emit structured audit events for topup approve/reject and credit adjustment.

@@ -24,3 +24,4 @@
 - Added source-code exposure guidance and production checklist items for frontend/GitHub visibility.
 - Added wallet history tests for authenticated-user scoping and generic failure responses.
 - Added `npm run check:secrets` and wired it into `npm run check`.
+- Added Railway-aware production runtime detection for CORS, CSP, JWT guards, and health metadata.

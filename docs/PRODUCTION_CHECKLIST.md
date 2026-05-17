@@ -17,6 +17,7 @@
 ## ✅ Section 2: Railway Variables
 
 ตรวจว่าตั้งค่าครบ:
+- [ ] `NODE_ENV=production`
 - [ ] `JWT_SECRET` (32+ ตัวอักษร ไม่ใช่ค่า default)
 - [ ] `ADMIN_PASSWORD` (แข็งแรง ไม่ใช่ default)
 - [ ] `DB_HOST` / `DB_PASS` / `DB_NAME` (Railway MySQL)

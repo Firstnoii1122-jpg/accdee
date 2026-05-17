@@ -8,6 +8,7 @@ const morgan     = require('morgan');
 const rateLimit  = require('express-rate-limit');
 const setupDb    = require('./config/setupDb');
 const { assertJwtConfig } = require('./utils/jwtConfig');
+const { getRuntimeEnvironment, isProductionRuntime } = require('./utils/runtimeEnv');
 const packageInfo = require('./package.json');
 
 const app = express();
@@ -31,7 +32,7 @@ const developmentOrigins = [
   'http://127.0.0.1:5173',
 ];
 
-const allowedOrigins = process.env.NODE_ENV === 'production'
+const allowedOrigins = isProductionRuntime()
   ? productionOrigins
   : [...productionOrigins, ...developmentOrigins];
 
@@ -57,7 +58,7 @@ app.use(helmet({
       frameAncestors: ["'none'"],
       frameSrc   : ["'none'"],
       objectSrc  : ["'none'"],
-      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+      upgradeInsecureRequests: isProductionRuntime() ? [] : null,
     }
   }
 }));
@@ -122,7 +123,7 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     service: 'accdee',
     version: packageInfo.version,
-    environment: process.env.NODE_ENV || 'development',
+    environment: getRuntimeEnvironment(),
     uptimeSeconds: Math.round(process.uptime()),
     timestamp: new Date().toISOString(),
   });
