@@ -334,7 +334,7 @@ nav {
   width: 100%;
   overflow: hidden;
   background: #000;
-  height: 520px; /* ← lock ความสูงทุก slide เท่ากัน */
+  aspect-ratio: 1920 / 520;
 }
 
 .hc-track {
@@ -1523,7 +1523,7 @@ footer {
   .nav-drawer { display: block; }
 
   /* hero carousel mobile */
-  .hero-car  { height: 300px; }
+  .hero-car  { aspect-ratio: 16 / 9; }
   .hc-track  { height: 100%; }
   .hc-slide  { height: 100%; }
   .hc-img    { height: 100%; object-fit: contain; object-position: center center; }
@@ -1578,7 +1578,7 @@ footer {
   .highbudget-section .section-header { padding: 0 16px; }
 
   /* hero carousel — mobile เล็ก */
-  .hero-car { height: 220px; }
+  .hero-car { aspect-ratio: 16 / 9; }
   .hc-arrow { width: 36px; height: 36px; font-size: 13px; }
   .hc-prev  { left: 8px; }
   .hc-next  { right: 8px; }
