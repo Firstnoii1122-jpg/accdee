@@ -10,9 +10,10 @@ process.env.NODE_ENV = 'test';
 
 const root = path.join(__dirname, '..');
 const dbPath = require.resolve(path.join(root, 'config/db.js'));
+const transactionPath = require.resolve(path.join(root, 'models/transactionModel.js'));
 const controllerPath = require.resolve(path.join(root, 'controllers/walletController.js'));
 
-function loadWalletController(dbMock) {
+function loadWalletController(dbMock, transactionMock) {
   delete require.cache[controllerPath];
   require.cache[dbPath] = {
     id: dbPath,
@@ -20,6 +21,16 @@ function loadWalletController(dbMock) {
     loaded: true,
     exports: dbMock,
   };
+  if (transactionMock) {
+    require.cache[transactionPath] = {
+      id: transactionPath,
+      filename: transactionPath,
+      loaded: true,
+      exports: transactionMock,
+    };
+  } else {
+    delete require.cache[transactionPath];
+  }
   return require('../controllers/walletController');
 }
 
@@ -155,4 +166,51 @@ test('useCoupon rolls back when max uses is reached during update', async () => 
     'rollback',
     'release',
   ]);
+});
+
+test('getHistory returns transactions for the authenticated user only', async () => {
+  const calls = [];
+  const rows = [
+    { id: 7, user_id: 22, amount: '100.00', type: 'topup', status: 'approved' },
+  ];
+  const { getHistory } = loadWalletController({
+    execute: async () => [[]],
+    getConnection: async () => ({}),
+  }, {
+    getByUserId: async (userId) => {
+      calls.push(userId);
+      return rows;
+    },
+  });
+
+  const res = createResponse();
+  await getHistory({ user: { id: 22 }, query: { userId: 999 } }, res);
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.success, true);
+  assert.deepEqual(res.body.data, rows);
+  assert.deepEqual(calls, [22]);
+});
+
+test('getHistory returns generic 500 when transaction lookup fails', async () => {
+  const originalError = console.error;
+  console.error = () => undefined;
+  const { getHistory } = loadWalletController({
+    execute: async () => [[]],
+    getConnection: async () => ({}),
+  }, {
+    getByUserId: async () => {
+      throw new Error('database unavailable with internal detail');
+    },
+  });
+
+  const res = createResponse();
+  try {
+    await getHistory({ user: { id: 22 } }, res);
+  } finally {
+    console.error = originalError;
+  }
+
+  assert.equal(res.statusCode, 500);
+  assert.deepEqual(res.body, { success: false, message: 'Server error' });
 });

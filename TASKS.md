@@ -39,7 +39,7 @@ Remaining:
 
 Next smallest task:
 
-- Add admin session invalidation planning or wallet history endpoint tests.
+- Add admin session invalidation planning or wallet transaction tests.
 
 ## Phase 1: Automated Testing
 
@@ -47,7 +47,6 @@ Status: Not complete
 
 Needed:
 
-- Wallet history endpoint tests.
 - Wallet transaction tests.
 
 Important:
@@ -86,6 +85,7 @@ Completed in Phase 2 continuation:
 - Admin credit adjustment tests for row locking and negative-balance rollback.
 - Payment slip upload validation and tests for spoofed image files.
 - Structured admin money-action audit events for topup approve/reject and credit adjustments.
+- Wallet history tests confirm history is scoped to the authenticated user and errors stay generic.
 
 Do not continue Phase 2 until Phase 0 is clean.
 

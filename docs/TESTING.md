@@ -29,12 +29,12 @@ npm run check:db
 - Coupon wallet tests verify duplicate-use rollback and max-use guards before balance credit.
 - Admin credit tests verify row locking, negative-balance rollback, and transaction logging.
 - Topup slip tests verify missing-file rejection, spoofed-image rejection, and pending transaction creation.
+- Wallet history tests verify the endpoint uses the authenticated user id and returns a generic 500 on lookup failure.
 
 ## What These Checks Do Not Prove
 
 - Wallet balances are safe.
 - Real concurrent order pressure has been tested against a dedicated test database.
-- Full wallet history coverage is complete.
 - Admin credit adjustment audit details are centralized.
 - Production sessions expire correctly.
 
@@ -55,10 +55,9 @@ Add tests in this order:
 3. Admin route without token returns 401.
 4. Admin route with non-admin token returns 403.
 5. Admin route with admin token succeeds.
-6. Wallet history endpoints have integration coverage.
-7. Topup reject cannot happen after approval.
-8. Add dedicated database-backed concurrent order tests.
-9. Add dedicated malware scanning or private object-storage validation for uploaded slips.
+6. Topup reject cannot happen after approval.
+7. Add dedicated database-backed concurrent order tests.
+8. Add dedicated malware scanning or private object-storage validation for uploaded slips.
 
 ## Recommended Test Structure
 

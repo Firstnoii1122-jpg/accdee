@@ -22,3 +22,4 @@
 - Configured Express to trust the Railway proxy so rate limiting handles `X-Forwarded-For` correctly.
 - Expanded `/api/health` with uptime-monitor-friendly metadata and automated coverage.
 - Added source-code exposure guidance and production checklist items for frontend/GitHub visibility.
+- Added wallet history tests for authenticated-user scoping and generic failure responses.
