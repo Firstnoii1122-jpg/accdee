@@ -593,4 +593,22 @@ const toggle2FA = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, bulkAddInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole, toggle2FA };
+// POST /api/admin/members/:id/revoke-sessions — force-logout user ทุก device
+const revokeUserSessions = async (req, res) => {
+  const targetId = parseInt(req.params.id);
+  if (targetId === req.user.id) {
+    return res.status(400).json({ success: false, message: 'ไม่สามารถ revoke session ของตัวเองได้' });
+  }
+  try {
+    const [[user]] = await db.execute('SELECT id, username FROM users WHERE id = ?', [targetId]);
+    if (!user) return res.status(404).json({ success: false, message: 'ไม่พบผู้ใช้' });
+
+    await db.execute('UPDATE users SET token_version = token_version + 1 WHERE id = ?', [targetId]);
+    res.json({ success: true, message: `Force-logout "${user.username}" สำเร็จ — token ทุกตัวใช้ไม่ได้แล้ว` });
+  } catch (err) {
+    console.error('revokeUserSessions error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, bulkAddInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole, toggle2FA, revokeUserSessions };

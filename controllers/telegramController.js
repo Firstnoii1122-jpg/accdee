@@ -77,4 +77,36 @@ const handleWebhook = async (req, res) => {
   );
 };
 
-module.exports = { handleWebhook };
+// POST /api/telegram/uptime-alert?secret=<UPTIME_WEBHOOK_SECRET>
+// UptimeRobot ส่งมาเมื่อเว็บล่มหรือกลับมาออนไลน์
+const uptimeAlert = (req, res) => {
+  const expectedSecret = process.env.UPTIME_WEBHOOK_SECRET || process.env.TELEGRAM_WEBHOOK_SECRET;
+  const incoming       = req.query.secret || req.headers['x-webhook-secret'];
+
+  if (!expectedSecret || incoming !== expectedSecret) {
+    return res.status(403).end();
+  }
+
+  res.json({ ok: true });
+
+  // UptimeRobot JSON payload fields
+  const { monitorFriendlyName, alertType, alertTypeFriendlyName, alertDetails, alertDuration, monitorURL } = req.body || {};
+
+  const isDown = String(alertType) === '1' || (alertTypeFriendlyName || '').toLowerCase().includes('down');
+  const icon   = isDown ? '🔴' : '✅';
+  const status = isDown ? 'ล่ม (DOWN)' : 'กลับมาแล้ว (UP)';
+
+  const lines = [
+    `${icon} <b>ACCDEE Website ${status}</b>`,
+    ``,
+    `🌐 ${monitorFriendlyName || monitorURL || 'accdee.shop'}`,
+  ];
+
+  if (alertDetails) lines.push(`📋 ${alertDetails}`);
+  if (alertDuration) lines.push(`⏱ Downtime: ${Math.round(alertDuration / 60)} นาที`);
+
+  const { sendTelegram: notify } = require('../config/telegram');
+  notify(lines.join('\n'));
+};
+
+module.exports = { handleWebhook, uptimeAlert };

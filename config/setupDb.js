@@ -102,6 +102,7 @@ async function setupDatabase() {
     `ALTER TABLE users ADD COLUMN two_fa_enabled   TINYINT(1)   NOT NULL DEFAULT 0`,
     `ALTER TABLE users ADD COLUMN two_fa_otp       VARCHAR(6)   NULL`,
     `ALTER TABLE users ADD COLUMN two_fa_expires   DATETIME     NULL`,
+    `ALTER TABLE users ADD COLUMN token_version    INT          NOT NULL DEFAULT 0`,
   ];
   for (const sql of optionalColumns) {
     try { await db.execute(sql); } catch (e) { if (e.code !== 'ER_DUP_FIELDNAME') throw e; }

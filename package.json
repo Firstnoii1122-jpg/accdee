@@ -19,7 +19,8 @@
     "check:env:production": "node scripts/check-env.js --production",
     "check:backup": "node scripts/check-backup-readiness.js",
     "backup:db": "node scripts/backup-db.js",
-    "restore:check": "node scripts/validate-restore-file.js"
+    "restore:check": "node scripts/validate-restore-file.js",
+    "restore:drill": "node scripts/restore-drill.js"
   },
   "keywords": [],
   "author": "",

@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 const findUserByEmail = async (email) => {
   const [rows] = await db.execute(
-    'SELECT id, username, email, password, balance, role, telegram_chat_id FROM users WHERE email = ?',
+    'SELECT id, username, email, password, balance, role, telegram_chat_id, two_fa_enabled, token_version FROM users WHERE email = ?',
     [email]
   );
   return rows[0];
@@ -15,10 +15,14 @@ const findUserByUsername = async (username) => {
 
 const findUserById = async (id) => {
   const [rows] = await db.execute(
-    'SELECT id, username, email, balance, role, created_at FROM users WHERE id = ?',
+    'SELECT id, username, email, balance, role, created_at, token_version FROM users WHERE id = ?',
     [id]
   );
   return rows[0];
+};
+
+const incrementTokenVersion = async (userId) => {
+  await db.execute('UPDATE users SET token_version = token_version + 1 WHERE id = ?', [userId]);
 };
 
 const createUser = async (username, email, hashedPassword) => {
@@ -29,4 +33,4 @@ const createUser = async (username, email, hashedPassword) => {
   return result.insertId;
 };
 
-module.exports = { findUserByEmail, findUserByUsername, findUserById, createUser };
+module.exports = { findUserByEmail, findUserByUsername, findUserById, createUser, incrementTokenVersion };

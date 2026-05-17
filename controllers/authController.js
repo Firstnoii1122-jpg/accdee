@@ -2,6 +2,7 @@ const bcrypt           = require('bcryptjs');
 const crypto           = require('crypto');
 const db               = require('../config/db');
 const User             = require('../models/userModel');
+const { incrementTokenVersion } = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
 const { sendEmail }    = require('../config/email');
 const { logSecurityEvent, maskEmail } = require('../utils/securityLogger');
@@ -125,7 +126,8 @@ const login = async (req, res) => {
     }
 
     // ไม่มี 2FA → login ปกติ
-    const token = signJwt({ id: user.id, role: user.role }, { expiresIn: getJwtExpiresIn() });
+    const tv    = user.token_version ?? 0;
+    const token = signJwt({ id: user.id, role: user.role, tv }, { expiresIn: getJwtExpiresIn() });
 
     res.status(200).json({
       success: true,
@@ -176,7 +178,9 @@ const verifyOtp = async (req, res) => {
     // clear OTP
     await db.execute('UPDATE users SET two_fa_otp = NULL, two_fa_expires = NULL WHERE id = ?', [user.id]);
 
-    const token = signJwt({ id: user.id, role: user.role }, { expiresIn: getJwtExpiresIn() });
+    const freshUser = await User.findUserById(user.id);
+    const tv        = freshUser?.token_version ?? 0;
+    const token     = signJwt({ id: user.id, role: user.role, tv }, { expiresIn: getJwtExpiresIn() });
 
     res.json({
       success: true,
@@ -276,4 +280,15 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, verifyOtp, forgotPassword, resetPassword };
+// POST /api/auth/logout — invalidate session โดย increment token_version
+const logout = async (req, res) => {
+  try {
+    await incrementTokenVersion(req.user.id);
+    res.json({ success: true, message: 'ออกจากระบบสำเร็จ' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+module.exports = { register, login, verifyOtp, forgotPassword, resetPassword, logout };
