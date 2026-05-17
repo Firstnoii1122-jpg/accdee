@@ -8,6 +8,7 @@ const morgan     = require('morgan');
 const rateLimit  = require('express-rate-limit');
 const setupDb    = require('./config/setupDb');
 const { assertJwtConfig } = require('./utils/jwtConfig');
+const packageInfo = require('./package.json');
 
 const app = express();
 
@@ -116,7 +117,15 @@ app.get('/admin.html', (req, res, next) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, message: 'API is running' });
+  res.json({
+    ok: true,
+    status: 'ok',
+    service: 'accdee',
+    version: packageInfo.version,
+    environment: process.env.NODE_ENV || 'development',
+    uptimeSeconds: Math.round(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
 });
 
 app.use((req, res) => {

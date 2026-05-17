@@ -20,3 +20,4 @@
 - Added structured audit logs for admin topup approvals, topup rejections, and credit adjustments.
 - Added database backup and restore-file validation scripts.
 - Configured Express to trust the Railway proxy so rate limiting handles `X-Forwarded-For` correctly.
+- Expanded `/api/health` with uptime-monitor-friendly metadata and automated coverage.

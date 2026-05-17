@@ -95,9 +95,12 @@ Needed:
 
 - Structured production logging.
 - Error tracking strategy.
-- Health endpoint verification.
 - Uptime monitor setup.
 - Admin/security alert plan.
+
+Completed:
+
+- Health endpoint now returns uptime-monitor-friendly metadata and has automated coverage.
 
 ## Phase 4: Backup + Restore
 

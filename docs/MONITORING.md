@@ -74,7 +74,7 @@ DELETE /api/admin/members/5 200
 ### Health Endpoint ของเรา
 ```
 GET https://www.accdee.shop/api/health
-→ {"ok":true,"message":"API is running"}
+→ {"ok":true,"status":"ok","service":"accdee","version":"1.0.0","environment":"production","uptimeSeconds":123,"timestamp":"2026-05-17T00:00:00.000Z"}
 ```
 UptimeRobot จะ check ทุก 5 นาที ถ้าไม่ได้ 200 → แจ้งเตือน
 
