@@ -5,6 +5,7 @@ const db               = require('../config/db');
 const User             = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
 const { sendEmail }    = require('../config/email');
+const { logSecurityEvent, maskEmail } = require('../utils/securityLogger');
 
 const emailRegex    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const usernameRegex = /^[a-zA-Z0-9_ก-๙]{3,30}$/;
@@ -87,6 +88,7 @@ const login = async (req, res) => {
     const passwordMatch = user && await bcrypt.compare(password, user.password);
 
     if (!user || !passwordMatch) {
+      logSecurityEvent('auth.login_failed', req, { email: maskEmail(email), reason: user ? 'bad_password' : 'unknown_user' });
       return res.status(401).json({ success: false, message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
     }
 
@@ -159,6 +161,7 @@ const verifyOtp = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่' });
     }
     if (!decoded.pending2FA) {
+      logSecurityEvent('auth.otp_invalid_token', req);
       return res.status(401).json({ success: false, message: 'Token ไม่ถูกต้อง' });
     }
 
@@ -167,9 +170,11 @@ const verifyOtp = async (req, res) => {
 
     // ตรวจ OTP
     if (!user.two_fa_otp || String(otp).trim() !== user.two_fa_otp) {
+      logSecurityEvent('auth.otp_failed', req, { userId: user.id });
       return res.status(401).json({ success: false, message: 'รหัส OTP ไม่ถูกต้อง' });
     }
     if (!user.two_fa_expires || new Date() > new Date(user.two_fa_expires)) {
+      logSecurityEvent('auth.otp_expired', req, { userId: user.id });
       return res.status(401).json({ success: false, message: 'รหัส OTP หมดอายุแล้ว กรุณาเข้าสู่ระบบใหม่' });
     }
 

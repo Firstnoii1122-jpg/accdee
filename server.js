@@ -10,6 +10,24 @@ const setupDb    = require('./config/setupDb');
 
 const app = express();
 
+const productionOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.SITE_URL,
+  'https://www.accdee.shop',
+  'https://accdee.shop',
+].filter(Boolean);
+
+const developmentOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+];
+
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? productionOrigins
+  : [...productionOrigins, ...developmentOrigins];
+
 // Request logging
 app.use(morgan('[:date[iso]] :method :url :status :res[content-length]B :response-time ms'));
 
@@ -17,6 +35,7 @@ app.use(morgan('[:date[iso]] :method :url :status :res[content-length]B :respons
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
   contentSecurityPolicy: {
+    useDefaults: true,
     directives: {
       defaultSrc : ["'self'"],
       scriptSrc  : ["'self'", "'unsafe-inline'"],   // inline onclick handlers ใน HTML
@@ -26,13 +45,25 @@ app.use(helmet({
       imgSrc     : ["'self'", 'data:', 'https://res.cloudinary.com',
                     'https://www.accdee.shop'],
       connectSrc : ["'self'"],
+      baseUri    : ["'self'"],
+      formAction : ["'self'"],
+      frameAncestors: ["'none'"],
       frameSrc   : ["'none'"],
       objectSrc  : ["'none'"],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
     }
   }
 }));
 
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS origin blocked'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 

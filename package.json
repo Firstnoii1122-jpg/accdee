@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --check server.js && node --check controllers/authController.js && node --check middleware/adminMiddleware.js",
+    "check": "node --check server.js && node --check controllers/authController.js && node --check middleware/authMiddleware.js && node --check middleware/adminMiddleware.js",
+    "build": "node --check server.js",
+    "check:db": "node -e \"require('dotenv').config(); const db=require('./config/db'); db.execute('SELECT 1').then(()=>{console.log('DB OK'); process.exit(0)}).catch((err)=>{console.error('DB check failed:', err.message); process.exit(1)})\""
   },
   "keywords": [],
   "author": "",
