@@ -28,12 +28,14 @@ Before making changes, read:
 2. `SKILL.md`
 3. `RULES.md`
 4. `TASKS.md`
-5. `docs/FILE_OWNERS.md`
-6. `docs/ARCHITECTURE.md`
-7. `docs/SECURITY.md`
-8. `docs/TESTING.md`
-9. `docs/DEPLOYMENT.md`
-10. `CHANGELOG.md`
+5. `docs/PROJECT_MAP.md`
+6. `docs/AI_WORKFLOW_SKILL.md`
+7. `docs/FILE_OWNERS.md`
+8. `docs/ARCHITECTURE.md`
+9. `docs/SECURITY.md`
+10. `docs/TESTING.md`
+11. `docs/DEPLOYMENT.md`
+12. `CHANGELOG.md`
 
 ## Executive Roles
 
@@ -106,11 +108,13 @@ Owns database safety.
 
 ## Worker File Ownership
 
-Use `docs/FILE_OWNERS.md` as the team map. Every file should have a responsible role before it is changed.
+Use `docs/PROJECT_MAP.md` to find the right file fast, then use `docs/FILE_OWNERS.md` as the team map. Every file should have a responsible role before it is changed.
 
 If a change crosses more than one role, pause and explain the risk first.
 
 For customer shopping, product modal, buy button, stock-empty, or guest purchase behavior, also read `docs/PURCHASE_UX_SKILL.md`.
+
+For multi-agent handoff, repo-prompt work, notebook-style LLM memory, or token-saving workflow, also read `docs/AI_WORKFLOW_SKILL.md`.
 
 ## Patch Rules
 

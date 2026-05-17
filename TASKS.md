@@ -30,6 +30,9 @@ Completed:
 - File ownership map added in `docs/FILE_OWNERS.md`.
 - Secret/source exposure scan added to `npm run check`.
 - Purchase UX skill added in `docs/PURCHASE_UX_SKILL.md`.
+- Project map added in `docs/PROJECT_MAP.md`.
+- AI workflow skill added in `docs/AI_WORKFLOW_SKILL.md`.
+- Project structure guard added via `npm run check:structure`.
 
 Remaining:
 
@@ -42,7 +45,7 @@ Remaining:
 
 Next smallest task:
 
-- Add admin session invalidation planning or wallet transaction tests.
+- Continue SEO metadata/content planning or admin session invalidation planning, depending on owner priority.
 
 ## Phase 1: Automated Testing
 
