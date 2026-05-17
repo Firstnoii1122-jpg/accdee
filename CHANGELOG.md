@@ -13,3 +13,4 @@
 - Added auth/admin integration tests that refuse production mode.
 - Added topup approve/reject guards to prevent already-processed transactions from being changed again.
 - Added transaction model tests for double approval/reject prevention.
+- Added order safety tests for rollback paths and single-item stock depletion.

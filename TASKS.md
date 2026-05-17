@@ -46,7 +46,7 @@ Needed:
 - Auth integration tests.
 - Admin RBAC tests.
 - Wallet transaction tests.
-- Stock depletion and order safety tests.
+- Wallet transaction tests.
 
 Important:
 
@@ -79,6 +79,7 @@ Completed in Phase 2 continuation:
 - Admin login hardening tests for login and admin authorization basics.
 - Topup approve/reject tests at the transaction model layer.
 - Double approval prevention at the database update boundary.
+- Order safety tests for insufficient balance, out-of-stock rollback, and successful stock depletion.
 
 Do not continue Phase 2 until Phase 0 is clean.
 

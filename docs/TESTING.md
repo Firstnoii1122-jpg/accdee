@@ -25,12 +25,13 @@ npm run check:db
 - Basic admin authorization returns 401 without a token and 403 for non-admin users.
 - A valid admin token can reach a protected admin test route.
 - Topup approval/reject model tests protect against already-processed transactions.
+- Order safety tests verify insufficient-balance rollback, out-of-stock rollback, and single-item stock depletion on purchase.
 
 ## What These Checks Do Not Prove
 
 - Wallet balances are safe.
-- Topup approval cannot be double-approved at the transaction model layer.
-- Orders cannot oversell stock.
+- Full wallet history coverage is complete.
+- Real concurrent order pressure has been tested against a dedicated test database.
 - Uploads are safely validated.
 - Production sessions expire correctly.
 
@@ -53,8 +54,8 @@ Add tests in this order:
 5. Admin route with admin token succeeds.
 6. Wallet transaction cannot create invalid balance.
 7. Topup reject cannot happen after approval.
-8. Order cannot reduce stock below zero.
-9. Stock decreases exactly once per completed order.
+8. Add dedicated database-backed concurrent order tests.
+9. Add upload validation tests for payment slips.
 
 ## Recommended Test Structure
 
