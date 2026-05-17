@@ -11,6 +11,9 @@ const { assertJwtConfig } = require('./utils/jwtConfig');
 
 const app = express();
 
+// Railway terminates TLS/proxy before Express, so rate-limit needs the real client IP.
+app.set('trust proxy', 1);
+
 assertJwtConfig();
 
 const productionOrigins = [

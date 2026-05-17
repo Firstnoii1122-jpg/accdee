@@ -10,6 +10,7 @@
 - Start command: `node server.js`
 - Healthcheck path: `/`
 - Restart policy: on failure
+- Express proxy mode: `trust proxy` is set to `1` for Railway so rate limiting can use forwarded client IPs safely.
 
 ## Before Any Deploy
 
@@ -97,6 +98,7 @@ Look for:
 - startup errors
 - database connection errors
 - repeated 500 responses
+- `ERR_ERL_UNEXPECTED_X_FORWARDED_FOR` from `express-rate-limit`
 - JWT/auth errors
 - admin access failures
 - memory or restart loops
