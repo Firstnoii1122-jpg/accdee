@@ -34,6 +34,7 @@
 - [ ] `.env` ไม่อยู่ใน git (`git status` ไม่เห็น `.env`)
 - [ ] GitHub repo เป็น private หรือถ้า public ต้องยืนยันว่าไม่มี secret ใน history
 - [ ] ตรวจ `public/` แล้วไม่มี JWT secret, admin password, DB password, email key, Telegram token, หรือ Cloudinary API secret
+- [ ] `npm run check:secrets` ผ่านก่อน push
 - [ ] `JWT_SECRET` ไม่ใช่ค่า default ("accdee_super_secret...")
 - [ ] Admin password ไม่ใช่ default
 - [ ] Secret ที่เคยอยู่ในเอกสารหรือ git history ถูก rotate แล้ว

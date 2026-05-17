@@ -23,3 +23,4 @@
 - Expanded `/api/health` with uptime-monitor-friendly metadata and automated coverage.
 - Added source-code exposure guidance and production checklist items for frontend/GitHub visibility.
 - Added wallet history tests for authenticated-user scoping and generic failure responses.
+- Added `npm run check:secrets` and wired it into `npm run check`.

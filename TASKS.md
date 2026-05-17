@@ -28,6 +28,7 @@ Completed:
 - Security baseline committed.
 - Main operating skill added in `SKILL.md`.
 - File ownership map added in `docs/FILE_OWNERS.md`.
+- Secret/source exposure scan added to `npm run check`.
 
 Remaining:
 
@@ -36,6 +37,7 @@ Remaining:
 - Keep `.claude/` local-only and ignored.
 - Reconcile docs that still mention old service names such as candy365.
 - Continue checking legacy docs for accidental secrets or old service names.
+- Keep rotating any secret that was ever committed in old history.
 
 Next smallest task:
 

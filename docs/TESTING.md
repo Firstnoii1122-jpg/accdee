@@ -11,6 +11,7 @@ Current required commands:
 ```powershell
 npm test
 npm run check
+npm run check:secrets
 npm run build
 npm run check:db
 ```
@@ -30,6 +31,7 @@ npm run check:db
 - Admin credit tests verify row locking, negative-balance rollback, and transaction logging.
 - Topup slip tests verify missing-file rejection, spoofed-image rejection, and pending transaction creation.
 - Wallet history tests verify the endpoint uses the authenticated user id and returns a generic 500 on lookup failure.
+- Secret scan checks public assets and documentation for likely committed secrets without printing values.
 
 ## What These Checks Do Not Prove
 

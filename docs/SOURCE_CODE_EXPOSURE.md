@@ -122,12 +122,14 @@ Finding placeholder names in documentation is fine. Finding real values is not f
 Before pushing:
 
 ```powershell
-rg -n "JWT_SECRET|ADMIN_PASSWORD|CLOUDINARY_API_SECRET|GMAIL_APP_PASSWORD|RESEND_API_KEY|TELEGRAM_BOT_TOKEN|DB_PASSWORD|MYSQLPASSWORD" public docs *.md
+npm run check:secrets
 git status --short
 git diff --cached --name-only
 ```
 
 Do not paste secret values into chat or documentation.
+
+`npm run check` also runs `npm run check:secrets`, so normal validation now includes a basic source-exposure guard.
 
 ## If A Secret Was Exposed
 
