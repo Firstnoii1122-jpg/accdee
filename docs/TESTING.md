@@ -27,12 +27,14 @@ npm run check:db
 - Topup approval/reject model tests protect against already-processed transactions.
 - Order safety tests verify insufficient-balance rollback, out-of-stock rollback, and single-item stock depletion on purchase.
 - Coupon wallet tests verify duplicate-use rollback and max-use guards before balance credit.
+- Admin credit tests verify row locking, negative-balance rollback, and transaction logging.
 
 ## What These Checks Do Not Prove
 
 - Wallet balances are safe.
 - Real concurrent order pressure has been tested against a dedicated test database.
 - Full wallet history coverage is complete.
+- Admin credit adjustment audit details are centralized.
 - Uploads are safely validated.
 - Production sessions expire correctly.
 

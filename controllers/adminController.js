@@ -164,7 +164,7 @@ const adjustCredit = async (req, res) => {
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
-    const [[user]] = await conn.execute('SELECT id, balance FROM users WHERE id = ?', [userId]);
+    const [[user]] = await conn.execute('SELECT id, balance FROM users WHERE id = ? FOR UPDATE', [userId]);
     if (!user) {
       await conn.rollback();
       return res.status(404).json({ success: false, message: 'ไม่พบสมาชิก' });

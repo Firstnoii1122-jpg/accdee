@@ -79,6 +79,7 @@ Completed in Phase 2 continuation:
 - Double approval prevention at the database update boundary.
 - Order safety tests for insufficient balance, out-of-stock rollback, and successful stock depletion.
 - Coupon wallet safety tests for duplicate-use rollback and max-use guards.
+- Admin credit adjustment tests for row locking and negative-balance rollback.
 
 Do not continue Phase 2 until Phase 0 is clean.
 

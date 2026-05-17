@@ -15,3 +15,4 @@
 - Added transaction model tests for double approval/reject prevention.
 - Added order safety tests for rollback paths and single-item stock depletion.
 - Hardened coupon wallet use with row locking, conditional max-use updates, and duplicate-use rollback tests.
+- Locked admin credit balance reads and added tests for credit adjustment safety.
