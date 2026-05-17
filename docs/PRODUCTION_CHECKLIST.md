@@ -89,6 +89,8 @@
 ## ✅ Section 6: Backup
 
 - [ ] Database backup ล่าสุดเก็บไว้แล้ว
+- [ ] ทดสอบ `npm run backup:db` หรือยืนยันว่ามี backup SQL ล่าสุดจาก Railway/DBeaver
+- [ ] ทดสอบ `npm run restore:check -- <backup.sql>` กับไฟล์ backup ล่าสุด
 - [ ] Railway Variables backup เก็บไว้ใน password manager
 - [ ] `.env` backup เก็บไว้นอก repo
 - [ ] GitHub repo เป็น private (ไม่ให้คนอื่นเห็น code)

@@ -99,15 +99,18 @@ Needed:
 
 ## Phase 4: Backup + Restore
 
-Status: Documentation exists, automation incomplete
+Status: Documentation exists, basic local automation started
 
 Needed:
 
-- Database backup script.
-- Restore validation script.
 - Environment backup checklist validation.
 - Railway rollback practice.
 - Restore test record.
+
+Completed:
+
+- Database backup script via `npm run backup:db`.
+- Restore file validation via `npm run restore:check -- <backup.sql>`.
 
 ## Phase 5: Production Migration
 

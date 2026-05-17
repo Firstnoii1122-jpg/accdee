@@ -6,9 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --check server.js && node --check controllers/authController.js && node --check middleware/adminMiddleware.js && node --test tests/*.test.js",
-    "check": "node --check server.js && node --check controllers/authController.js && node --check middleware/authMiddleware.js && node --check middleware/adminMiddleware.js && node --check controllers/adminController.js && node --check controllers/walletController.js && node --check models/transactionModel.js && node --check utils/fileValidation.js && node --check utils/jwtConfig.js",
+    "check": "node --check server.js && node --check controllers/authController.js && node --check middleware/authMiddleware.js && node --check middleware/adminMiddleware.js && node --check controllers/adminController.js && node --check controllers/walletController.js && node --check models/transactionModel.js && node --check utils/fileValidation.js && node --check utils/jwtConfig.js && node --check scripts/backup-db.js && node --check scripts/validate-restore-file.js",
     "build": "node --check server.js",
-    "check:db": "node -e \"require('dotenv').config(); const db=require('./config/db'); db.execute('SELECT 1').then(()=>{console.log('DB OK'); process.exit(0)}).catch((err)=>{console.error('DB check failed:', err.message); process.exit(1)})\""
+    "check:db": "node -e \"require('dotenv').config(); const db=require('./config/db'); db.execute('SELECT 1').then(()=>{console.log('DB OK'); process.exit(0)}).catch((err)=>{console.error('DB check failed:', err.message); process.exit(1)})\"",
+    "backup:db": "node scripts/backup-db.js",
+    "restore:check": "node scripts/validate-restore-file.js"
   },
   "keywords": [],
   "author": "",

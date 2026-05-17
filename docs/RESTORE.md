@@ -52,6 +52,15 @@ Railway → Deployments → คลิก deployment ก่อนหน้า →
 
 ## สถานการณ์ที่ 3: Database พัง / ข้อมูลหาย
 
+### ตรวจไฟล์ backup ก่อน restore
+ก่อน import ทุกครั้ง ให้ตรวจว่าไฟล์ backup ดูเป็น SQL dump จริง:
+```powershell
+cd C:\Users\PCCOPA\Documents\MyProjects\accdee
+npm run restore:check -- C:\path\to\backup.sql
+```
+
+คำสั่งนี้เป็น read-only ไม่แตะ database
+
 ### ตรวจก่อน
 ```powershell
 # Railway CLI

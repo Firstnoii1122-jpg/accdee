@@ -18,6 +18,20 @@
 
 ## 2. Backup Database — วิธีทำ
 
+### วิธีที่ 0: npm script ในโปรเจกต์
+```powershell
+cd C:\Users\PCCOPA\Documents\MyProjects\accdee
+npm run backup:db
+```
+
+ผลลัพธ์จะอยู่ในโฟลเดอร์ `backups/` ซึ่งถูก ignore ไม่ให้ติด Git แล้ว
+
+หมายเหตุ:
+- ต้องมี `mysqldump` อยู่ในเครื่องหรือ environment ที่รัน
+- script อ่านค่า DB จาก `.env` หรือ Railway variables
+- script ไม่พิมพ์ password ออกหน้าจอ
+- ห้าม commit ไฟล์ `.sql` หรือ `backups/`
+
 ### วิธีที่ 1: Railway CLI (แนะนำ)
 ```powershell
 # 1. ติดตั้ง Railway CLI (ถ้ายังไม่มี)
