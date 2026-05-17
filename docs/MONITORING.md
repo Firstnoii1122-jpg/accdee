@@ -4,7 +4,7 @@
 
 ### วิธีเข้า
 1. เปิด [railway.com](https://railway.com)
-2. เข้า Project → service **candy365** (หรือ accdee)
+2. เข้า Project → service **accdee**
 3. คลิกแถบ **Deployments** → เลือก deploy ล่าสุด
 4. คลิก **View Logs**
 

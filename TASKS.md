@@ -43,9 +43,8 @@ Remaining:
 
 - Rotate the exposed GitHub token outside the repo.
 - Confirm whether GitHub should remain private and rotate any secret that was ever committed.
-- Keep `.claude/` local-only and ignored.
-- Reconcile docs that still mention old service names such as candy365.
-- Continue checking legacy docs for accidental secrets or old service names.
+- Keep `.claude/` local-only and ignored (already in .gitignore).
+- ~~Reconcile docs that still mention old service names such as candy365.~~ Done 2026-05-18.
 - Keep rotating any secret that was ever committed in old history.
 
 Next smallest task:

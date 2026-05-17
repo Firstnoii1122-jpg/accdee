@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — 2026-05-18
+
+- Added PROJECT BOUNDARY warning to CLAUDE.md and accdee-skill.md to prevent AI context bleeding from CANDY365.
+- Fixed stale candy365 references in accdee-skill.md (Deploy line, status note), docs/MONITORING.md, and docs/RESTORE.md.
+- Promoted DBeaver → Railway MySQL as primary backup method in docs/BACKUP.md with step-by-step instructions.
+- Added Backup Channel section to accdee-skill.md (channel, Google Drive storage, restore:check gate).
+- Added backup rules to CLAUDE.md iron rules (no .sql commit, DBeaver channel, restore:check gate).
+- Updated docs/BACKUP_RESTORE_SKILL.md with backup channel block.
+- Marked candy365 doc reconciliation as complete in TASKS.md.
+
 ## Unreleased
 
 - Added production CORS allowlist.

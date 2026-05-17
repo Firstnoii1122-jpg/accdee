@@ -25,7 +25,7 @@
 - **Email**: Gmail (nodemailer) primary + Resend fallback — `config/email.js`
 - **Upload**: Cloudinary v2 — สลิปโอนเงิน
 - **Notify**: Telegram Bot — admin แจ้งเตือน real-time
-- **Deploy**: Railway — project `ingenious-enjoyment` (candy365) และ accdee project แยก account
+- **Deploy**: Railway — project `95b47776-e7cd-41a4-82f6-667d506f43e7` (accdee), account Firstnoii_1122@icloud.com
 - **Domain**: `https://www.accdee.shop` (DNS ผูกแล้ว) → Railway accdee service
 
 ---
@@ -421,7 +421,7 @@ API.del('/admin/...')
 - Mobile responsive (bottom-sheet modal, carousel, product grid)
 - SEO meta tags
 - Security (rate limiting, helmet, bcrypt 12, parameterized queries)
-- Railway variables set (candy365 service — รอ deploy accdee แยก)
+- Context bleeding fix + DBeaver backup channel documented (2026-05-18)
 
 ### ❌ ยังต้องทำ
 1. **Login Railway accdee account** → `railway logout` แล้ว `railway login`
