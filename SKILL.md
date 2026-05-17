@@ -122,6 +122,8 @@ For SEO metadata, sitemap, robots, search keyword, or Google Search Console work
 
 For Railway variables, `.env`, secret rotation, deployment settings, or production readiness checks, also read `docs/ENVIRONMENT_SAFETY_SKILL.md`.
 
+For database backup, restore validation, rollback readiness, or disaster recovery work, also read `docs/BACKUP_RESTORE_SKILL.md`.
+
 ## Patch Rules
 
 - One phase at a time.

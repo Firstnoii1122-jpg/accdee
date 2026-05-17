@@ -36,3 +36,4 @@
 - Added customer flow skill, Facebook contact fallback, and `npm run check:customer-flow`.
 - Added customer flow manual testing checklist and optional `npm run check:live` production smoke check.
 - Added environment safety skill and redacted `npm run check:env` / `npm run check:env:production` checks.
+- Added backup/restore readiness skill and non-destructive `npm run check:backup`.
