@@ -4,7 +4,7 @@
 
 ## Current Test Status
 
-The active repo currently has basic npm validation scripts. These checks are useful, but they are not enough for production safety.
+The active repo currently has basic npm validation scripts plus initial auth/admin integration tests. These checks are useful, but they are not enough for full production safety.
 
 Current required commands:
 
@@ -21,11 +21,12 @@ npm run check:db
 - Main server files can be parsed.
 - Build/check command is available.
 - Database connection can respond to `SELECT 1`.
+- Login success and wrong-password behavior work with isolated test users.
+- Basic admin authorization returns 401 without a token and 403 for non-admin users.
+- A valid admin token can reach a protected admin test route.
 
 ## What These Checks Do Not Prove
 
-- Login works end to end.
-- Admin permissions are enforced.
 - Wallet balances are safe.
 - Topup approval cannot be double-approved.
 - Orders cannot oversell stock.

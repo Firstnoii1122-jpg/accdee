@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const { verifyJwt } = require('../utils/jwtConfig');
 
 const protect = (req, res, next) => {
   try {
@@ -13,7 +13,7 @@ const protect = (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Invalid token format' });
     }
 
-    const decoded = jwt.verify(parts[1], process.env.JWT_SECRET);
+    const decoded = verifyJwt(parts[1]);
 
     // ปฏิเสธ tempToken (2FA pending) — ต้อง verify OTP ก่อน
     if (decoded.pending2FA) {

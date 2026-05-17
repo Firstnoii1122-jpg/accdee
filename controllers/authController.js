@@ -1,11 +1,11 @@
 const bcrypt           = require('bcryptjs');
-const jwt              = require('jsonwebtoken');
 const crypto           = require('crypto');
 const db               = require('../config/db');
 const User             = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
 const { sendEmail }    = require('../config/email');
 const { logSecurityEvent, maskEmail } = require('../utils/securityLogger');
+const { TEMP_TOKEN_EXPIRES_IN, getJwtExpiresIn, signJwt, verifyJwt } = require('../utils/jwtConfig');
 
 const emailRegex    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const usernameRegex = /^[a-zA-Z0-9_ก-๙]{3,30}$/;
@@ -116,21 +116,16 @@ const login = async (req, res) => {
       });
 
       // tempToken ใช้แทน JWT จริง — payload บอกว่ายัง pending 2FA
-      const tempToken = jwt.sign(
+      const tempToken = signJwt(
         { id: user.id, pending2FA: true },
-        process.env.JWT_SECRET,
-        { expiresIn: '10m' }
+        { expiresIn: TEMP_TOKEN_EXPIRES_IN }
       );
 
       return res.json({ success: true, requires2FA: true, tempToken });
     }
 
     // ไม่มี 2FA → login ปกติ
-    const token = jwt.sign(
-      { id: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
+    const token = signJwt({ id: user.id, role: user.role }, { expiresIn: getJwtExpiresIn() });
 
     res.status(200).json({
       success: true,
@@ -156,7 +151,7 @@ const verifyOtp = async (req, res) => {
     // ตรวจ tempToken
     let decoded;
     try {
-      decoded = jwt.verify(tempToken, process.env.JWT_SECRET);
+      decoded = verifyJwt(tempToken);
     } catch {
       return res.status(401).json({ success: false, message: 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่' });
     }
@@ -181,11 +176,7 @@ const verifyOtp = async (req, res) => {
     // clear OTP
     await db.execute('UPDATE users SET two_fa_otp = NULL, two_fa_expires = NULL WHERE id = ?', [user.id]);
 
-    const token = jwt.sign(
-      { id: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
+    const token = signJwt({ id: user.id, role: user.role }, { expiresIn: getJwtExpiresIn() });
 
     res.json({
       success: true,

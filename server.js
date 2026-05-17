@@ -7,8 +7,11 @@ const helmet     = require('helmet');
 const morgan     = require('morgan');
 const rateLimit  = require('express-rate-limit');
 const setupDb    = require('./config/setupDb');
+const { assertJwtConfig } = require('./utils/jwtConfig');
 
 const app = express();
+
+assertJwtConfig();
 
 const productionOrigins = [
   process.env.FRONTEND_URL,
@@ -119,11 +122,17 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-setupDb()
-  .then(() => {
-    app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch(err => {
-    console.error('Database setup failed:', err.message);
-    process.exit(1);
-  });
+function start() {
+  return setupDb()
+    .then(() => app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`)))
+    .catch(err => {
+      console.error('Database setup failed:', err.message);
+      process.exit(1);
+    });
+}
+
+if (require.main === module) {
+  start();
+}
+
+module.exports = { app, start };

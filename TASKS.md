@@ -7,13 +7,13 @@
 - Active repo: `C:\Users\PCCOPA\Documents\MyProjects\accdee`
 - Branch: `main`
 - Deployment: Railway via `railway.toml`
-- Current priority: finish Phase 0.5 single-source-of-truth cleanup before more security changes
+- Current priority: continue Phase 2 security hardening after JWT/admin auth baseline
 - Archived repo: `C:\temp\accdee_ARCHIVE_DO_NOT_USE`
 - Dual-repo workflow: disabled
 
 ## Phase 0: Audit + Reconciliation
 
-Status: In progress
+Status: Complete enough to proceed with Phase 2
 
 Completed:
 
@@ -31,11 +31,11 @@ Remaining:
 - Rotate the exposed GitHub token outside the repo.
 - Keep `.claude/` local-only and ignored.
 - Reconcile docs that still mention old service names such as candy365.
-- Confirm final validation after single-source-of-truth cleanup.
+- Rotate the exposed GitHub token outside the repo.
 
 Next smallest task:
 
-- Finish single-source-of-truth cleanup and validation.
+- Add admin session invalidation planning and broader money-flow tests.
 
 ## Phase 1: Automated Testing
 
@@ -70,12 +70,15 @@ Detected partial work:
 
 Still needed:
 
+- Admin session/token invalidation plan.
+- 2FA/TOTP review or implementation plan.
+
+Completed in Phase 2 continuation:
+
 - JWT algorithm lock to HS256.
 - Production `JWT_SECRET` guard.
-- Configurable `JWT_EXPIRES_IN`.
-- Admin session/token invalidation plan.
-- Admin login hardening tests.
-- 2FA/TOTP review or implementation plan.
+- Configurable `JWT_EXPIRES_IN` with safer fallback.
+- Admin login hardening tests for login and admin authorization basics.
 
 Do not continue Phase 2 until Phase 0 is clean.
 
