@@ -14,6 +14,12 @@ const protect = (req, res, next) => {
     }
 
     const decoded = jwt.verify(parts[1], process.env.JWT_SECRET);
+
+    // ปฏิเสธ tempToken (2FA pending) — ต้อง verify OTP ก่อน
+    if (decoded.pending2FA) {
+      return res.status(401).json({ success: false, message: 'Please complete 2FA verification first' });
+    }
+
     req.user = decoded;
     next();
 

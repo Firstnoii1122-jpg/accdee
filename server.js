@@ -14,7 +14,23 @@ const app = express();
 app.use(morgan('[:date[iso]] :method :url :status :res[content-length]B :response-time ms'));
 
 // Security headers
-app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc : ["'self'"],
+      scriptSrc  : ["'self'", "'unsafe-inline'"],   // inline onclick handlers ใน HTML
+      styleSrc   : ["'self'", "'unsafe-inline'",
+                    'https://fonts.googleapis.com'],
+      fontSrc    : ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc     : ["'self'", 'data:', 'https://res.cloudinary.com',
+                    'https://www.accdee.shop'],
+      connectSrc : ["'self'"],
+      frameSrc   : ["'none'"],
+      objectSrc  : ["'none'"],
+    }
+  }
+}));
 
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 app.use(express.json({ limit: '2mb' }));
@@ -52,8 +68,18 @@ app.use('/api/telegram', apiLimiter, telegramRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// ป้องกัน admin.html ถูกเข้าถึงโดยตรงโดยไม่มี token ใน header
+// (defense-in-depth: JS ฝั่ง frontend ก็ redirect อยู่แล้ว)
+app.get('/admin.html', (req, res, next) => {
+  const auth = req.headers['authorization'] || req.query._t;
+  if (!auth) {
+    return res.redirect('/admin-login.html');
+  }
+  next();
+});
+
 app.get('/api/health', (req, res) => {
-  res.json({ message: 'Accdee API is running!', version: '1.0.0' });
+  res.json({ ok: true, message: 'API is running' });
 });
 
 app.use((req, res) => {

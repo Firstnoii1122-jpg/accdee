@@ -144,8 +144,12 @@ const adjustCredit = async (req, res) => {
   const { amount, type, note } = req.body;
   const userId = parseInt(req.params.id);
 
-  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+  const parsedAmount = parseFloat(amount);
+  if (!amount || isNaN(parsedAmount) || parsedAmount <= 0) {
     return res.status(400).json({ success: false, message: 'จำนวนเงินไม่ถูกต้อง' });
+  }
+  if (parsedAmount > 1_000_000) {
+    return res.status(400).json({ success: false, message: 'จำนวนเงินสูงสุด 1,000,000 บาทต่อครั้ง' });
   }
   if (!['deposit', 'withdraw'].includes(type)) {
     return res.status(400).json({ success: false, message: 'ประเภทไม่ถูกต้อง' });
