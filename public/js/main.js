@@ -714,10 +714,84 @@ function safeInit(name, fn) {
   }
 }
 
+function initLegacyClickDelegation() {
+  const allowedHandlers = {
+    openAuth,
+    closeAuth,
+    switchAuthTab,
+    doLogin,
+    doRegister,
+    doForgotPassword,
+    doVerifyOtp,
+    doLogout,
+    openModal,
+    closeModal,
+    handleBuy,
+    filterCat,
+    toggleDrawer,
+    closeDrawer,
+    openTopup,
+    closeTopup,
+    submitTopup,
+    useCoupon,
+    copyText,
+    openProfile,
+    closeProfile,
+    saveUsername,
+    savePassword,
+    hcMove: (dir) => {
+      if (typeof window.hcMove === 'function') window.hcMove(dir);
+    }
+  };
+
+  const parseArg = (raw, target, event) => {
+    const value = raw.trim();
+    if (value === 'this') return target;
+    if (value === 'event') return event;
+    if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
+    const quoted = value.match(/^['"]([\s\S]*)['"]$/);
+    return quoted ? quoted[1] : value;
+  };
+
+  const runCall = (call, target, event) => {
+    const match = call.trim().match(/^([A-Za-z_$][\w$]*)\((.*)\)$/);
+    if (!match) return false;
+
+    const handler = allowedHandlers[match[1]];
+    if (!handler) return false;
+
+    const argsText = match[2].trim();
+    const args = argsText ? argsText.split(',').map(arg => parseArg(arg, target, event)) : [];
+    handler(...args);
+    return true;
+  };
+
+  document.addEventListener('click', (event) => {
+    const textTarget = event.target.closest('[data-text]');
+    if (textTarget && textTarget.dataset.text) {
+      navigator.clipboard.writeText(textTarget.dataset.text).then(() => showToast('Copy สำเร็จ!'));
+      event.preventDefault();
+      return;
+    }
+
+    const target = event.target.closest('[onclick]');
+    if (!target) return;
+
+    const calls = target.getAttribute('onclick').split(';').map(part => part.trim()).filter(Boolean);
+    let handled = false;
+    for (const call of calls) {
+      handled = runCall(call, target, event) || handled;
+    }
+
+    if (handled) event.preventDefault();
+  });
+}
+
 // ── 10. INIT (รันเมื่อหน้าโหลดเสร็จ) ────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('ready');
+  safeInit('initLegacyClickDelegation', initLegacyClickDelegation);
   safeInit('checkAuth', checkAuth);
   safeInit('initScrollAnimations', initScrollAnimations);
   safeInit('initKeyboardSupport', initKeyboardSupport);

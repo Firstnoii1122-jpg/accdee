@@ -28,3 +28,4 @@
 - Added ACCDEE purchase UX skill and improved storefront product/contact popups so product clicks no longer fail silently.
 - Added storefront validation to catch broken product modal wiring before deploy.
 - Fixed CSP compatibility for the legacy storefront's inline `onclick` handlers.
+- Added legacy click delegation so storefront buttons keep working even when inline event attributes are blocked by CSP.
