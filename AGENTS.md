@@ -56,6 +56,15 @@ git diff --cached --name-only
 
 When reporting `git remote -v`, redact credentials if any are present.
 
+## Required Skill Files
+
+Before changing any file, read:
+
+- `SKILL.md` for the operating skill and role model.
+- `docs/FILE_OWNERS.md` to identify which role owns the target file.
+
+If the target file crosses multiple owners, explain the risk before editing.
+
 ## Validation Commands
 
 After every patch, run:

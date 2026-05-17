@@ -7,7 +7,7 @@
 - Active repo: `C:\Users\PCCOPA\Documents\MyProjects\accdee`
 - Branch: `main`
 - Deployment: Railway via `railway.toml`
-- Current priority: continue Phase 2 security hardening after JWT/admin auth baseline
+- Current priority: keep one source of truth and continue production hardening in small patches
 - Archived repo: `C:\temp\accdee_ARCHIVE_DO_NOT_USE`
 - Dual-repo workflow: disabled
 
@@ -25,17 +25,19 @@ Completed:
 - Git remote sanitized to a credential-free URL.
 - Governance docs committed.
 - Security baseline committed.
+- Main operating skill added in `SKILL.md`.
+- File ownership map added in `docs/FILE_OWNERS.md`.
 
 Remaining:
 
 - Rotate the exposed GitHub token outside the repo.
 - Keep `.claude/` local-only and ignored.
 - Reconcile docs that still mention old service names such as candy365.
-- Rotate the exposed GitHub token outside the repo.
+- Continue checking legacy docs for accidental secrets or old service names.
 
 Next smallest task:
 
-- Add admin session invalidation planning and broader money-flow tests.
+- Add admin session invalidation planning or wallet history endpoint tests.
 
 ## Phase 1: Automated Testing
 

@@ -261,26 +261,26 @@ railway up
 ```
 PORT=8080
 DB_HOST / DB_USER / DB_PASS / DB_NAME  ← Railway MySQL inject อัตโนมัติ
-JWT_SECRET=393fecc...
+JWT_SECRET=[REDACTED - set in Railway Variables only]
 JWT_EXPIRES_IN=7d
 ADMIN_EMAIL=panomphen865@gmail.com      ← รับ notification
-ADMIN_PASSWORD=Accdee!Admin2026         ← password ของ admin@accdee.shop
+ADMIN_PASSWORD=[REDACTED - set in Railway Variables only]
 FRONTEND_URL=https://www.accdee.shop
 SITE_URL=https://www.accdee.shop        ← ใช้ใน reset password email link
-PROMPTPAY_NUMBER=8292725105
+PROMPTPAY_NUMBER=[REDACTED - set in Railway Variables only]
 BANK_NAME=ไทยพาณิชย์ (SCB)
-BANK_ACCOUNT_NUMBER=8292725105
+BANK_ACCOUNT_NUMBER=[REDACTED - set in Railway Variables only]
 BANK_ACCOUNT_NAME=จตุภัทร พระสว่าง
 CLOUDINARY_CLOUD_NAME=dhvkwljtz
-CLOUDINARY_API_KEY=723958412578962
-CLOUDINARY_API_SECRET=hT6pxVf7ccyjVZ-MQODZFqJn-0k
+CLOUDINARY_API_KEY=[REDACTED - set in Railway Variables only]
+CLOUDINARY_API_SECRET=[REDACTED - set in Railway Variables only]
 GMAIL_USER=panomphen865@gmail.com
-GMAIL_APP_PASSWORD=nkwh zjlf qjdz gauq
+GMAIL_APP_PASSWORD=[REDACTED - set in Railway Variables only]
 EMAIL_FROM=Accdee <panomphen865@gmail.com>
-RESEND_API_KEY=re_5LHK9qjJ_4v1kzPEX8EKJ2tjUNd7rcfEY
-TELEGRAM_BOT_TOKEN=8442683460:AAGJ6FjeavSsAFqsHCfyzYvwdzSwcvy78pQ
+RESEND_API_KEY=[REDACTED - set in Railway Variables only]
+TELEGRAM_BOT_TOKEN=[REDACTED - set in Railway Variables only]
 TELEGRAM_CHAT_ID=7481841218
-TELEGRAM_NOTIFY_BOT_TOKEN=8631114867:AAFqf9THRs4KL3qJbTP49nePuIXHw3GrNwk
+TELEGRAM_NOTIFY_BOT_TOKEN=[REDACTED - set in Railway Variables only]
 ```
 
 ### db.js — Variable Priority
