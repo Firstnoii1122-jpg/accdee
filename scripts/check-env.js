@@ -151,6 +151,9 @@ function checkPaymentAndNotifications() {
 
   if (process.env.TELEGRAM_WEBHOOK_SECRET) ok('TELEGRAM_WEBHOOK_SECRET', 'configured');
   else warn('TELEGRAM_WEBHOOK_SECRET', 'missing; webhook endpoint should reject requests');
+
+  if (process.env.UPTIME_WEBHOOK_SECRET) ok('UPTIME_WEBHOOK_SECRET', 'configured');
+  else warn('UPTIME_WEBHOOK_SECRET', 'not set; /api/telegram/uptime-alert will reject UptimeRobot pings');
 }
 
 checkCore();

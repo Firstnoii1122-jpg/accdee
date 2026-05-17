@@ -64,6 +64,7 @@ const requiredPaths = [
   'public/js/admin-main.js',
   'public/js/admin-login.js',
   'scripts/backup-db.js',
+  'scripts/restore-drill.js',
   'scripts/check-backup-readiness.js',
   'scripts/check-secrets.js',
   'scripts/check-customer-flow.js',
@@ -72,9 +73,13 @@ const requiredPaths = [
   'scripts/check-seo.js',
   'scripts/check-storefront.js',
   'scripts/validate-restore-file.js',
+  'tests/adminCredit.test.js',
   'tests/authAdmin.test.js',
   'tests/health.test.js',
+  'tests/runtimeEnv.test.js',
+  'tests/sessionSecurity.test.js',
   'tests/shopController.test.js',
+  'tests/transactionModel.test.js',
   'tests/walletController.test.js',
   'tests/walletTopup.test.js',
 ];
@@ -111,6 +116,7 @@ const requiredScripts = [
   'check:structure',
   'backup:db',
   'restore:check',
+  'restore:drill',
 ];
 
 const requiredGitignoreEntries = [

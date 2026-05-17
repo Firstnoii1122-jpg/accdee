@@ -408,26 +408,28 @@ API.del('/admin/...')
 
 ---
 
-## สถานะปัจจุบัน (2026-05-17)
+## สถานะปัจจุบัน (2026-05-18)
 
-### ✅ เสร็จ 100%
+### ✅ โค้ด 100% เสร็จ — Tests 35/35 pass
 - Auth (register/login/2FA OTP/forgot/reset password)
 - Profile (username/password change)
 - Wallet (topup/coupon/history) + Cloudinary slip upload
 - Shop (products/buy/orders/reviews)
 - Admin Dashboard (stats/members/topups/products/inventory/coupons/settings/admins)
 - Email system (Gmail + Resend dual)
-- Telegram notifications
+- Telegram notifications + UptimeRobot webhook endpoint
 - Mobile responsive (bottom-sheet modal, carousel, product grid)
-- SEO meta tags
-- Security (rate limiting, helmet, bcrypt 12, parameterized queries)
-- Context bleeding fix + DBeaver backup channel documented (2026-05-18)
+- SEO meta tags + robots.txt + sitemap.xml
+- Security: rate limiting, helmet, bcrypt 12, parameterized queries,
+  session invalidation (token_version), logout API, admin revoke sessions
+- Backup: scripts/backup-db.js + restore-drill.js + DBeaver channel documented
 
-### ❌ ยังต้องทำ
-1. **Login Railway accdee account** → `railway logout` แล้ว `railway login`
-2. **Deploy accdee code ขึ้น Railway** (project 95b47776-...)
-3. **ตั้ง variables บน accdee service** (ค่าทั้งหมดอยู่ใน .env แล้ว)
-4. **ทดสอบระบบ end-to-end** บน accdee.shop จริง
+### ⏳ รอเจ้าของทำ (AI ทำแทนไม่ได้)
+1. `railway logout` → `railway login` (Firstnoii_1122@icloud.com) → `railway up`
+2. ตั้ง Variables บน Railway Dashboard
+3. ทดสอบ end-to-end บน accdee.shop
+4. สมัคร UptimeRobot → Monitor accdee.shop/api/health
+5. DBeaver → dump DB ครั้งแรก → Google Drive
 
 ---
 
