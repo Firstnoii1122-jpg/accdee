@@ -41,6 +41,9 @@ const approveTopup = async (req, res) => {
 
     res.json({ success: true, message: 'Approved and balance updated' });
   } catch (err) {
+    if (err.code === 'TOPUP_ALREADY_PROCESSED') {
+      return res.status(400).json({ success: false, message: 'Transaction already processed' });
+    }
     console.error('approveTopup error:', err);
     res.status(500).json({ success: false, message: 'Server error' });
   }
@@ -73,6 +76,9 @@ const rejectTopup = async (req, res) => {
 
     res.json({ success: true, message: 'Rejected' });
   } catch (err) {
+    if (err.code === 'TOPUP_ALREADY_PROCESSED') {
+      return res.status(400).json({ success: false, message: 'Transaction already processed' });
+    }
     console.error('rejectTopup error:', err);
     res.status(500).json({ success: false, message: 'Server error' });
   }

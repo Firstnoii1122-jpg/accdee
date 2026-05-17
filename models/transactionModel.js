@@ -33,11 +33,23 @@ const getById = async (id) => {
   return rows[0];
 };
 
+function alreadyProcessedError() {
+  const error = new Error('Transaction already processed');
+  error.code = 'TOPUP_ALREADY_PROCESSED';
+  return error;
+}
+
 const approveTopup = async (transactionId, userId, amount) => {
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
-    await conn.execute(`UPDATE transactions SET status = 'approved' WHERE id = ?`, [transactionId]);
+    const [result] = await conn.execute(
+      `UPDATE transactions SET status = 'approved' WHERE id = ? AND status = 'pending'`,
+      [transactionId]
+    );
+    if (result.affectedRows !== 1) {
+      throw alreadyProcessedError();
+    }
     await conn.execute(`UPDATE users SET balance = balance + ? WHERE id = ?`, [amount, userId]);
     await conn.commit();
   } catch (error) {
@@ -49,7 +61,13 @@ const approveTopup = async (transactionId, userId, amount) => {
 };
 
 const rejectTopup = async (transactionId) => {
-  await db.execute(`UPDATE transactions SET status = 'rejected' WHERE id = ?`, [transactionId]);
+  const [result] = await db.execute(
+    `UPDATE transactions SET status = 'rejected' WHERE id = ? AND status = 'pending'`,
+    [transactionId]
+  );
+  if (result.affectedRows !== 1) {
+    throw alreadyProcessedError();
+  }
 };
 
 module.exports = { createTopup, getByUserId, getPending, getById, approveTopup, rejectTopup };

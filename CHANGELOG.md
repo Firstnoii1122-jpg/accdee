@@ -11,3 +11,5 @@
 - Added production JWT secret length guard.
 - Changed default JWT expiry fallback from 7d to 15m with `JWT_EXPIRES_IN` support.
 - Added auth/admin integration tests that refuse production mode.
+- Added topup approve/reject guards to prevent already-processed transactions from being changed again.
+- Added transaction model tests for double approval/reject prevention.

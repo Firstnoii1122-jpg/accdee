@@ -46,8 +46,6 @@ Needed:
 - Auth integration tests.
 - Admin RBAC tests.
 - Wallet transaction tests.
-- Topup approve/reject tests.
-- Double approval prevention tests.
 - Stock depletion and order safety tests.
 
 Important:
@@ -79,6 +77,8 @@ Completed in Phase 2 continuation:
 - Production `JWT_SECRET` guard.
 - Configurable `JWT_EXPIRES_IN` with safer fallback.
 - Admin login hardening tests for login and admin authorization basics.
+- Topup approve/reject tests at the transaction model layer.
+- Double approval prevention at the database update boundary.
 
 Do not continue Phase 2 until Phase 0 is clean.
 

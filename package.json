@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --check server.js && node --check controllers/authController.js && node --check middleware/adminMiddleware.js && node --test tests/*.test.js",
-    "check": "node --check server.js && node --check controllers/authController.js && node --check middleware/authMiddleware.js && node --check middleware/adminMiddleware.js && node --check utils/jwtConfig.js",
+    "check": "node --check server.js && node --check controllers/authController.js && node --check middleware/authMiddleware.js && node --check middleware/adminMiddleware.js && node --check models/transactionModel.js && node --check utils/jwtConfig.js",
     "build": "node --check server.js",
     "check:db": "node -e \"require('dotenv').config(); const db=require('./config/db'); db.execute('SELECT 1').then(()=>{console.log('DB OK'); process.exit(0)}).catch((err)=>{console.error('DB check failed:', err.message); process.exit(1)})\""
   },
