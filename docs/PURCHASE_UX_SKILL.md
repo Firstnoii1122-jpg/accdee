@@ -72,6 +72,14 @@ npm run build
 npm run check:db
 ```
 
+`npm run check` includes `npm run check:storefront`, which verifies:
+
+- Every `openModal('id')` in `public/index.html` has product data in `public/js/main.js`.
+- Contact-only storefront products stay marked with `contactOnly: true`.
+- Direct-buy products are not accidentally marked contact-only.
+- Inline HTML handlers remain exported on `window`.
+- Unknown product ids show a fallback modal instead of failing silently.
+
 If local DB fails, report it honestly and also check live `/api/health` when allowed.
 
 ## Handoff

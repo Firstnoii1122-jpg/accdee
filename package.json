@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --check server.js && node --check controllers/authController.js && node --check middleware/adminMiddleware.js && node --test tests/*.test.js",
-    "check": "node --check server.js && node --check controllers/authController.js && node --check middleware/authMiddleware.js && node --check middleware/adminMiddleware.js && node --check controllers/adminController.js && node --check controllers/walletController.js && node --check models/transactionModel.js && node --check utils/fileValidation.js && node --check utils/jwtConfig.js && node --check utils/runtimeEnv.js && node --check public/js/main.js && node --check public/js/admin-login.js && node --check public/js/admin-main.js && node --check public/js/admin-api.js && node --check public/js/admin-config.js && node --check scripts/backup-db.js && node --check scripts/validate-restore-file.js && node --check scripts/check-secrets.js && npm run check:secrets",
+    "check": "node --check server.js && node --check controllers/authController.js && node --check middleware/authMiddleware.js && node --check middleware/adminMiddleware.js && node --check controllers/adminController.js && node --check controllers/walletController.js && node --check models/transactionModel.js && node --check utils/fileValidation.js && node --check utils/jwtConfig.js && node --check utils/runtimeEnv.js && node --check public/js/main.js && node --check public/js/admin-login.js && node --check public/js/admin-main.js && node --check public/js/admin-api.js && node --check public/js/admin-config.js && node --check scripts/backup-db.js && node --check scripts/validate-restore-file.js && node --check scripts/check-secrets.js && node --check scripts/check-storefront.js && npm run check:secrets && npm run check:storefront",
     "build": "node --check server.js",
     "check:db": "node -e \"require('dotenv').config(); const db=require('./config/db'); db.execute('SELECT 1').then(()=>{console.log('DB OK'); process.exit(0)}).catch((err)=>{console.error('DB check failed:', err.message); process.exit(1)})\"",
     "check:secrets": "node scripts/check-secrets.js",
+    "check:storefront": "node scripts/check-storefront.js",
     "backup:db": "node scripts/backup-db.js",
     "restore:check": "node scripts/validate-restore-file.js"
   },
