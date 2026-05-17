@@ -67,7 +67,7 @@ Important:
 
 ## Phase 2: Security Hardening
 
-Status: Partially started
+Status: Complete ✅ (2026-05-18)
 
 Detected partial work:
 
@@ -79,8 +79,8 @@ Detected partial work:
 
 Still needed:
 
-- Admin session/token invalidation plan.
-- 2FA/TOTP review or implementation plan.
+- ~~Admin session/token invalidation plan.~~ Done 2026-05-18 (token_version + logout API + revoke sessions).
+- 2FA/TOTP: already implemented (OTP via email). TOTP (Google Authenticator) optional future upgrade.
 
 Completed in Phase 2 continuation:
 
@@ -101,14 +101,14 @@ Do not continue Phase 2 until Phase 0 is clean.
 
 ## Phase 3: Monitoring
 
-Status: Documentation exists, implementation incomplete
+Status: Webhook ready, UptimeRobot setup pending (needs deploy first)
 
 Needed:
 
-- Structured production logging.
-- Error tracking strategy.
-- Uptime monitor setup.
-- Admin/security alert plan.
+- ~~Uptime monitor webhook endpoint.~~ Done 2026-05-18 (/api/telegram/uptime-alert).
+- UptimeRobot account setup — owner does after deploy (5 min, free).
+- Structured production logging — Railway logs + Morgan (already active).
+- Error tracking strategy — optional (Railway logs sufficient for small shop).
 
 Completed:
 
@@ -116,29 +116,33 @@ Completed:
 
 ## Phase 4: Backup + Restore
 
-Status: Documentation exists, basic local automation started
+Status: Scripts complete, first real dump pending (needs deploy first)
 
 Needed:
 
-- Environment backup checklist validation.
-- Railway rollback practice.
-- Restore test record.
+- First real DB dump via DBeaver after deploy — owner does this.
+- Restore drill after first dump: `npm run restore:drill -- <backup.sql>`.
+- Backup schedule: owner runs DBeaver dump daily, stores on Google Drive.
 
 Completed:
 
 - Database backup script via `npm run backup:db`.
 - Restore file validation via `npm run restore:check -- <backup.sql>`.
+- Restore drill script via `npm run restore:drill -- <backup.sql>` (2026-05-18).
+- DBeaver backup channel documented as primary method.
 
-## Phase 5: Production Migration
+## Phase 5: Production Deploy
 
-Status: Not started
+Status: Ready to deploy — waiting for owner to run railway login
 
-Needed:
-
-- Clear migration plan from legacy app to rebuild.
-- Staging deployment.
-- Full validation.
-- Production rollout checklist.
+Steps remaining (owner does):
+1. `railway logout` → `railway login` (Firstnoii_1122@icloud.com)
+2. `railway link --project 95b47776-e7cd-41a4-82f6-667d506f43e7`
+3. `railway up`
+4. Set Railway Variables (from .env)
+5. Test end-to-end on accdee.shop
+6. Set up UptimeRobot (uptimerobot.com, 5 min, free)
+7. First DBeaver backup → Google Drive
 
 ## Do Not Touch Without Approval
 

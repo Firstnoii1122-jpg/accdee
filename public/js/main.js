@@ -288,8 +288,17 @@ async function doForgotPassword() {
   }
 }
 
-// Logout — ลบ token ออกจาก localStorage
-function doLogout() {
+// Logout — แจ้ง server ก่อน แล้วค่อยล้าง localStorage
+async function doLogout() {
+  const token = localStorage.getItem('accdee_token');
+  if (token) {
+    try {
+      await fetch('/api/auth/logout', {
+        method : 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+      });
+    } catch { /* network error — ล้าง local ต่อได้เลย */ }
+  }
   localStorage.removeItem('accdee_token');
   localStorage.removeItem('accdee_user');
   updateNavbar(null);

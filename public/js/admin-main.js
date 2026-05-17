@@ -244,6 +244,7 @@ async function loadMembers(search = '') {
           <button class="btn btn-warning btn-sm" onclick="openResetPassword(${m.id},'${escapeHtml(m.username)}')">🔑 รีเซ็ตรหัส</button>
           <button class="btn btn-outline btn-sm" style="border-color:#a78bfa;color:#a78bfa" onclick="promoteToAdmin(${m.id},'${escapeHtml(m.username)}')">👑 Promote</button>
           <button class="btn btn-outline btn-sm" style="border-color:#22d3ee;color:#22d3ee" onclick="toggle2FA(${m.id},'${escapeHtml(m.username)}',${m.two_fa_enabled ? 1 : 0})" title="2FA ${m.two_fa_enabled ? 'เปิดอยู่' : 'ปิดอยู่'}">${m.two_fa_enabled ? '🔒 2FA ON' : '🔓 2FA OFF'}</button>
+          <button class="btn btn-outline btn-sm" style="border-color:#f59e0b;color:#f59e0b" onclick="revokeUserSessions(${m.id},'${escapeHtml(m.username)}')" title="Force-logout ทุก device">⛔ Revoke</button>
           <button class="btn btn-danger btn-sm" onclick="deleteMember(${m.id},'${escapeHtml(m.username)}')">🗑️ ลบ</button>
         </td>
       </tr>`
@@ -708,8 +709,20 @@ async function toggle2FA(id, username, currentState) {
 // ===== LOGOUT =====
 async function logout() {
   if (!confirm('ต้องการออกจากระบบหรือไม่?')) return;
+  try {
+    await API.post('/auth/logout', {});
+  } catch { /* network error — ล้าง local ต่อได้เลย */ }
   API_CONFIG.clearToken();
   location.replace('/admin-login.html');
+}
+
+// ===== REVOKE USER SESSIONS =====
+async function revokeUserSessions(id, username) {
+  if (!confirm(`Force-logout "${username}" ทุก device ใช่ไหม?\nToken ทุกตัวของลูกค้าคนนี้จะใช้ไม่ได้ทันที`)) return;
+  try {
+    const res = await API.post(`/admin/members/${id}/revoke-sessions`, {});
+    toast('✅ ' + res.message, 'success');
+  } catch (err) { toast('❌ ' + err.message, 'error'); }
 }
 
 // ===== MODAL CLOSE ON OVERLAY CLICK =====
@@ -771,4 +784,5 @@ window.loadAdmins       = loadAdmins;
 window.saveAdmin        = saveAdmin;
 window.promoteToAdmin   = promoteToAdmin;
 window.demoteAdmin      = demoteAdmin;
-window.toggle2FA        = toggle2FA;
+window.toggle2FA            = toggle2FA;
+window.revokeUserSessions   = revokeUserSessions;

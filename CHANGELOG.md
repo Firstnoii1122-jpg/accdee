@@ -1,6 +1,14 @@
 # Changelog
 
-## Unreleased — 2026-05-18
+## Unreleased — 2026-05-18 (session 3)
+
+- Fixed customer logout to call POST /api/auth/logout before clearing localStorage.
+- Fixed admin logout to call POST /api/auth/logout before clearing token.
+- Added ⛔ Revoke Sessions button in admin member table for force-logout per user.
+- Added revokeUserSessions() function in admin-main.js wired to /admin/members/:id/revoke-sessions.
+- Updated TASKS.md: Phase 2 complete, Phase 3 webhook done, Phase 4 drill done, Phase 5 steps clear.
+
+## Unreleased — 2026-05-18 (session 2)
 
 - Added PROJECT BOUNDARY warning to CLAUDE.md and accdee-skill.md to prevent AI context bleeding from CANDY365.
 - Fixed stale candy365 references in accdee-skill.md (Deploy line, status note), docs/MONITORING.md, and docs/RESTORE.md.
