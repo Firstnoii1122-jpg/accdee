@@ -334,7 +334,7 @@ nav {
   width: 100%;
   overflow: hidden;
   background: #000;
-  aspect-ratio: 1920 / 520;
+  aspect-ratio: 16 / 9;
 }
 
 .hc-track {
