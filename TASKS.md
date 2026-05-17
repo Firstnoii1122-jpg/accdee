@@ -7,7 +7,9 @@
 - Active repo: `C:\Users\PCCOPA\Documents\MyProjects\accdee`
 - Branch: `main`
 - Deployment: Railway via `railway.toml`
-- Current priority: Phase 0 reconciliation before more security changes
+- Current priority: finish Phase 0.5 single-source-of-truth cleanup before more security changes
+- Archived repo: `C:\temp\accdee_ARCHIVE_DO_NOT_USE`
+- Dual-repo workflow: disabled
 
 ## Phase 0: Audit + Reconciliation
 
@@ -16,22 +18,24 @@ Status: In progress
 Completed:
 
 - Active repo identified.
-- Duplicate rebuild repo identified at `C:\temp\accdee`.
+- Archived rebuild repo identified at `C:\temp\accdee_ARCHIVE_DO_NOT_USE`.
+- Active repo established as the only source of truth.
 - Monitoring, backup, restore, security operations, production checklist docs exist.
 - Basic npm validation scripts exist.
+- Git remote sanitized to a credential-free URL.
+- Governance docs committed.
+- Security baseline committed.
 
 Remaining:
 
-- Sanitize git remote so no token is embedded.
 - Rotate the exposed GitHub token outside the repo.
-- Complete missing governance docs.
-- Decide whether `.claude/` should stay local-only.
+- Keep `.claude/` local-only and ignored.
 - Reconcile docs that still mention old service names such as candy365.
-- Confirm Phase 2 working tree changes before committing or expanding them.
+- Confirm final validation after single-source-of-truth cleanup.
 
 Next smallest task:
 
-- Finish governance/handoff files in the active repo.
+- Finish single-source-of-truth cleanup and validation.
 
 ## Phase 1: Automated Testing
 
@@ -117,4 +121,4 @@ Needed:
 - Wallet/order/topup money logic
 - Existing production database schema
 - Git history rewrite
-- `C:\temp\accdee` rebuild repo
+- `C:\temp\accdee_ARCHIVE_DO_NOT_USE` archived rebuild repo

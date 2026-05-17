@@ -10,12 +10,12 @@
 - Runtime: Node.js + Express + MySQL + static frontend in `public/`
 - Start command: `node server.js`
 
-## Duplicate Repository Warning
+## Single Source of Truth
 
-- `C:\temp\accdee` is a rebuild/staging workspace.
-- Do not treat `C:\temp\accdee` as production unless the owner explicitly says so.
-- Do not merge files from `C:\temp\accdee` automatically.
-- If code or docs differ between the two repos, report the difference first and ask for approval before moving anything.
+- Use only `C:\Users\PCCOPA\Documents\MyProjects\accdee` as the active project.
+- `C:\temp\accdee_ARCHIVE_DO_NOT_USE` is archived and must not be read, modified, copied from, or used for comparisons unless the owner explicitly approves it.
+- There is no dual-repo workflow from this point forward.
+- Do not merge React/Vite rebuild work into the active repo until there is an approved migration plan.
 
 ## Safety Rules
 
