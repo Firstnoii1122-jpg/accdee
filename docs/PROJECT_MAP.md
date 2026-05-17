@@ -30,9 +30,10 @@ Do not read, copy, merge, or compare the archived repo unless the owner explicit
 | Security logs | `utils/securityLogger.js` |
 | Upload validation | `utils/fileValidation.js` |
 | Backup/restore | `scripts/backup-db.js`, `scripts/validate-restore-file.js` |
-| Validation scripts | `package.json`, `scripts/check-secrets.js`, `scripts/check-storefront.js`, `scripts/check-project-structure.js`, `scripts/check-seo.js`, `scripts/check-customer-flow.js`, `scripts/check-live-site.js` |
+| Validation scripts | `package.json`, `scripts/check-secrets.js`, `scripts/check-storefront.js`, `scripts/check-project-structure.js`, `scripts/check-seo.js`, `scripts/check-customer-flow.js`, `scripts/check-live-site.js`, `scripts/check-env.js` |
 | SEO/crawler files | `public/robots.txt`, `public/sitemap.xml`, `docs/SEO_SKILL.md` |
 | Customer click flow | `public/index.html`, `public/js/main.js`, `docs/CUSTOMER_FLOW_SKILL.md`, `docs/CUSTOMER_FLOW_TESTING.md` |
+| Environment safety | `.env.example`, `scripts/check-env.js`, `docs/ENVIRONMENT_SAFETY_SKILL.md` |
 
 ## Folder Responsibilities
 
@@ -64,6 +65,7 @@ Do not read, copy, merge, or compare the archived repo unless the owner explicit
 | Order/stock problem | `controllers/shopController.js`, `tests/shopController.test.js` |
 | Upload rejected | `utils/fileValidation.js`, `controllers/walletController.js`, `tests/walletTopup.test.js` |
 | Railway deploy fails | `railway.toml`, `server.js`, `package.json`, `docs/DEPLOYMENT.md` |
+| Railway variables seem wrong | `scripts/check-env.js`, `.env.example`, `docs/ENVIRONMENT_SAFETY_SKILL.md` |
 | Live site still shows old files | Railway deploy logs, `scripts/check-live-site.js`, script query version in `public/index.html` |
 | Logs show rate limit/proxy issue | `server.js`, Railway proxy settings, `docs/MONITORING.md` |
 | Secret exposure concern | `scripts/check-secrets.js`, `.gitignore`, GitHub token rotation outside repo |

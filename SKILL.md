@@ -120,6 +120,8 @@ For multi-agent handoff, repo-prompt work, notebook-style LLM memory, or token-s
 
 For SEO metadata, sitemap, robots, search keyword, or Google Search Console work, also read `docs/SEO_SKILL.md`.
 
+For Railway variables, `.env`, secret rotation, deployment settings, or production readiness checks, also read `docs/ENVIRONMENT_SAFETY_SKILL.md`.
+
 ## Patch Rules
 
 - One phase at a time.

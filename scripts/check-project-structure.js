@@ -21,6 +21,7 @@ const requiredPaths = [
   'docs/CUSTOMER_FLOW_SKILL.md',
   'docs/CUSTOMER_FLOW_TESTING.md',
   'docs/DEPLOYMENT.md',
+  'docs/ENVIRONMENT_SAFETY_SKILL.md',
   'docs/FILE_OWNERS.md',
   'docs/MONITORING.md',
   'docs/PROJECT_MAP.md',
@@ -64,6 +65,7 @@ const requiredPaths = [
   'scripts/backup-db.js',
   'scripts/check-secrets.js',
   'scripts/check-customer-flow.js',
+  'scripts/check-env.js',
   'scripts/check-live-site.js',
   'scripts/check-seo.js',
   'scripts/check-storefront.js',
@@ -95,6 +97,8 @@ const requiredScripts = [
   'test',
   'check',
   'check:customer-flow',
+  'check:env',
+  'check:env:production',
   'check:live',
   'build',
   'check:db',
@@ -193,7 +197,7 @@ if (exists('server.js')) {
 
 if (exists('SKILL.md')) {
   const skill = read('SKILL.md');
-  for (const doc of ['docs/PROJECT_MAP.md', 'docs/AI_WORKFLOW_SKILL.md', 'docs/PURCHASE_UX_SKILL.md', 'docs/SEO_SKILL.md', 'docs/CUSTOMER_FLOW_SKILL.md']) {
+  for (const doc of ['docs/PROJECT_MAP.md', 'docs/AI_WORKFLOW_SKILL.md', 'docs/PURCHASE_UX_SKILL.md', 'docs/SEO_SKILL.md', 'docs/CUSTOMER_FLOW_SKILL.md', 'docs/ENVIRONMENT_SAFETY_SKILL.md']) {
     if (!skill.includes(doc)) {
       errors.push(`SKILL.md should reference ${doc}`);
     }

@@ -43,6 +43,12 @@
 - Recommended production values are short, such as `15m`, `30m`, or `1h`.
 - Longer sessions increase risk if a token is stolen.
 
+Check environment safety without exposing secret values:
+
+```powershell
+npm run check:env:production
+```
+
 ## Still Required
 
 - Admin session versioning or token invalidation.

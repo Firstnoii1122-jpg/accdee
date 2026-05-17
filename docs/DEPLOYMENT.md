@@ -64,6 +64,13 @@ Required production runtime variables:
 
 The app also treats Railway runtime variables as a production signal, but `NODE_ENV=production` should still be set explicitly in Railway for clarity.
 
+Validate local or Railway-style variables without printing secret values:
+
+```powershell
+npm run check:env
+npm run check:env:production
+```
+
 Use `.env.example` only for placeholder names and safe examples.
 
 ## Safe Deployment Flow

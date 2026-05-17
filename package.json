@@ -15,6 +15,8 @@
     "check:seo": "node scripts/check-seo.js",
     "check:customer-flow": "node scripts/check-customer-flow.js",
     "check:live": "node scripts/check-live-site.js",
+    "check:env": "node scripts/check-env.js",
+    "check:env:production": "node scripts/check-env.js --production",
     "backup:db": "node scripts/backup-db.js",
     "restore:check": "node scripts/validate-restore-file.js"
   },
