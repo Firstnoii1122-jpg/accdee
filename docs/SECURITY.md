@@ -7,6 +7,7 @@
 - CSP currently allows legacy inline event-handler attributes because the storefront still uses `onclick` in HTML. Remove this exception after migrating buttons to delegated JavaScript event listeners.
 - Login failures are logged as structured security events without passwords or full sensitive values.
 - Suspicious admin access is logged when an admin endpoint is accessed without a token or by a non-admin user.
+- Admin pages are served through explicit routes with no-store/noindex headers and restrictive browser permissions.
 - JWT signing and verification are locked to HS256.
 - Production requires `JWT_SECRET` to exist and be at least 32 characters.
 - Railway runtime is treated as production security mode even if `NODE_ENV` is missing.
@@ -46,6 +47,7 @@
 
 - Admin session versioning or token invalidation.
 - Stronger CSP after removing inline scripts and inline event-handler attributes.
+- Server-side admin page gating should move to secure cookies or sessions; localStorage tokens cannot be checked during the initial HTML navigation.
 - Admin 2FA review and enforcement policy.
 - Centralized log retention and alerting.
 - Confirm GitHub visibility policy and rotate any secret that was ever committed.

@@ -74,6 +74,25 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json({ limit: '2mb' }));
+
+function adminPageHeaders(req, res, next) {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  next();
+}
+
+app.get('/admin-login.html', adminPageHeaders, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
+});
+
+app.get('/admin.html', adminPageHeaders, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Rate limiting — ป้องกัน brute-force login
@@ -107,17 +126,6 @@ app.use('/api/shop',     apiLimiter, shopRoutes);
 app.use('/api/telegram', apiLimiter, telegramRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// ป้องกัน admin.html ถูกเข้าถึงโดยตรงโดยไม่มี token ใน header
-// (defense-in-depth: JS ฝั่ง frontend ก็ redirect อยู่แล้ว)
-app.get('/admin.html', (req, res, next) => {
-  const auth = req.headers['authorization'] || req.query._t;
-  if (!auth) {
-    return res.redirect('/admin-login.html');
-  }
-  next();
-});
-
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
