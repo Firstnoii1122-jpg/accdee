@@ -81,6 +81,7 @@ Completed in Phase 2 continuation:
 - Coupon wallet safety tests for duplicate-use rollback and max-use guards.
 - Admin credit adjustment tests for row locking and negative-balance rollback.
 - Payment slip upload validation and tests for spoofed image files.
+- Structured admin money-action audit events for topup approve/reject and credit adjustments.
 
 Do not continue Phase 2 until Phase 0 is clean.
 

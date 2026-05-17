@@ -13,9 +13,10 @@ const dbPath = require.resolve(path.join(root, 'config/db.js'));
 const emailPath = require.resolve(path.join(root, 'config/email.js'));
 const telegramPath = require.resolve(path.join(root, 'config/telegram.js'));
 const transactionPath = require.resolve(path.join(root, 'models/transactionModel.js'));
+const securityLoggerPath = require.resolve(path.join(root, 'utils/securityLogger.js'));
 const controllerPath = require.resolve(path.join(root, 'controllers/adminController.js'));
 
-function loadAdminController(dbMock) {
+function loadAdminController(dbMock, auditEvents = []) {
   delete require.cache[controllerPath];
   require.cache[dbPath] = {
     id: dbPath,
@@ -43,6 +44,14 @@ function loadAdminController(dbMock) {
     filename: transactionPath,
     loaded: true,
     exports: {},
+  };
+  require.cache[securityLoggerPath] = {
+    id: securityLoggerPath,
+    filename: securityLoggerPath,
+    loaded: true,
+    exports: {
+      logSecurityEvent: (event, req, details) => auditEvents.push({ event, details }),
+    },
   };
   return require('../controllers/adminController');
 }
@@ -80,13 +89,14 @@ function createConnection(results) {
   };
 }
 
-async function runAdjustCredit(conn, body) {
+async function runAdjustCredit(conn, body, auditEvents = []) {
   const { adjustCredit } = loadAdminController({
     getConnection: async () => conn,
     execute: async () => [[]],
-  });
+  }, auditEvents);
   const req = {
     params: { id: '22' },
+    user: { id: 1, role: 'admin' },
     body,
   };
   const res = createResponse();
@@ -95,6 +105,7 @@ async function runAdjustCredit(conn, body) {
 }
 
 test('adjustCredit locks user row and commits deposit transaction', async () => {
+  const auditEvents = [];
   const conn = createConnection([
     [[{ id: 22, balance: '100.00' }]],
     [{ affectedRows: 1 }],
@@ -105,7 +116,7 @@ test('adjustCredit locks user row and commits deposit transaction', async () => 
     amount: '50',
     type: 'deposit',
     note: 'manual deposit',
-  });
+  }, auditEvents);
 
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.success, true);
@@ -122,6 +133,16 @@ test('adjustCredit locks user row and commits deposit transaction', async () => 
     'commit',
     'release',
   ]);
+  assert.deepEqual(auditEvents, [{
+    event: 'admin.credit_adjusted',
+    details: {
+      adminId: 1,
+      targetUserId: 22,
+      type: 'deposit',
+      amount: 50,
+      newBalance: 150,
+    },
+  }]);
 });
 
 test('adjustCredit rolls back withdrawal that would make balance negative', async () => {

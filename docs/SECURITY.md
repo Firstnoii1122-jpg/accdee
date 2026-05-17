@@ -10,6 +10,7 @@
 - Production requires `JWT_SECRET` to exist and be at least 32 characters.
 - JWT expiry is configurable with `JWT_EXPIRES_IN`; the safe fallback is now `15m`.
 - Payment slip uploads validate both allowed MIME type and image file signature before Cloudinary upload.
+- Admin money actions emit structured audit events for topup approve/reject and credit adjustment.
 
 ## Current Allowed Production Origins
 
@@ -26,6 +27,9 @@
 - `auth.otp_expired`
 - `admin.access_missing_token`
 - `admin.access_forbidden`
+- `admin.topup_approved`
+- `admin.topup_rejected`
+- `admin.credit_adjusted`
 
 ## JWT Session Configuration
 

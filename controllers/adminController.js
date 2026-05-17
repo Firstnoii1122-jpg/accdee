@@ -3,6 +3,7 @@ const bcrypt           = require('bcryptjs');
 const Transaction      = require('../models/transactionModel');
 const { sendEmail }              = require('../config/email');
 const { sendTelegram, sendNotify } = require('../config/telegram');
+const { logSecurityEvent } = require('../utils/securityLogger');
 
 const getPendingTopups = async (req, res) => {
   try {
@@ -22,6 +23,12 @@ const approveTopup = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Transaction already processed' });
     }
     await Transaction.approveTopup(tx.id, tx.user_id, tx.amount);
+    logSecurityEvent('admin.topup_approved', req, {
+      adminId: req.user?.id,
+      transactionId: tx.id,
+      targetUserId: tx.user_id,
+      amount: Number(tx.amount),
+    });
 
     const [[user]] = await db.execute('SELECT username, email, telegram_chat_id FROM users WHERE id = ?', [tx.user_id]);
     sendEmail({
@@ -57,6 +64,12 @@ const rejectTopup = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Transaction already processed' });
     }
     await Transaction.rejectTopup(tx.id);
+    logSecurityEvent('admin.topup_rejected', req, {
+      adminId: req.user?.id,
+      transactionId: tx.id,
+      targetUserId: tx.user_id,
+      amount: Number(tx.amount),
+    });
 
     const [[user]] = await db.execute('SELECT username, email, telegram_chat_id FROM users WHERE id = ?', [tx.user_id]);
     sendEmail({
@@ -183,6 +196,13 @@ const adjustCredit = async (req, res) => {
       [userId, Math.abs(parseFloat(amount)), note || `Admin ${type}`]
     );
     await conn.commit();
+    logSecurityEvent('admin.credit_adjusted', req, {
+      adminId: req.user?.id,
+      targetUserId: userId,
+      type,
+      amount: parsedAmount,
+      newBalance,
+    });
     res.json({ success: true, message: `ปรับยอดเงินสำเร็จ ยอดใหม่: ${newBalance.toFixed(2)} ฿` });
   } catch (err) {
     await conn.rollback();

@@ -36,6 +36,9 @@ DELETE /api/admin → ใครลบอะไร
 /api/admin/topups
 /api/admin/members
 /api/admin/inventory
+admin.topup_approved
+admin.topup_rejected
+admin.credit_adjusted
 ```
 ตรวจว่า action เหล่านี้สมเหตุสมผลไหม
 
