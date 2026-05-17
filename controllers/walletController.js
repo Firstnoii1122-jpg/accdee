@@ -115,12 +115,12 @@ const useCoupon = async (req, res) => {
 
   if (!code) return res.status(400).json({ success: false, message: 'กรุณากรอกโค้ด' });
 
-  const conn = await require('../config/db').getConnection();
+  const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
 
     const [[coupon]] = await conn.execute(
-      'SELECT * FROM coupons WHERE code = ? AND is_active = 1',
+      'SELECT * FROM coupons WHERE code = ? AND is_active = 1 FOR UPDATE',
       [code]
     );
     if (!coupon) {
@@ -146,10 +146,18 @@ const useCoupon = async (req, res) => {
       return res.status(400).json({ success: false, message: 'คุณเคยใช้โค้ดนี้แล้ว' });
     }
 
+    await conn.execute('INSERT INTO coupon_uses (coupon_id, user_id) VALUES (?, ?)', [coupon.id, userId]);
+    const [couponUpdate] = await conn.execute(
+      'UPDATE coupons SET used_count = used_count + 1 WHERE id = ? AND used_count < max_uses',
+      [coupon.id]
+    );
+    if (couponUpdate.affectedRows !== 1) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, message: 'โค้ดถูกใช้ครบแล้ว' });
+    }
+
     // เพิ่มเงินเข้ากระเป๋า
     await conn.execute('UPDATE users SET balance = balance + ? WHERE id = ?', [coupon.bonus_amount, userId]);
-    await conn.execute('UPDATE coupons SET used_count = used_count + 1 WHERE id = ?', [coupon.id]);
-    await conn.execute('INSERT INTO coupon_uses (coupon_id, user_id) VALUES (?, ?)', [coupon.id, userId]);
     await conn.execute(
       "INSERT INTO transactions (user_id, amount, type, status, note) VALUES (?, ?, 'topup', 'approved', ?)",
       [userId, coupon.bonus_amount, `โค้ดส่วนลด: ${code}`]
@@ -159,6 +167,9 @@ const useCoupon = async (req, res) => {
     res.json({ success: true, message: `ใช้โค้ดสำเร็จ! ได้รับเงิน ${coupon.bonus_amount} บาท`, data: { bonus: coupon.bonus_amount } });
   } catch (err) {
     await conn.rollback();
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ success: false, message: 'คุณเคยใช้โค้ดนี้แล้ว' });
+    }
     console.error('useCoupon error:', err);
     res.status(500).json({ success: false, message: 'Server error' });
   } finally {

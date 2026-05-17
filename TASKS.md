@@ -43,9 +43,7 @@ Status: Not complete
 
 Needed:
 
-- Auth integration tests.
-- Admin RBAC tests.
-- Wallet transaction tests.
+- Wallet history endpoint tests.
 - Wallet transaction tests.
 
 Important:
@@ -80,6 +78,7 @@ Completed in Phase 2 continuation:
 - Topup approve/reject tests at the transaction model layer.
 - Double approval prevention at the database update boundary.
 - Order safety tests for insufficient balance, out-of-stock rollback, and successful stock depletion.
+- Coupon wallet safety tests for duplicate-use rollback and max-use guards.
 
 Do not continue Phase 2 until Phase 0 is clean.
 
