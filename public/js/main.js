@@ -538,15 +538,17 @@ function initScrollAnimations() {
 // ── 9. KEYBOARD SUPPORT ─────────────────────────
 
 function initKeyboardSupport() {
-  document.getElementById('loginPassword').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
-  document.getElementById('regPassword').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doRegister();
-  });
-  document.getElementById('otpCode').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doVerifyOtp();
-  });
+  const bindEnter = (id, handler) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handler();
+    });
+  };
+
+  bindEnter('loginPassword', doLogin);
+  bindEnter('regPassword', doRegister);
+  bindEnter('otpCode', doVerifyOtp);
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeModal(); closeAuth(); closeTopup(); closeDrawer(); closeProfile(); }
   });
@@ -572,19 +574,26 @@ function closeDrawer() {
   document.body.style.overflow = '';
 }
 
+function safeInit(name, fn) {
+  try {
+    fn();
+  } catch (err) {
+    console.error(`[ACCDEE] ${name} failed:`, err);
+  }
+}
+
 // ── 10. INIT (รันเมื่อหน้าโหลดเสร็จ) ────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();                          // ตรวจสอบสถานะ login
-  document.body.classList.add('ready'); // แสดงหน้าหลัง auth state ถูกต้องแล้ว
-  initScrollAnimations();               // เปิด scroll animations
-  initKeyboardSupport();                // เปิด keyboard shortcuts
-  initTopupEvents();       // เปิด event สำหรับ topup modal
-  loadSiteSettings();      // โหลดค่าตั้งค่าจาก DB (alert, contact links)
-  loadPublicReviews();     // โหลดรีวิวจริงจาก DB
+  document.body.classList.add('ready');
+  safeInit('checkAuth', checkAuth);
+  safeInit('initScrollAnimations', initScrollAnimations);
+  safeInit('initKeyboardSupport', initKeyboardSupport);
+  safeInit('initTopupEvents', initTopupEvents);
+  safeInit('loadSiteSettings', loadSiteSettings);
+  safeInit('loadPublicReviews', loadPublicReviews);
 
-  // refresh balance ทุก 30 วิ — ลูกค้าเห็นยอดล่าสุดหลัง admin อนุมัติ
-  setInterval(refreshBalance, 30000);
+  safeInit('refreshBalanceTimer', () => setInterval(refreshBalance, 30000));
 });
 
 // ── 11. TOPUP MODAL (เติมเงินเข้า Wallet) ────────
@@ -744,7 +753,8 @@ async function loadSiteSettings() {
 // ตั้งค่า event listeners สำหรับ topup
 function initTopupEvents() {
   // แสดง preview รูปสลิปทันทีที่เลือกไฟล์
-  document.getElementById('topupSlip').addEventListener('change', function () {
+  const topupSlip = document.getElementById('topupSlip');
+  if (topupSlip) topupSlip.addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -896,3 +906,35 @@ async function savePassword() {
   } catch { msgEl.textContent = 'เชื่อมต่อไม่ได้'; msgEl.className = 'auth-msg error'; }
   finally { btn.disabled = false; btn.textContent = 'เปลี่ยนรหัสผ่าน'; }
 }
+
+
+Object.assign(window, {
+  openAuth,
+  closeAuth,
+  closeAuthOuter,
+  switchAuthTab,
+  doLogin,
+  doRegister,
+  doForgotPassword,
+  doVerifyOtp,
+  doLogout,
+  openModal,
+  closeModal,
+  closeModalOuter,
+  handleBuy,
+  filterCat,
+  showToast,
+  copyText,
+  toggleDrawer,
+  closeDrawer,
+  openTopup,
+  closeTopup,
+  closeTopupOuter,
+  submitTopup,
+  useCoupon,
+  openProfile,
+  closeProfile,
+  closeProfileOuter,
+  saveUsername,
+  savePassword
+});
