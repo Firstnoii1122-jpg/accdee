@@ -1,5 +1,13 @@
 # CLAUDE.md — ACCDEE Social Media Account Store
 
+## ⛔ PROJECT BOUNDARY — อ่านก่อนทำอะไรทุกครั้ง
+
+> ไฟล์นี้เป็นของ **ACCDEE** เท่านั้น — domain `accdee.shop`, Railway account `Firstnoii_1122@icloud.com`
+> ห้าม reference หรือ bleed context จาก **CANDY365** (candy365.online) เด็ดขาด
+> ถ้าเห็น candy365 เข้ามา — หยุด แจ้ง user ก่อนทำงานต่อ
+
+---
+
 ## โปรเจคคืออะไร
 ร้านขายบัญชีโซเชียลมีเดียพรีเมียมออนไลน์ **ACCDEE**
 - Backend: Node.js + Express → `server.js` port 3000
@@ -17,10 +25,13 @@
 | กฎ | เหตุผล |
 |----|--------|
 | ห้าม commit `.env` | มี DB password + JWT secret |
+| ห้าม commit `.sql` หรือ `backups/` | ข้อมูล customer |
 | Admin route ต้องผ่าน `adminMiddleware.js` | ป้องกัน privilege escalation |
 | ใช้ parameterized query เสมอ | ป้องกัน SQL injection |
 | อธิบายก่อน รอ confirm แล้วค่อยแก้ | user เรียนรู้ไปด้วย |
 | ทำทีละไฟล์ | ป้องกันพัง cascade |
+| Backup ผ่าน DBeaver → Railway → Google Drive | ไม่มี mysqldump local |
+| ก่อน restore ต้องรัน `npm run restore:check` | read-only validation ก่อนแตะ DB |
 
 ---
 

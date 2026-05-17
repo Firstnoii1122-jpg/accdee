@@ -2,6 +2,18 @@
 
 Use this skill when changing backup scripts, restore validation, rollback notes, or disaster recovery procedures.
 
+> **PROJECT BOUNDARY:** ไฟล์นี้เป็นของ ACCDEE เท่านั้น (accdee.shop)
+> ห้าม reference candy365 / candy365.online ในทุกกรณี
+
+## Backup Channel
+
+```
+ช่องทาง:   DBeaver → Railway MySQL (accdee project)
+Railway:   account Firstnoii_1122@icloud.com
+ที่เก็บ:   Google Drive (ห้าม commit .sql ลง repo)
+ก่อน restore: ต้องรัน npm run restore:check ก่อนเสมอ
+```
+
 ## Goal
 
 Make sure ACCDEE can recover from database loss, bad deploys, missing Railway variables, and accidental data damage.

@@ -18,51 +18,46 @@
 
 ## 2. Backup Database — วิธีทำ
 
-### วิธีที่ 0: npm script ในโปรเจกต์
+### ✅ วิธีหลัก: DBeaver (แนะนำ — ง่าย ไม่ต้องติดตั้ง CLI)
+
+```
+ขั้นตอน:
+1. โหลด DBeaver Community ที่ dbeaver.io (ฟรี)
+2. Railway → accdee project → MySQL service → Connect tab
+   → copy ค่า: Host, Port, Username, Password, Database
+3. DBeaver → Database → New Connection → MySQL
+   → ใส่ค่าที่ copy มา → Test Connection → Finish
+4. คลิกขวาที่ database ใน Navigator → Tools → Dump Database
+   → Format: SQL → เลือกโฟลเดอร์บันทึก
+5. ตั้งชื่อไฟล์: accdee_backup_YYYY-MM-DD.sql
+6. อัปขึ้น Google Drive ทันที
+```
+
+> ห้าม commit .sql — ดู .gitignore: `backups/`, `*.sql`
+
+---
+
+### วิธีที่ 2: npm run backup:db (ต้องมี mysqldump ในเครื่อง)
 ```powershell
 cd C:\Users\PCCOPA\Documents\MyProjects\accdee
 npm run backup:db
 ```
 
-ผลลัพธ์จะอยู่ในโฟลเดอร์ `backups/` ซึ่งถูก ignore ไม่ให้ติด Git แล้ว
+ผลลัพธ์อยู่ใน `backups/accdee_<timestamp>.sql`
 
 หมายเหตุ:
-- ต้องมี `mysqldump` อยู่ในเครื่องหรือ environment ที่รัน
-- script อ่านค่า DB จาก `.env` หรือ Railway variables
+- ต้องมี `mysqldump` อยู่ในเครื่อง (ลงมากับ MySQL Server หรือ MySQL Shell)
 - script ไม่พิมพ์ password ออกหน้าจอ
 - ห้าม commit ไฟล์ `.sql` หรือ `backups/`
 
-### วิธีที่ 1: Railway CLI (แนะนำ)
+---
+
+### วิธีที่ 3: Railway CLI + mysqldump
 ```powershell
-# 1. ติดตั้ง Railway CLI (ถ้ายังไม่มี)
 npm install -g @railway/cli
-
-# 2. Login
-railway login
-
-# 3. Link project
-railway link
-
-# 4. Backup ด้วย mysqldump ผ่าน Railway
-railway run mysqldump -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASSWORD $MYSQLDATABASE > backup_$(date +%Y%m%d).sql
-```
-
-### วิธีที่ 2: Railway Dashboard (ง่ายกว่า)
-1. เปิด Railway → Project → service **MySQL**
-2. คลิก **Connect** → copy connection string
-3. ใช้ MySQL Workbench หรือ DBeaver เชื่อมต่อ
-4. Export → SQL dump
-5. บันทึกไฟล์ชื่อ `backup_YYYY-MM-DD.sql`
-
-### วิธีที่ 3: Script อัตโนมัติ (Windows)
-สร้างไฟล์ `scripts/backup.bat`:
-```batch
-@echo off
-SET DATE=%date:~10,4%-%date:~4,2%-%date:~7,2%
-SET BACKUP_DIR=C:\backups\accdee
-mkdir %BACKUP_DIR% 2>nul
-railway run mysqldump ... > %BACKUP_DIR%\backup_%DATE%.sql
-echo Backup complete: backup_%DATE%.sql
+railway login   # ใช้ Firstnoii_1122@icloud.com
+railway link    # เลือก accdee project
+railway run mysqldump -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASSWORD $MYSQLDATABASE > backup_$(Get-Date -Format "yyyyMMdd").sql
 ```
 
 ---

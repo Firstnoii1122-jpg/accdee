@@ -111,7 +111,7 @@ DB_PASS            = [ดูจาก Railway MySQL service]
 
 ### ตรวจ
 ```
-1. เปิด https://www.candy365.online/api/health → ถ้าใช้ได้ = DNS ปัญหา
+1. เปิด https://www.accdee.shop/api/health → ถ้าใช้ได้ = DNS ปัญหา
 2. ping www.accdee.shop → ดู IP
 3. nslookup www.accdee.shop → ดู DNS records
 ```

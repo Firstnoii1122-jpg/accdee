@@ -1,5 +1,19 @@
 # ACCDEE — Complete Project Skill Reference
-# อัปเดต: 2026-05-17 — ใช้ไฟล์นี้ทำงานต่อได้ทันทีโดยไม่ต้องถามใหม่
+# อัปเดต: 2026-05-18 — ใช้ไฟล์นี้ทำงานต่อได้ทันทีโดยไม่ต้องถามใหม่
+
+---
+
+## ⛔ PROJECT BOUNDARY — อ่านก่อนทำอะไรทุกครั้ง
+
+> **ไฟล์นี้เป็นของ ACCDEE เท่านั้น**
+> ห้าม reference URL, domain, project name, variable, หรือโค้ดจาก CANDY365 เด็ดขาด
+>
+> | โปรเจกต์ | Folder | Domain | Railway account |
+> |---|---|---|---|
+> | **ACCDEE** (ไฟล์นี้) | `C:\...\accdee` | `accdee.shop` | iCloud (Firstnoii_1122@icloud.com) |
+> | CANDY365 (แยก) | `C:\...\candy365` | `candy365.online` | pattamanarajad@gmail.com |
+>
+> ถ้า AI เห็น candy365 context เข้ามาใน ACCDEE — หยุดทันที แจ้ง user ก่อน
 
 ---
 
@@ -243,11 +257,13 @@ POST /api/admin/admins             { username, email, password }
 
 ## Railway Deployment
 
-### สองโปรเจคที่แยกกัน
-| โปรเจค | Account | Domain | สถานะ |
-|---|---|---|---|
-| `ingenious-enjoyment` / candy365 | pattamanarajad@gmail.com | candy365.online | Live ใช้งานอยู่ ห้ามแตะ |
-| accdee (project ID: 95b47776-...) | iCloud account (Firstnoii_1122@icloud.com) | accdee.shop | ต้อง login Railway ใหม่ |
+### Railway Account สำหรับ ACCDEE
+```
+account: Firstnoii_1122@icloud.com
+project: accdee (project ID: 95b47776-e7cd-41a4-82f6-667d506f43e7)
+domain:  accdee.shop
+```
+> CANDY365 อยู่คนละ account — ห้ามสับสน
 
 ### วิธี deploy accdee
 ```powershell
@@ -412,6 +428,36 @@ API.del('/admin/...')
 2. **Deploy accdee code ขึ้น Railway** (project 95b47776-...)
 3. **ตั้ง variables บน accdee service** (ค่าทั้งหมดอยู่ใน .env แล้ว)
 4. **ทดสอบระบบ end-to-end** บน accdee.shop จริง
+
+---
+
+## Backup Channel — ช่องทางสำรองข้อมูล ACCDEE
+
+### ช่องทางหลัก: DBeaver → Railway MySQL
+```
+1. เปิด DBeaver (ดาวน์โหลดที่ dbeaver.io — ฟรี)
+2. Railway → accdee project → MySQL service → Connect tab
+   → copy: Host / Port / User / Password / Database
+3. DBeaver → New Connection → MySQL → ใส่ค่าจาก Railway
+4. คลิกขวาที่ database → Tools → Dump Database
+5. บันทึกชื่อ: accdee_backup_YYYY-MM-DD.sql
+6. อัปไฟล์ขึ้น Google Drive (ห้าม commit .sql)
+```
+
+### ที่เก็บ Backup
+- **Google Drive** — เก็บ SQL dump ทุก version
+- **ห้าม** เก็บใน repo (ดู .gitignore: `backups/`, `*.sql`)
+
+### ก่อน Restore ทุกครั้ง
+```powershell
+npm run restore:check -- C:\path\to\backup.sql
+```
+คำสั่งนี้ read-only — ไม่แตะ database
+
+### Script backup (ต้องมี mysqldump ในเครื่อง)
+```powershell
+npm run backup:db   # สร้าง backups/accdee_<timestamp>.sql
+```
 
 ---
 
