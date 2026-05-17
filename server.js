@@ -47,6 +47,7 @@ app.use(helmet({
     directives: {
       defaultSrc : ["'self'"],
       scriptSrc  : ["'self'", "'unsafe-inline'"],   // inline onclick handlers ใน HTML
+      scriptSrcAttr: ["'unsafe-inline'"],            // legacy storefront still uses onclick attributes
       styleSrc   : ["'self'", "'unsafe-inline'",
                     'https://fonts.googleapis.com'],
       fontSrc    : ["'self'", 'https://fonts.gstatic.com'],

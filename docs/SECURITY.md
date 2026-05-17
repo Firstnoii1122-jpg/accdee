@@ -4,6 +4,7 @@
 
 - Production CORS now uses an allowlist.
 - CSP remains compatible with the current legacy frontend while adding safer defaults such as `base-uri`, `form-action`, and `frame-ancestors`.
+- CSP currently allows legacy inline event-handler attributes because the storefront still uses `onclick` in HTML. Remove this exception after migrating buttons to delegated JavaScript event listeners.
 - Login failures are logged as structured security events without passwords or full sensitive values.
 - Suspicious admin access is logged when an admin endpoint is accessed without a token or by a non-admin user.
 - JWT signing and verification are locked to HS256.
@@ -44,7 +45,7 @@
 ## Still Required
 
 - Admin session versioning or token invalidation.
-- Stronger CSP after removing inline scripts.
+- Stronger CSP after removing inline scripts and inline event-handler attributes.
 - Admin 2FA review and enforcement policy.
 - Centralized log retention and alerting.
 - Confirm GitHub visibility policy and rotate any secret that was ever committed.

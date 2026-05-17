@@ -27,3 +27,4 @@
 - Added Railway-aware production runtime detection for CORS, CSP, JWT guards, and health metadata.
 - Added ACCDEE purchase UX skill and improved storefront product/contact popups so product clicks no longer fail silently.
 - Added storefront validation to catch broken product modal wiring before deploy.
+- Fixed CSP compatibility for the legacy storefront's inline `onclick` handlers.
