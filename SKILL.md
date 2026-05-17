@@ -116,6 +116,8 @@ For customer shopping, product modal, buy button, stock-empty, or guest purchase
 
 For multi-agent handoff, repo-prompt work, notebook-style LLM memory, or token-saving workflow, also read `docs/AI_WORKFLOW_SKILL.md`.
 
+For SEO metadata, sitemap, robots, search keyword, or Google Search Console work, also read `docs/SEO_SKILL.md`.
+
 ## Patch Rules
 
 - One phase at a time.

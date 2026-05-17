@@ -30,7 +30,8 @@ Do not read, copy, merge, or compare the archived repo unless the owner explicit
 | Security logs | `utils/securityLogger.js` |
 | Upload validation | `utils/fileValidation.js` |
 | Backup/restore | `scripts/backup-db.js`, `scripts/validate-restore-file.js` |
-| Validation scripts | `package.json`, `scripts/check-secrets.js`, `scripts/check-storefront.js` |
+| Validation scripts | `package.json`, `scripts/check-secrets.js`, `scripts/check-storefront.js`, `scripts/check-project-structure.js`, `scripts/check-seo.js` |
+| SEO/crawler files | `public/robots.txt`, `public/sitemap.xml`, `docs/SEO_SKILL.md` |
 
 ## Folder Responsibilities
 
@@ -63,6 +64,7 @@ Do not read, copy, merge, or compare the archived repo unless the owner explicit
 | Railway deploy fails | `railway.toml`, `server.js`, `package.json`, `docs/DEPLOYMENT.md` |
 | Logs show rate limit/proxy issue | `server.js`, Railway proxy settings, `docs/MONITORING.md` |
 | Secret exposure concern | `scripts/check-secrets.js`, `.gitignore`, GitHub token rotation outside repo |
+| Google/share preview looks wrong | `public/index.html`, `public/robots.txt`, `public/sitemap.xml`, `scripts/check-seo.js`, `docs/SEO_SKILL.md` |
 
 ## Keep / Review / Ignore
 
@@ -108,4 +110,3 @@ Local-only or generated files that must stay out of Git:
 ## Safe Change Rule
 
 Do not move or delete folders just to make the repo look cleaner. In this project, folder structure is already usable. Cleanliness should come from docs, ownership, validation scripts, and small patches first. Move files only with a migration plan and tests.
-

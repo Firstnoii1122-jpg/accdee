@@ -32,3 +32,4 @@
 - Added explicit no-store/noindex admin page headers without changing customer storefront behavior.
 - Added ACCDEE project map and AI workflow skill so ChatGPT/Claude can work from the same repo context.
 - Added `npm run check:structure` to guard required folders, docs, scripts, and deploy assumptions.
+- Added SEO skill, robots.txt, sitemap.xml, homepage JSON-LD, and `npm run check:seo`.

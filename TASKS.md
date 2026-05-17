@@ -33,6 +33,7 @@ Completed:
 - Project map added in `docs/PROJECT_MAP.md`.
 - AI workflow skill added in `docs/AI_WORKFLOW_SKILL.md`.
 - Project structure guard added via `npm run check:structure`.
+- SEO skill, robots, sitemap, JSON-LD, and SEO guard added via `npm run check:seo`.
 
 Remaining:
 
