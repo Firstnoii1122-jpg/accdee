@@ -575,9 +575,10 @@ function closeDrawer() {
 // ── 10. INIT (รันเมื่อหน้าโหลดเสร็จ) ────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();             // ตรวจสอบสถานะ login
-  initScrollAnimations();  // เปิด scroll animations
-  initKeyboardSupport();   // เปิด keyboard shortcuts
+  checkAuth();                          // ตรวจสอบสถานะ login
+  document.body.classList.add('ready'); // แสดงหน้าหลัง auth state ถูกต้องแล้ว
+  initScrollAnimations();               // เปิด scroll animations
+  initKeyboardSupport();                // เปิด keyboard shortcuts
   initTopupEvents();       // เปิด event สำหรับ topup modal
   loadSiteSettings();      // โหลดค่าตั้งค่าจาก DB (alert, contact links)
   loadPublicReviews();     // โหลดรีวิวจริงจาก DB
