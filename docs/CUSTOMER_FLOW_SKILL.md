@@ -40,3 +40,10 @@ npm run check
 
 This catches missing click handlers, missing modal roots, dead contact fallback, and missing cache busting.
 
+After Railway deploy, also run:
+
+```powershell
+npm run check:live
+```
+
+For manual browser testing, follow `docs/CUSTOMER_FLOW_TESTING.md`.

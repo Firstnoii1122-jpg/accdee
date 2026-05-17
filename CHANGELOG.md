@@ -34,3 +34,4 @@
 - Added `npm run check:structure` to guard required folders, docs, scripts, and deploy assumptions.
 - Added SEO skill, robots.txt, sitemap.xml, homepage JSON-LD, and `npm run check:seo`.
 - Added customer flow skill, Facebook contact fallback, and `npm run check:customer-flow`.
+- Added customer flow manual testing checklist and optional `npm run check:live` production smoke check.

@@ -35,6 +35,7 @@ Completed:
 - Project structure guard added via `npm run check:structure`.
 - SEO skill, robots, sitemap, JSON-LD, and SEO guard added via `npm run check:seo`.
 - Customer flow skill and click guard added via `npm run check:customer-flow`.
+- Customer flow manual checklist and optional production smoke check added via `npm run check:live`.
 
 Remaining:
 
