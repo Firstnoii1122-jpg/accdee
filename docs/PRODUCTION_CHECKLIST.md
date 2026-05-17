@@ -32,8 +32,11 @@
 ## ✅ Section 3: ความปลอดภัย
 
 - [ ] `.env` ไม่อยู่ใน git (`git status` ไม่เห็น `.env`)
+- [ ] GitHub repo เป็น private หรือถ้า public ต้องยืนยันว่าไม่มี secret ใน history
+- [ ] ตรวจ `public/` แล้วไม่มี JWT secret, admin password, DB password, email key, Telegram token, หรือ Cloudinary API secret
 - [ ] `JWT_SECRET` ไม่ใช่ค่า default ("accdee_super_secret...")
 - [ ] Admin password ไม่ใช่ default
+- [ ] Secret ที่เคยอยู่ในเอกสารหรือ git history ถูก rotate แล้ว
 - [ ] Rate limiting ทำงาน (ลอง login ผิด 15 ครั้ง → ต้องได้ error)
 - [ ] Admin panel redirect ถ้าไม่ login (`/admin.html` → `/admin-login.html`)
 - [ ] HTTPS enforced (ไม่มี HTTP leak)

@@ -46,3 +46,11 @@
 - Stronger CSP after removing inline scripts.
 - Admin 2FA review and enforcement policy.
 - Centralized log retention and alerting.
+- Confirm GitHub visibility policy and rotate any secret that was ever committed.
+
+## Source Code Exposure
+
+- Visitors can see frontend files in `public/`; this is normal.
+- Visitors should not see backend files, `.env`, Railway variables, or database credentials through the website.
+- If GitHub is public, repository code is visible from GitHub even though backend code is not exposed by the browser.
+- See `docs/SOURCE_CODE_EXPOSURE.md` before deciding whether the repository should be public or private.

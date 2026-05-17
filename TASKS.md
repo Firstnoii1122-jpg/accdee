@@ -21,6 +21,7 @@ Completed:
 - Archived rebuild repo identified at `C:\temp\accdee_ARCHIVE_DO_NOT_USE`.
 - Active repo established as the only source of truth.
 - Monitoring, backup, restore, security operations, production checklist docs exist.
+- Source code exposure guide exists.
 - Basic npm validation scripts exist.
 - Git remote sanitized to a credential-free URL.
 - Governance docs committed.
@@ -31,6 +32,7 @@ Completed:
 Remaining:
 
 - Rotate the exposed GitHub token outside the repo.
+- Confirm whether GitHub should remain private and rotate any secret that was ever committed.
 - Keep `.claude/` local-only and ignored.
 - Reconcile docs that still mention old service names such as candy365.
 - Continue checking legacy docs for accidental secrets or old service names.
