@@ -3,6 +3,7 @@ const Transaction      = require('../models/transactionModel');
 const User             = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
 const db               = require('../config/db');
+const { validateSlipImage } = require('../utils/fileValidation');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,8 +35,9 @@ const requestTopup = async (req, res) => {
       return res.status(400).json({ success: false, message: 'จำนวนเงินสูงสุด 100,000 บาทต่อครั้ง' });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: 'กรุณาแนบรูปสลิปการโอนเงิน' });
+    const slipValidation = validateSlipImage(req.file);
+    if (!slipValidation.ok) {
+      return res.status(400).json({ success: false, message: slipValidation.message });
     }
 
     // อัปโหลดไป Cloudinary

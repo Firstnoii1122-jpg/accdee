@@ -28,6 +28,7 @@ npm run check:db
 - Order safety tests verify insufficient-balance rollback, out-of-stock rollback, and single-item stock depletion on purchase.
 - Coupon wallet tests verify duplicate-use rollback and max-use guards before balance credit.
 - Admin credit tests verify row locking, negative-balance rollback, and transaction logging.
+- Topup slip tests verify missing-file rejection, spoofed-image rejection, and pending transaction creation.
 
 ## What These Checks Do Not Prove
 
@@ -35,7 +36,6 @@ npm run check:db
 - Real concurrent order pressure has been tested against a dedicated test database.
 - Full wallet history coverage is complete.
 - Admin credit adjustment audit details are centralized.
-- Uploads are safely validated.
 - Production sessions expire correctly.
 
 ## Test Safety Rules
@@ -58,7 +58,7 @@ Add tests in this order:
 6. Wallet history endpoints have integration coverage.
 7. Topup reject cannot happen after approval.
 8. Add dedicated database-backed concurrent order tests.
-9. Add upload validation tests for payment slips.
+9. Add dedicated malware scanning or private object-storage validation for uploaded slips.
 
 ## Recommended Test Structure
 

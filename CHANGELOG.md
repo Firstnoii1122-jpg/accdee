@@ -16,3 +16,4 @@
 - Added order safety tests for rollback paths and single-item stock depletion.
 - Hardened coupon wallet use with row locking, conditional max-use updates, and duplicate-use rollback tests.
 - Locked admin credit balance reads and added tests for credit adjustment safety.
+- Added payment slip image signature validation and topup upload tests.

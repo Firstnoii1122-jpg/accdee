@@ -9,6 +9,7 @@
 - JWT signing and verification are locked to HS256.
 - Production requires `JWT_SECRET` to exist and be at least 32 characters.
 - JWT expiry is configurable with `JWT_EXPIRES_IN`; the safe fallback is now `15m`.
+- Payment slip uploads validate both allowed MIME type and image file signature before Cloudinary upload.
 
 ## Current Allowed Production Origins
 
