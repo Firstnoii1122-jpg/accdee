@@ -25,3 +25,4 @@
 - Added wallet history tests for authenticated-user scoping and generic failure responses.
 - Added `npm run check:secrets` and wired it into `npm run check`.
 - Added Railway-aware production runtime detection for CORS, CSP, JWT guards, and health metadata.
+- Added ACCDEE purchase UX skill and improved storefront product/contact popups so product clicks no longer fail silently.

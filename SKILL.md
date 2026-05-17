@@ -110,6 +110,8 @@ Use `docs/FILE_OWNERS.md` as the team map. Every file should have a responsible 
 
 If a change crosses more than one role, pause and explain the risk first.
 
+For customer shopping, product modal, buy button, stock-empty, or guest purchase behavior, also read `docs/PURCHASE_UX_SKILL.md`.
+
 ## Patch Rules
 
 - One phase at a time.

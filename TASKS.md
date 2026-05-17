@@ -29,6 +29,7 @@ Completed:
 - Main operating skill added in `SKILL.md`.
 - File ownership map added in `docs/FILE_OWNERS.md`.
 - Secret/source exposure scan added to `npm run check`.
+- Purchase UX skill added in `docs/PURCHASE_UX_SKILL.md`.
 
 Remaining:
 

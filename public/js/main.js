@@ -29,6 +29,41 @@ const products = {
     icon: '🐦', platform: 'Twitter (X)', productKey: 'tw-1k',
     title: 'Twitter บัญชี 1,000+ ผู้ติดตาม', price: '800 ฿',
     desc: 'บัญชี Twitter ที่มีผู้ติดตามกว่า 1,000 คน เพิ่มความน่าเชื่อถือ\n\n• 1,000+ ผู้ติดตามจริง\n• บัญชีมีประวัติกิจกรรม\n• เหมาะสำหรับการตลาดระดับพรีเมียม'
+  },
+  'ig-premium': {
+    icon: '📸', platform: 'Instagram', productKey: 'ig-premium', contactOnly: true,
+    title: 'Instagram Account พรีเมียม', price: 'ติดต่อ',
+    desc: 'บัญชี Instagram คุณภาพสูงสำหรับสร้างแบรนด์และเพิ่มความน่าเชื่อถือ\n\n• ตรวจสอบรายละเอียดก่อนส่งมอบ\n• เหมาะกับงานแบรนด์และธุรกิจออนไลน์\n• ติดต่อทีมงานเพื่อเช็กสต็อกและราคา'
+  },
+  'bm-premium': {
+    icon: '💼', platform: 'Business Manager', productKey: 'bm-premium', contactOnly: true,
+    title: 'Business Manager พรีเมียม', price: 'ติดต่อ',
+    desc: 'บัญชี Business Manager สำหรับบริหารโฆษณาและขยายแบรนด์\n\n• เหมาะกับงานยิงแอด\n• ต้องเช็กคุณภาพและเงื่อนไขก่อนขาย\n• ติดต่อทีมงานเพื่อประเมินความพร้อม'
+  },
+  'gmail': {
+    icon: '✉️', platform: 'Gmail', productKey: 'gmail', contactOnly: true,
+    title: 'Gmail Account พรีเมียม', price: 'ติดต่อ',
+    desc: 'บัญชี Gmail คุณภาพสูงสำหรับงานสื่อสารและธุรกิจ\n\n• ตรวจสอบก่อนส่งมอบ\n• เหมาะกับงาน Business Communication\n• ติดต่อทีมงานเพื่อเช็กสต็อกล่าสุด'
+  },
+  'fb-personal': {
+    icon: '📘', platform: 'Facebook Personal', productKey: 'fb-personal', contactOnly: true,
+    title: 'Facebook Personal วงเงินสูง', price: 'ติดต่อ',
+    desc: 'บัญชี Personal เก่าวงเงินสูง เหมาะกับงานโฆษณาที่ต้องการความพร้อมมากขึ้น\n\n• วงเงินประมาณ $250 - $1,500\n• ต้องตรวจสภาพบัญชีก่อนส่งมอบ\n• ติดต่อ LINE @ACCDEE เพื่อเช็กตัวเลือก'
+  },
+  'ig-personal': {
+    icon: '📸', platform: 'Instagram Personal', productKey: 'ig-personal', contactOnly: true,
+    title: 'Instagram Personal วงเงินสูง', price: 'ติดต่อ',
+    desc: 'บัญชี Instagram Personal สำหรับงานโฆษณาและแบรนด์ที่ต้องการบัญชีพร้อมใช้งาน\n\n• วงเงินประมาณ $250 - $1,500\n• เช็กเงื่อนไขก่อนขายทุกครั้ง\n• ติดต่อทีมงานเพื่อรับคำแนะนำ'
+  },
+  'tt-personal': {
+    icon: '🎵', platform: 'TikTok Personal', productKey: 'tt-personal', contactOnly: true,
+    title: 'TikTok Personal วงเงินสูง', price: 'ติดต่อ',
+    desc: 'บัญชี TikTok Personal สำหรับงานคอนเทนต์และโฆษณา\n\n• เหมาะกับธุรกิจที่ต้องการบัญชีพร้อมใช้งาน\n• ตรวจสอบสต็อกก่อนส่งมอบ\n• ติดต่อทีมงานเพื่อเช็กราคา'
+  },
+  'netflix': {
+    icon: '🎬', platform: 'Netflix', productKey: 'netflix', contactOnly: true,
+    title: 'Netflix Personal', price: 'ติดต่อ',
+    desc: 'สินค้า/บริการกลุ่ม Netflix ต้องสอบถามสถานะก่อนสั่งซื้อ\n\n• เช็กสต็อกก่อนทุกครั้ง\n• ทีมงานแจ้งรายละเอียดก่อนชำระ\n• ติดต่อ LINE หรือ Telegram เพื่อสอบถาม'
   }
 };
 
@@ -344,10 +379,85 @@ async function refreshBalance() {
 
 // ── 5. PRODUCT MODAL ────────────────────────────
 
+function openModalWithContent(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function contactButtons() {
+  return `
+    <div style="display:flex;flex-direction:column;gap:10px;margin:16px 0">
+      <a href="https://lin.ee/xLWi136" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#06c755;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px">
+        💬 ติดต่อ LINE @ACCDEE
+      </a>
+      <a href="https://t.me/AccdeeNotifyBot" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#0ea5e9;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px">
+        ✈️ ติดต่อ Telegram
+      </a>
+    </div>
+  `;
+}
+
+function openContactProductModal(p, title = 'สอบถามสินค้านี้กับทีมงาน') {
+  openModalWithContent(`
+    <div style="text-align:center">
+      <div class="modal-product-icon">${p ? p.icon : '💬'}</div>
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:2px;color:var(--neon-blue);text-transform:uppercase;margin-bottom:6px">${p ? p.platform : 'ACCDEE'}</div>
+      <div class="modal-title">${title}</div>
+      <div class="modal-price">${p ? p.price : 'ติดต่อ'}</div>
+      <div class="modal-desc" style="white-space:pre-line">${p ? p.desc : 'ทีมงานจะช่วยเช็กสินค้า ราคา และสต็อกล่าสุดให้ก่อนชำระเงิน'}</div>
+      ${contactButtons()}
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closeModal()">ดูสินค้าอื่นต่อ</button>
+        <button class="btn-ghost" onclick="closeModal()">ปิด</button>
+      </div>
+    </div>
+  `);
+}
+
+function openTopupRequiredModal(message) {
+  openModalWithContent(`
+    <div style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:8px">💰</div>
+      <div class="modal-title" style="margin-bottom:8px">ยอดเงินไม่พอ</div>
+      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:18px">${message}</p>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closeModal();openTopup()">เติมเงินตอนนี้</button>
+        <button class="btn-ghost" onclick="closeModal()">ดูสินค้าอื่น</button>
+      </div>
+    </div>
+  `);
+}
+
+function openPurchaseErrorModal(message) {
+  openModalWithContent(`
+    <div style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:8px">⚠️</div>
+      <div class="modal-title" style="margin-bottom:8px">ยังสั่งซื้อไม่ได้</div>
+      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:18px">${message || 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่ หรือติดต่อทีมงาน'}</p>
+      ${contactButtons()}
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closeModal()">ลองดูสินค้าอื่น</button>
+        <button class="btn-ghost" onclick="closeModal()">ปิด</button>
+      </div>
+    </div>
+  `);
+}
+
 function openModal(id) {
   const p = products[id];
-  if (!p) return;
-  document.getElementById('modalContent').innerHTML = `
+  if (!p) {
+    openContactProductModal(null, 'ยังไม่พบข้อมูลสินค้านี้');
+    showToast('ทีมงานพร้อมช่วยเช็กสินค้านี้ให้', 'error');
+    return;
+  }
+  if (p.contactOnly) {
+    openContactProductModal(p);
+    return;
+  }
+  openModalWithContent(`
     <div class="modal-product-icon">${p.icon}</div>
     <div style="font-size:0.72rem;font-weight:700;letter-spacing:2px;color:var(--neon-blue);text-transform:uppercase;margin-bottom:6px">${p.platform}</div>
     <div class="modal-title">${p.title}</div>
@@ -357,9 +467,7 @@ function openModal(id) {
       <button class="btn-primary" onclick="handleBuy('${id}')">สั่งซื้อเลย</button>
       <button class="btn-ghost" onclick="closeModal()">ปิด</button>
     </div>
-  `;
-  document.getElementById('modalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  `);
 }
 
 function closeModal() {
@@ -373,16 +481,26 @@ function closeModalOuter(e) {
 
 // ปุ่มสั่งซื้อ — ซื้อจากหน้าแรกได้เลย ไม่ต้องไปหน้าร้าน
 async function handleBuy(productId) {
+  const p = products[productId];
+  if (!p) {
+    openContactProductModal(null, 'ยังไม่พบข้อมูลสินค้านี้');
+    return;
+  }
+  if (p.contactOnly) {
+    openContactProductModal(p);
+    return;
+  }
+
   const token = localStorage.getItem('accdee_token');
 
   if (!token) {
     closeModal();
     openAuth('login');
+    showAuthMsg('loginMsg', 'สมัครสมาชิกหรือเข้าสู่ระบบก่อนสั่งซื้อ แล้วกลับมากดซื้อได้ทันที');
     showToast('กรุณาเข้าสู่ระบบก่อนสั่งซื้อ', 'error');
     return;
   }
 
-  const p   = products[productId];
   const btn = document.querySelector('#modalContent .btn-primary');
   if (btn) { btn.disabled = true; btn.textContent = 'กำลังดำเนินการ...'; }
 
@@ -422,6 +540,20 @@ async function handleBuy(productId) {
     `;
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = 'สั่งซื้อเลย'; }
+    const errMessage = err && err.message ? err.message : '';
+
+    if (errMessage.includes('ยอดเงิน') || errMessage.toLowerCase().includes('balance')) {
+      openTopupRequiredModal(errMessage);
+      return;
+    }
+    if (errMessage.includes('หมดสต็อก') || errMessage.toLowerCase().includes('stock')) {
+      openContactProductModal(p, 'สินค้าหมดชั่วคราว');
+      return;
+    }
+    if (errMessage.includes('ไม่พบสินค้า')) {
+      openContactProductModal(p, 'ต้องเช็กสินค้ากับทีมงาน');
+      return;
+    }
 
     // ถ้าหมดสต็อก → เปลี่ยน modal เป็นหน้าติดต่อแทน
     if (err.message && err.message.includes('หมดสต็อก')) {
@@ -447,7 +579,7 @@ async function handleBuy(productId) {
         </div>
       `;
     } else {
-      showToast(err.message, 'error');
+      openPurchaseErrorModal(errMessage);
     }
   }
 }
