@@ -18,6 +18,7 @@ const requiredPaths = [
   'docs/ARCHITECTURE.md',
   'docs/AI_WORKFLOW_SKILL.md',
   'docs/BACKUP.md',
+  'docs/CUSTOMER_FLOW_SKILL.md',
   'docs/DEPLOYMENT.md',
   'docs/FILE_OWNERS.md',
   'docs/MONITORING.md',
@@ -61,6 +62,7 @@ const requiredPaths = [
   'public/js/admin-login.js',
   'scripts/backup-db.js',
   'scripts/check-secrets.js',
+  'scripts/check-customer-flow.js',
   'scripts/check-seo.js',
   'scripts/check-storefront.js',
   'scripts/validate-restore-file.js',
@@ -90,6 +92,7 @@ const requiredDirs = [
 const requiredScripts = [
   'test',
   'check',
+  'check:customer-flow',
   'build',
   'check:db',
   'check:secrets',
@@ -151,6 +154,9 @@ if (exists('package.json')) {
   if (!checkScript.includes('check:seo')) {
     errors.push('npm run check must include npm run check:seo');
   }
+  if (!checkScript.includes('check:customer-flow')) {
+    errors.push('npm run check must include npm run check:customer-flow');
+  }
 }
 
 if (exists('.gitignore')) {
@@ -184,7 +190,7 @@ if (exists('server.js')) {
 
 if (exists('SKILL.md')) {
   const skill = read('SKILL.md');
-  for (const doc of ['docs/PROJECT_MAP.md', 'docs/AI_WORKFLOW_SKILL.md', 'docs/PURCHASE_UX_SKILL.md', 'docs/SEO_SKILL.md']) {
+  for (const doc of ['docs/PROJECT_MAP.md', 'docs/AI_WORKFLOW_SKILL.md', 'docs/PURCHASE_UX_SKILL.md', 'docs/SEO_SKILL.md', 'docs/CUSTOMER_FLOW_SKILL.md']) {
     if (!skill.includes(doc)) {
       errors.push(`SKILL.md should reference ${doc}`);
     }

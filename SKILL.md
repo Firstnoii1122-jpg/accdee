@@ -114,6 +114,8 @@ If a change crosses more than one role, pause and explain the risk first.
 
 For customer shopping, product modal, buy button, stock-empty, or guest purchase behavior, also read `docs/PURCHASE_UX_SKILL.md`.
 
+For customer click flow, contact cards, auth modal, topup prompts, or "button does nothing" work, also read `docs/CUSTOMER_FLOW_SKILL.md`.
+
 For multi-agent handoff, repo-prompt work, notebook-style LLM memory, or token-saving workflow, also read `docs/AI_WORKFLOW_SKILL.md`.
 
 For SEO metadata, sitemap, robots, search keyword, or Google Search Console work, also read `docs/SEO_SKILL.md`.

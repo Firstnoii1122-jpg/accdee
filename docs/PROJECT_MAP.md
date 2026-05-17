@@ -30,8 +30,9 @@ Do not read, copy, merge, or compare the archived repo unless the owner explicit
 | Security logs | `utils/securityLogger.js` |
 | Upload validation | `utils/fileValidation.js` |
 | Backup/restore | `scripts/backup-db.js`, `scripts/validate-restore-file.js` |
-| Validation scripts | `package.json`, `scripts/check-secrets.js`, `scripts/check-storefront.js`, `scripts/check-project-structure.js`, `scripts/check-seo.js` |
+| Validation scripts | `package.json`, `scripts/check-secrets.js`, `scripts/check-storefront.js`, `scripts/check-project-structure.js`, `scripts/check-seo.js`, `scripts/check-customer-flow.js` |
 | SEO/crawler files | `public/robots.txt`, `public/sitemap.xml`, `docs/SEO_SKILL.md` |
+| Customer click flow | `public/index.html`, `public/js/main.js`, `docs/CUSTOMER_FLOW_SKILL.md` |
 
 ## Folder Responsibilities
 
@@ -53,6 +54,7 @@ Do not read, copy, merge, or compare the archived repo unless the owner explicit
 | Symptom | Check These First |
 |---|---|
 | Customer buttons do not click | `public/index.html`, `public/js/main.js`, `server.js` CSP, `scripts/check-storefront.js` |
+| Contact card does nothing | `public/index.html`, `public/js/main.js`, `scripts/check-customer-flow.js` |
 | Product popup is blank | `public/js/main.js` product data and unknown-product fallback |
 | Buy button does nothing | `public/js/main.js` `handleBuy`, product `contactOnly`, auth/topup popup logic |
 | Register/login fails | `controllers/authController.js`, `routes/authRoutes.js`, `public/js/main.js`, browser console |

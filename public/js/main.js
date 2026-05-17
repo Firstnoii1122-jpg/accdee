@@ -787,11 +787,26 @@ function initLegacyClickDelegation() {
   });
 }
 
+function initContactFallbacks() {
+  const facebook = document.getElementById('contactFacebook');
+  if (!facebook) return;
+
+  facebook.addEventListener('click', (event) => {
+    const href = (facebook.getAttribute('href') || '').trim();
+    const hasRealLink = href && href !== '#' && !href.startsWith('#');
+    if (hasRealLink) return;
+
+    event.preventDefault();
+    showToast('ช่องทาง Facebook กำลังอัปเดต กรุณาติดต่อ LINE @ACCDEE หรือ Telegram ก่อนนะครับ');
+  });
+}
+
 // ── 10. INIT (รันเมื่อหน้าโหลดเสร็จ) ────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('ready');
   safeInit('initLegacyClickDelegation', initLegacyClickDelegation);
+  safeInit('initContactFallbacks', initContactFallbacks);
   safeInit('checkAuth', checkAuth);
   safeInit('initScrollAnimations', initScrollAnimations);
   safeInit('initKeyboardSupport', initKeyboardSupport);
