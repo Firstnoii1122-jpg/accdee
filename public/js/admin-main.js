@@ -725,6 +725,29 @@ async function revokeUserSessions(id, username) {
   } catch (err) { toast('❌ ' + err.message, 'error'); }
 }
 
+// ===== DATABASE BACKUP =====
+async function downloadBackup() {
+  try {
+    toast('กำลัง export database...', 'info');
+    const token = API_CONFIG.getToken();
+    const res = await fetch(API_CONFIG.BASE_URL + '/admin/export-db', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 401) { toast('❌ Session หมดอายุ กรุณา login ใหม่', 'error'); return; }
+    if (!res.ok) { toast('❌ Export ล้มเหลว', 'error'); return; }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `accdee_backup_${date}.sql`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('✅ Backup ดาวน์โหลดสำเร็จ', 'success');
+  } catch { toast('❌ เชื่อมต่อไม่ได้', 'error'); }
+}
+window.downloadBackup = downloadBackup;
+
 // ===== MODAL CLOSE ON OVERLAY CLICK =====
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
