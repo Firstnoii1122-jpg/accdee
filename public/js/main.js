@@ -822,8 +822,10 @@ document.addEventListener('DOMContentLoaded', () => {
   safeInit('initTopupEvents', initTopupEvents);
   safeInit('loadSiteSettings', loadSiteSettings);
   safeInit('loadPublicReviews', loadPublicReviews);
-
   safeInit('refreshBalanceTimer', () => setInterval(refreshBalance, 30000));
+
+  const hamburger = document.getElementById('navHamburger');
+  if (hamburger) hamburger.addEventListener('click', toggleDrawer);
 });
 
 // ── 11. TOPUP MODAL (เติมเงินเข้า Wallet) ────────
