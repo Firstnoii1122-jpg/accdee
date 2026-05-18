@@ -43,4 +43,7 @@ router.get('/coupons',         adminOnly, adminController.getCoupons);
 router.post('/coupons',        adminOnly, adminController.addCoupon);
 router.delete('/coupons/:id',  adminOnly, adminController.deleteCoupon);
 
+// backup
+router.get('/export-db', adminOnly, adminController.exportDatabase);
+
 module.exports = router;

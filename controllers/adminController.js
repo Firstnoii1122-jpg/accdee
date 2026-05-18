@@ -611,4 +611,50 @@ const revokeUserSessions = async (req, res) => {
   }
 };
 
-module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, bulkAddInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole, toggle2FA, revokeUserSessions };
+const exportDatabase = async (req, res) => {
+  try {
+    const [tables] = await db.execute('SHOW TABLES');
+    const tableNames = tables.map(r => Object.values(r)[0]);
+
+    const lines = [
+      `-- ACCDEE Database Backup`,
+      `-- Date: ${new Date().toISOString()}`,
+      `-- Tables: ${tableNames.join(', ')}`,
+      `SET FOREIGN_KEY_CHECKS=0;`,
+      '',
+    ];
+
+    for (const table of tableNames) {
+      const [[createRow]] = await db.execute(`SHOW CREATE TABLE \`${table}\``);
+      lines.push(`-- Table: ${table}`);
+      lines.push(`DROP TABLE IF EXISTS \`${table}\`;`);
+      lines.push(`${createRow['Create Table']};`);
+      lines.push('');
+
+      const [rows] = await db.execute(`SELECT * FROM \`${table}\``);
+      for (const row of rows) {
+        const cols = Object.keys(row).map(c => `\`${c}\``).join(', ');
+        const vals = Object.values(row).map(v => {
+          if (v === null) return 'NULL';
+          if (v instanceof Date) return `'${v.toISOString().slice(0, 19).replace('T', ' ')}'`;
+          if (typeof v === 'number') return String(v);
+          return `'${String(v).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+        }).join(', ');
+        lines.push(`INSERT INTO \`${table}\` (${cols}) VALUES (${vals});`);
+      }
+      lines.push('');
+    }
+
+    lines.push('SET FOREIGN_KEY_CHECKS=1;');
+
+    const filename = `accdee_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}.sql`;
+    res.setHeader('Content-Type', 'application/sql');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(lines.join('\n'));
+  } catch (err) {
+    console.error('exportDatabase error:', err);
+    res.status(500).json({ success: false, message: 'Export failed' });
+  }
+};
+
+module.exports = { getPendingTopups, approveTopup, rejectTopup, getStats, getMembers, adjustCredit, resetMemberPassword, deleteMember, getTopupHistory, getInventory, getStock, addInventory, bulkAddInventory, deleteInventory, getAllOrders, getProducts, addProduct, deleteProduct, editProduct, getCoupons, addCoupon, deleteCoupon, getSettings, updateSettings, getAdmins, createAdmin, setMemberRole, toggle2FA, revokeUserSessions, exportDatabase };
