@@ -144,9 +144,33 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
+function startDbMonitor() {
+  const db = require('./config/db');
+  const { sendTelegram } = require('./config/telegram');
+  let lastDown = false;
+  setInterval(async () => {
+    try {
+      await db.execute('SELECT 1');
+      if (lastDown) {
+        lastDown = false;
+        sendTelegram('✅ <b>ACCDEE กลับมาออนไลน์แล้ว</b>\nDB connection กลับมาปกติ');
+      }
+    } catch {
+      if (!lastDown) {
+        lastDown = true;
+        sendTelegram('🚨 <b>ACCDEE — DB Connection Error</b>\nเชื่อมต่อฐานข้อมูลไม่ได้ กรุณาตรวจสอบด่วน!');
+      }
+    }
+  }, 5 * 60 * 1000);
+}
+
 function start() {
   return setupDb()
-    .then(() => app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`)))
+    .then(() => {
+      const server = app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
+      startDbMonitor();
+      return server;
+    })
     .catch(err => {
       console.error('Database setup failed:', err.message);
       process.exit(1);
