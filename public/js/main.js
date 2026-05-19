@@ -299,6 +299,7 @@ async function doLogout() {
       });
     } catch { /* network error — ล้าง local ต่อได้เลย */ }
   }
+  if (window._balanceTimer) { clearInterval(window._balanceTimer); window._balanceTimer = null; }
   localStorage.removeItem('accdee_token');
   localStorage.removeItem('accdee_user');
   updateNavbar(null);
@@ -822,7 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
   safeInit('initTopupEvents', initTopupEvents);
   safeInit('loadSiteSettings', loadSiteSettings);
   safeInit('loadPublicReviews', loadPublicReviews);
-  safeInit('refreshBalanceTimer', () => setInterval(refreshBalance, 30000));
+  safeInit('refreshBalanceTimer', () => { window._balanceTimer = setInterval(refreshBalance, 30000); });
 
   const hamburger = document.getElementById('navHamburger');
   if (hamburger) hamburger.addEventListener('click', toggleDrawer);

@@ -95,7 +95,7 @@ const login = async (req, res) => {
 
     // ถ้าเปิด 2FA → ส่ง OTP แล้ว return tempToken แทน JWT จริง
     if (user.two_fa_enabled) {
-      const otp     = String(Math.floor(100000 + Math.random() * 900000));
+      const otp     = String(100000 + (crypto.randomBytes(3).readUIntBE(0, 3) % 900000));
       const expires = new Date(Date.now() + 5 * 60 * 1000); // 5 นาที
 
       await db.execute(
