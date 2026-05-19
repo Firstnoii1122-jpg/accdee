@@ -432,7 +432,7 @@ function openTopupRequiredModal(message) {
     <div style="text-align:center">
       <div style="font-size:3rem;margin-bottom:8px">💰</div>
       <div class="modal-title" style="margin-bottom:8px">ยอดเงินไม่พอ</div>
-      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:18px">${message}</p>
+      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:18px">${escapeHtml(String(message))}</p>
       <div class="modal-actions">
         <button class="btn-primary" onclick="closeModal();openTopup()">เติมเงินตอนนี้</button>
         <button class="btn-ghost" onclick="closeModal()">ดูสินค้าอื่น</button>
@@ -446,7 +446,7 @@ function openPurchaseErrorModal(message) {
     <div style="text-align:center">
       <div style="font-size:3rem;margin-bottom:8px">⚠️</div>
       <div class="modal-title" style="margin-bottom:8px">ยังสั่งซื้อไม่ได้</div>
-      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:18px">${message || 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่ หรือติดต่อทีมงาน'}</p>
+      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:18px">${escapeHtml(String(message || 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่ หรือติดต่อทีมงาน'))}</p>
       ${contactButtons()}
       <div class="modal-actions">
         <button class="btn-primary" onclick="closeModal()">ลองดูสินค้าอื่น</button>
@@ -537,13 +537,13 @@ async function handleBuy(productId) {
       <div style="text-align:center">
         <div style="font-size:3rem;margin-bottom:8px">✅</div>
         <div class="modal-title" style="margin-bottom:8px">สั่งซื้อสำเร็จ!</div>
-        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:4px">สินค้า: <b>${d.productName}</b></p>
-        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px">ยอดคงเหลือ: <b style="color:#10b981">${d.newBalance} ฿</b></p>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:4px">สินค้า: <b>${escapeHtml(String(d.productName))}</b></p>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px">ยอดคงเหลือ: <b style="color:#10b981">${escapeHtml(String(d.newBalance))} ฿</b></p>
         <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px">📋 ข้อมูลบัญชีของคุณ (แตะเพื่อ copy)</p>
         <div onclick="navigator.clipboard.writeText(this.dataset.text).then(()=>showToast('Copy สำเร็จ!'))"
-             data-text="${d.credentials}"
+             data-text="${escapeHtml(String(d.credentials))}"
              style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:monospace;font-size:13px;color:#10b981;word-break:break-all;cursor:pointer;text-align:left;margin-bottom:16px">
-          ${d.credentials}
+          ${escapeHtml(String(d.credentials))}
         </div>
         <button class="btn-primary" onclick="closeModal()">ปิด</button>
       </div>
