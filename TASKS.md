@@ -2,14 +2,29 @@
 
 ไฟล์นี้ใช้เป็น task board กลางสำหรับ ChatGPT/Codex, Claude Code, และเจ้าของโปรเจกต์ เพื่อดูว่างานไหนเสร็จแล้ว งานไหนยังเสี่ยง และงานไหนควรทำต่อ
 
-## Current Status
+## Current Status (2026-05-20, post-audit)
 
 - Active repo: `C:\Users\PCCOPA\Documents\MyProjects\accdee`
 - Branch: `main`
-- Deployment: Railway via `railway.toml`
-- Current priority: keep one source of truth and continue production hardening in small patches
+- Deployment: Railway via `railway.toml` (auto-deploy on push)
+- Tests: **35/35 pass** ✅
+- Last audit: 2026-05-20 — XSS critical fixes + perf improvement complete
 - Archived repo: `C:\temp\accdee_ARCHIVE_DO_NOT_USE`
 - Dual-repo workflow: disabled
+
+### Completed since last audit (2026-05-20)
+- ✅ XSS fix: purchase modal (d.productName, d.credentials, d.newBalance) — commit f2680cc
+- ✅ XSS fix: error modals (openTopupRequiredModal, openPurchaseErrorModal) — commit f2680cc
+- ✅ Perf fix: getStats sequential → Promise.all() parallel (8 queries) — commit f994cf9
+- ✅ Test fix: authAdmin.test.js stub missing findUserByEmailOrUsername — commit e4dbb5b
+- ✅ /accdee skill upgraded to v3 with post-audit state
+
+### Remaining (ordered by priority)
+1. **Domain renewal** — `accdee.shop` หมดอายุ (owner does this)
+2. **UptimeRobot** — ตั้งหลังได้ domain (owner does this)
+3. **DB Backup ครั้งแรก** — DBeaver → Google Drive (owner does this)
+4. **Admin Pagination** — limit 200 rows → next/prev page (code task)
+5. **SELECT * cleanup** — transactionModel, authController (low priority)
 
 ## Phase 0: Audit + Reconciliation
 
