@@ -2,7 +2,7 @@ const bcrypt           = require('bcryptjs');
 const crypto           = require('crypto');
 const db               = require('../config/db');
 const User             = require('../models/userModel');
-const { incrementTokenVersion } = require('../models/userModel');
+const { incrementTokenVersion, findUserByEmailOrUsername } = require('../models/userModel');
 const { sendTelegram } = require('../config/telegram');
 const { sendEmail }    = require('../config/email');
 const { logSecurityEvent, maskEmail } = require('../utils/securityLogger');
@@ -78,23 +78,23 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const email    = (req.body.email    || '').trim().toLowerCase();
-    const password =  req.body.password || '';
+    const identifier = (req.body.email || req.body.username || '').trim();
+    const password   =  req.body.password || '';
 
-    if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'กรุณากรอกอีเมลและรหัสผ่าน' });
+    if (!identifier || !password) {
+      return res.status(400).json({ success: false, message: 'กรุณากรอก username/อีเมล และรหัสผ่าน' });
     }
 
-    const user = await User.findUserByEmail(email);
+    const user = await findUserByEmailOrUsername(identifier);
     const passwordMatch = user && await bcrypt.compare(password, user.password);
 
     if (!user || !passwordMatch) {
-      logSecurityEvent('auth.login_failed', req, { email: maskEmail(email), reason: user ? 'bad_password' : 'unknown_user' });
+      logSecurityEvent('auth.login_failed', req, { identifier, reason: user ? 'bad_password' : 'unknown_user' });
       return res.status(401).json({ success: false, message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
     }
 
-    // ถ้าเปิด 2FA → ส่ง OTP แล้ว return tempToken แทน JWT จริง
-    if (user.two_fa_enabled) {
+    // Admin ต้องผ่าน 2FA ทุกครั้ง ไม่ว่า two_fa_enabled จะเป็นอะไร
+    if (user.two_fa_enabled || user.role === 'admin') {
       const otp     = String(100000 + (crypto.randomBytes(3).readUIntBE(0, 3) % 900000));
       const expires = new Date(Date.now() + 5 * 60 * 1000); // 5 นาที
 

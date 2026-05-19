@@ -57,6 +57,32 @@
       </div>
     </form>
 
+    <!-- OTP Step — แสดงหลัง login สำเร็จสำหรับ Admin -->
+    <div id="otpStep" style="display:none">
+      <p style="color:#a0aec0;font-size:13px;margin-bottom:16px;text-align:center">
+        🔐 ส่งรหัส OTP ไปที่ Email ของคุณแล้ว (หมดอายุใน 5 นาที)
+      </p>
+      <div class="form-group">
+        <label class="form-label" for="otpInput">รหัส OTP 6 หลัก</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔑</span>
+          <input
+            id="otpInput"
+            type="text"
+            class="form-control with-icon"
+            placeholder="000000"
+            maxlength="6"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            autofocus>
+        </div>
+      </div>
+      <button type="button" id="otpBtn" class="btn-login">ยืนยัน OTP</button>
+      <div style="text-align:center;margin-top:12px">
+        <a href="/admin-login.html" style="color:#7c3aed;font-size:13px">← กลับหน้า Login</a>
+      </div>
+    </div>
+
     <div class="login-footer">
       © 2026 ACCDEE · Admin Portal · Secure Login
     </div>

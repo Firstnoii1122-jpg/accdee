@@ -9,7 +9,18 @@ const findUserByEmail = async (email) => {
 };
 
 const findUserByUsername = async (username) => {
-  const [rows] = await db.execute('SELECT id FROM users WHERE username = ?', [username]);
+  const [rows] = await db.execute(
+    'SELECT id, username, email, password, balance, role, telegram_chat_id, two_fa_enabled, token_version FROM users WHERE username = ?',
+    [username]
+  );
+  return rows[0];
+};
+
+const findUserByEmailOrUsername = async (identifier) => {
+  const [rows] = await db.execute(
+    'SELECT id, username, email, password, balance, role, telegram_chat_id, two_fa_enabled, token_version FROM users WHERE email = ? OR username = ? LIMIT 1',
+    [identifier.toLowerCase(), identifier]
+  );
   return rows[0];
 };
 
@@ -33,4 +44,4 @@ const createUser = async (username, email, hashedPassword) => {
   return result.insertId;
 };
 
-module.exports = { findUserByEmail, findUserByUsername, findUserById, createUser, incrementTokenVersion };
+module.exports = { findUserByEmail, findUserByUsername, findUserByEmailOrUsername, findUserById, createUser, incrementTokenVersion };

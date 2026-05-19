@@ -4,6 +4,7 @@ const API_CONFIG = {
   USER_KEY:  'accdee_user',
   endpoints: {
     login:         '/auth/login',
+    verifyOtp:     '/auth/verify-otp',
     stats:         '/admin/stats',
     topups:        '/admin/topups',
     topupHistory:  '/admin/topups/history',
