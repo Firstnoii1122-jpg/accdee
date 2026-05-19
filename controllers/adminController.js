@@ -100,33 +100,28 @@ const rejectTopup = async (req, res) => {
 // GET /api/admin/stats — สถิติสำหรับ dashboard
 const getStats = async (req, res) => {
   try {
-    const [[{ totalMembers }]] = await db.execute(
-      "SELECT COUNT(*) as totalMembers FROM users WHERE role = 'user'"
-    );
-    const [[{ newToday }]] = await db.execute(
-      "SELECT COUNT(*) as newToday FROM users WHERE role = 'user' AND DATE(created_at) = CURDATE()"
-    );
-    const [[{ pendingCount }]] = await db.execute(
-      "SELECT COUNT(*) as pendingCount FROM transactions WHERE status = 'pending'"
-    );
-    const [[{ topupToday }]] = await db.execute(
-      "SELECT COALESCE(SUM(amount),0) as topupToday FROM transactions WHERE type='topup' AND status='approved' AND DATE(created_at)=CURDATE()"
-    );
-    const [[{ ordersToday }]] = await db.execute(
-      "SELECT COUNT(*) as ordersToday FROM orders WHERE DATE(created_at) = CURDATE()"
-    );
-    const [[{ totalRevenue }]] = await db.execute(
-      "SELECT COALESCE(SUM(amount),0) as totalRevenue FROM transactions WHERE type='topup' AND status='approved'"
-    );
-    const [[{ totalOrders }]] = await db.execute(
-      "SELECT COUNT(*) as totalOrders FROM orders"
-    );
-    const [recentTransactions] = await db.execute(
-      `SELECT t.id, t.amount, t.type, t.status, t.created_at,
-              u.username, u.email
-       FROM transactions t JOIN users u ON t.user_id = u.id
-       ORDER BY t.created_at DESC LIMIT 10`
-    );
+    const [
+      [[{ totalMembers }]],
+      [[{ newToday }]],
+      [[{ pendingCount }]],
+      [[{ topupToday }]],
+      [[{ ordersToday }]],
+      [[{ totalRevenue }]],
+      [[{ totalOrders }]],
+      [recentTransactions],
+    ] = await Promise.all([
+      db.execute("SELECT COUNT(*) as totalMembers FROM users WHERE role = 'user'"),
+      db.execute("SELECT COUNT(*) as newToday FROM users WHERE role = 'user' AND DATE(created_at) = CURDATE()"),
+      db.execute("SELECT COUNT(*) as pendingCount FROM transactions WHERE status = 'pending'"),
+      db.execute("SELECT COALESCE(SUM(amount),0) as topupToday FROM transactions WHERE type='topup' AND status='approved' AND DATE(created_at)=CURDATE()"),
+      db.execute("SELECT COUNT(*) as ordersToday FROM orders WHERE DATE(created_at) = CURDATE()"),
+      db.execute("SELECT COALESCE(SUM(amount),0) as totalRevenue FROM transactions WHERE type='topup' AND status='approved'"),
+      db.execute("SELECT COUNT(*) as totalOrders FROM orders"),
+      db.execute(`SELECT t.id, t.amount, t.type, t.status, t.created_at,
+                         u.username, u.email
+                  FROM transactions t JOIN users u ON t.user_id = u.id
+                  ORDER BY t.created_at DESC LIMIT 10`),
+    ]);
     res.json({
       success: true,
       data: { totalMembers, newToday, pendingCount, topupToday: parseFloat(topupToday),
