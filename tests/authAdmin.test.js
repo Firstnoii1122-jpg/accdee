@@ -60,9 +60,12 @@ stubModule('config/telegram.js', {
 
 stubModule('models/userModel.js', {
   findUserByEmail: async (email) => users[email],
-  findUserByUsername: async () => undefined,
+  findUserByUsername: async (username) => Object.values(users).find((u) => u.username === username),
+  findUserByEmailOrUsername: async (identifier) =>
+    users[identifier] || Object.values(users).find((u) => u.username === identifier),
   findUserById: async (id) => Object.values(users).find((user) => user.id === id),
   createUser: async () => 100,
+  incrementTokenVersion: async () => {},
 });
 
 const authRoutes = require('../routes/authRoutes');
